@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Entity {
     
-    // Protected attributes as defined in UML (denoted by '#')
+    // Attributes defined as protected (#) in UML
     protected Vector2 position;
     protected float rotation;
     protected boolean isActive;
@@ -16,14 +16,14 @@ public abstract class Entity {
         this.position = new Vector2(x, y);
         this.rotation = 0.0f;
         this.isActive = true;
-        this.isCollidable = false; // Default
+        this.isCollidable = false; // Default, overridden by CollidableEntity
     }
 
-    // Abstract methods forced to be implemented by subclasses
+    // Abstract methods to be implemented by subclasses
     public abstract void update(float deltaTime);
     public abstract void render(SpriteBatch batch);
 
-    // Concrete methods
+    // Concrete methods defined in UML
     public Vector2 getPosition() {
         return position;
     }
@@ -36,6 +36,7 @@ public abstract class Entity {
         return isCollidable;
     }
 
+    // method to mark entity for removal
     public void destroy() {
         this.isActive = false;
     }

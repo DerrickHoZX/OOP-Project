@@ -6,15 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EntityManager {
 
-    // Private attribute
     private ArrayList<Entity> entities;
 
-    // Constructor
     public EntityManager() {
-        entities = new ArrayList<Entity>();
+        this.entities = new ArrayList<Entity>();
     }
 
-    // Methods
     public void addEntity(Entity entity) {
         entities.add(entity);
     }
@@ -24,16 +21,17 @@ public class EntityManager {
     }
 
     public void update(float deltaTime) {
-        // Safe removal using Iterator to prevent ConcurrentModificationException
+        // Use Iterator to safely remove entities while iterating
         Iterator<Entity> iterator = entities.iterator();
         while (iterator.hasNext()) {
             Entity entity = iterator.next();
             
-            // 1. Update the entity
+            // 1. Update the entity logic
             entity.update(deltaTime);
             
-            // 2. Check if it should be destroyed (using destroy() from Entity class)
-            if (!entity.isActive) { // accessing protected field via package-private
+            // 2. Check if the entity is dead
+            // Accessing 'isActive' directly as it is protected and we are in the same package
+            if (!entity.isActive) {
                 iterator.remove();
             }
         }
