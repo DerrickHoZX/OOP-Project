@@ -44,4 +44,5 @@ public class StartScene extends Scene {
     public void onExit() {
         if (bg != null) bg.dispose();
     }
+    
 }

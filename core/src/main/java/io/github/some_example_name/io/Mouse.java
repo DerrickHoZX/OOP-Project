@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import io.github.some_example_name.interfaces.InputDevice;
 
 public class Mouse implements InputDevice {
+	
 
     @Override
     public void update() {}

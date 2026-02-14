@@ -27,4 +27,5 @@ public class IOManager {
     public boolean isKeyJustPressed(KeyCode key) {
         return keyboard.isJustPressed(key);
     }
+    
 }

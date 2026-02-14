@@ -17,6 +17,7 @@ public abstract class Scene {
     
     
     public void resize(int width, int height) {
-        // default: do nothing
+        // default: do nothing 
     }
+    
 }

@@ -65,3 +65,4 @@ public class Main extends ApplicationAdapter {
         if (batch != null) batch.dispose();
     }
 }
+

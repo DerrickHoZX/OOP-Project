@@ -8,6 +8,7 @@ public class Keyboard implements InputDevice {
 
     @Override
     public void update() {}
+    
 
     public boolean isJustPressed(KeyCode key) {
         switch (key) {
