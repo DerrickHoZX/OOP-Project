@@ -1,15 +1,15 @@
 package io.github.some_example_name.lwjgl3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EntityManager {
 
-    private ArrayList<Entity> entities;
+    private List<Entity> entities;
 
     public EntityManager() {
-        this.entities = new ArrayList<Entity>();
+        this.entities = new ArrayList<>();
     }
 
     public void addEntity(Entity entity) {
@@ -20,30 +20,36 @@ public class EntityManager {
         entities.remove(entity);
     }
 
-    public void update(float deltaTime) {
-        // Use Iterator to safely remove entities while iterating
+    public void update(float dt) {
+        // Use Iterator to safely remove inactive entities while looping
         Iterator<Entity> iterator = entities.iterator();
         while (iterator.hasNext()) {
-            Entity entity = iterator.next();
-            
-            // 1. Update the entity logic
-            entity.update(deltaTime);
-            
-            // 2. Check if the entity is dead
-            // Accessing 'isActive' directly as it is protected and we are in the same package
-            if (!entity.isActive) {
-                iterator.remove();
+            Entity e = iterator.next();
+            if (e.isActive()) {
+                e.update(dt);
+            } else {
+                iterator.remove(); // Clean up destroyed entities
             }
         }
     }
 
-    public void render(SpriteBatch batch) {
-        for (Entity entity : entities) {
-            entity.render(batch);
+    public void render() {
+        for (Entity e : entities) {
+            if (e.isActive()) {
+                e.render();
+            }
         }
     }
 
-    public void dispose() {
-        entities.clear();
+    // Returns a list containing ONLY the collidable entities
+    public List<Entity> getCollidableEntities() {
+        List<Entity> collidables = new ArrayList<>();
+        for (Entity e : entities) {
+            // Check the flag we set in the constructors
+            if (e.isCollidable() && e.isActive()) {
+                collidables.add(e);
+            }
+        }
+        return collidables;
     }
 }
