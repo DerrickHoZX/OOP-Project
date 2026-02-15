@@ -1,5 +1,16 @@
 package io.github.some_example_name.interfaces;
 
+import io.github.some_example_name.movement.MovementComponent;
+import com.badlogic.gdx.math.Vector2;
+
 public interface Movable {
-	
+    
+    // Get current position
+    Vector2 getPosition();
+    
+    // Set position (used by movement components)
+    void setPosition(float x, float y);
+    
+    // Get the movement component attached to this entity
+    MovementComponent getMovementComponent();
 }
