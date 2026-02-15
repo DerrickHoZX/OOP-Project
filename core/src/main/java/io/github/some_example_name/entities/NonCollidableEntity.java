@@ -1,30 +1,28 @@
 package io.github.some_example_name.entities;
 
-import com.badlogic.gdx.math.Vector2;                               // added for movement
-import io.github.some_example_name.interfaces.Movable;              // added for movement
-import io.github.some_example_name.movement.MovementComponent;      // added for movement
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import io.github.some_example_name.interfaces.Movable;
+import io.github.some_example_name.movement.MovementComponent;
 
 public class NonCollidableEntity extends Entity implements Movable {
 
-	protected MovementComponent movementComponent; //for movement
-	
+    protected MovementComponent movementComponent;
+    
     public NonCollidableEntity(float x, float y) {
         super(x, y);
         this.isCollidable = false;
-        this.movementComponent = null; //for movement
+        this.movementComponent = null;
     }
 
     @Override
     public void update(float dt) {
-        // Movement is handled by MovementManager now
     }
 
     @Override
-    public void render() {
-        // Implement draw logic
+    public void render(ShapeRenderer shapeRenderer) {
     }
     
-    // Implement Movable interface
     @Override
     public Vector2 getPosition() {
         return new Vector2(x, y);
@@ -41,7 +39,6 @@ public class NonCollidableEntity extends Entity implements Movable {
         return movementComponent;
     }
     
-    // Allow setting movement component
     public void setMovementComponent(MovementComponent component) {
         this.movementComponent = component;
     }

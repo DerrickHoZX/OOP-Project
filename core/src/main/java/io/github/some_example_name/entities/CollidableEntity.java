@@ -1,33 +1,34 @@
 package io.github.some_example_name.entities;
 
-import com.badlogic.gdx.math.Rectangle;								// for movement
-import com.badlogic.gdx.math.Vector2;                              // for movement
-import io.github.some_example_name.interfaces.Movable;              //  for movement
-import io.github.some_example_name.movement.MovementComponent;      // for movement
-import com.badlogic.gdx.math.Rectangle; // Or java.awt.Rectangle depending on your library
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer; 
+import io.github.some_example_name.interfaces.Movable;
+import io.github.some_example_name.movement.MovementComponent;
 
 public class CollidableEntity extends Entity implements Movable { 
 
     protected float width;
     protected float height;
-    protected MovementComponent movementComponent; // added for movement
+    protected MovementComponent movementComponent;
 
     public CollidableEntity(float x, float y, float w, float h) {
         super(x, y);       
         this.width = w;
         this.height = h;
-        this.isCollidable = true; // IMPORTANT: Flag this as collidable
+        this.isCollidable = true;
         this.movementComponent = null;
     }
 
     @Override
     public void update(float dt) {
-        // Movement is handled by MovementManager now
+        // Movement logic handled by manager or component
     }
 
+    // UPDATED: Implementation of the new abstract method
     @Override
-    public void render() {
-        // Implement draw logic
+    public void render(ShapeRenderer shapeRenderer) {
+        // Default: Draw nothing. Child classes (Circle/Square) will override this.
     }
 
     public float getWidth() { return width; }
@@ -37,14 +38,10 @@ public class CollidableEntity extends Entity implements Movable {
         return new Rectangle(x, y, width, height);
     }
 
-    // Concrete implementation (required because the class is not abstract)
     public void onCollision(Entity other) {
-        // Default: do nothing. Override in subclasses like Player/Enemy.
         System.out.println("Collision detected with " + other);
     }
     
-    
-    //added for movement 
     @Override
     public Vector2 getPosition() {
         return new Vector2(x, y);
@@ -61,9 +58,7 @@ public class CollidableEntity extends Entity implements Movable {
         return movementComponent;
     }
     
-    // Allow setting movement component
     public void setMovementComponent(MovementComponent component) {
         this.movementComponent = component;
     }
-    
 }

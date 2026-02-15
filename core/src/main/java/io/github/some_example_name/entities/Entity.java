@@ -1,28 +1,28 @@
 package io.github.some_example_name.entities;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer; // Import added
+
 public abstract class Entity {
     
-    // Protected fields (Inherited by children)
     protected float x;
     protected float y;
     protected float rotation;
     protected boolean isActive;
     protected boolean isCollidable;
 
-    // Constructor
     public Entity(float x, float y) {
         this.x = x;
         this.y = y;
         this.rotation = 0;
         this.isActive = true;
-        this.isCollidable = false; // Default
+        this.isCollidable = false;
     }
 
-    // Abstract methods: Children MUST implement these
     public abstract void update(float dt);
-    public abstract void render();
+    
+    // UPDATED: Now accepts ShapeRenderer
+    public abstract void render(ShapeRenderer shapeRenderer);
 
-    // Getters and Setters
     public float getX() { return x; }
     public float getY() { return y; }
     

@@ -1,7 +1,7 @@
 package io.github.some_example_name.managers;
 
-// IMPORT is required because Entity is in a different package
 import io.github.some_example_name.entities.Entity;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -29,15 +29,16 @@ public class EntityManager {
             if (e.isActive()) {
                 e.update(dt);
             } else {
-                iterator.remove(); // Remove dead entities
+                iterator.remove();
             }
         }
     }
 
-    public void render() {
+    // UPDATED: Pass ShapeRenderer
+    public void render(ShapeRenderer shapeRenderer) {
         for (Entity e : entities) {
             if (e.isActive()) {
-                e.render();
+                e.render(shapeRenderer);
             }
         }
     }

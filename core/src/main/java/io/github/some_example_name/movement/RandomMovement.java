@@ -6,71 +6,71 @@ import java.util.Random;
 
 public class RandomMovement extends MovementComponent {
     
-    private float speed;              // How fast it moves
-    private float changeInterval;     // How often to change direction (seconds)
-    private float timeSinceLastChange; // Timer tracking when to change
+    private float speed;
+    private float changeInterval;
+    private float timeSinceLastChange;
+    
+    // Boundary settings
+    private float screenWidth;
+    private float screenHeight;
+    private float entitySize; 
     
     private Random random;
     
-    public RandomMovement(float speed, float changeInterval) {
+    public RandomMovement(float speed, float changeInterval, float screenW, float screenH, float entitySize) {
         super();
         this.speed = speed;
         this.changeInterval = changeInterval;
+        this.screenWidth = screenW;
+        this.screenHeight = screenH;
+        this.entitySize = entitySize;
+        
         this.timeSinceLastChange = 0;
         this.random = new Random();
         
-        // Start with random direction
         pickRandomDirection();
     }
     
     @Override
     public void update(Movable entity, float dt) {
-        // Update timer
         timeSinceLastChange += dt;
         
-        // Change direction if interval has passed
+        // 1. Change direction periodically
         if (timeSinceLastChange >= changeInterval) {
             pickRandomDirection();
-            timeSinceLastChange = 0; // Reset timer
+            timeSinceLastChange -= changeInterval; 
         }
         
-        // Move entity in current direction
+        // 2. Calculate proposed position
         Vector2 currentPos = entity.getPosition();
         float newX = currentPos.x + velocity.x * dt;
         float newY = currentPos.y + velocity.y * dt;
         
+        // 3. Screen Boundary Check (Bounce Logic)
+        if (newX < 0) {
+            newX = 0;
+            velocity.x = -velocity.x; // Bounce right
+        } else if (newX > screenWidth - entitySize) {
+            newX = screenWidth - entitySize;
+            velocity.x = -velocity.x; // Bounce left
+        }
+        
+        if (newY < 0) {
+            newY = 0;
+            velocity.y = -velocity.y; // Bounce up
+        } else if (newY > screenHeight - entitySize) {
+            newY = screenHeight - entitySize;
+            velocity.y = -velocity.y; // Bounce down
+        }
+        
+        // 4. Update Position
         entity.setPosition(newX, newY);
     }
     
     private void pickRandomDirection() {
-        // Generate random angle between 0 and 2*PI
         float angle = random.nextFloat() * (float)(2 * Math.PI);
-        
-        // Convert to direction vector
         float dirX = (float)Math.cos(angle);
         float dirY = (float)Math.sin(angle);
-        
-        // Set velocity
         velocity.set(dirX, dirY).nor().scl(speed);
-    }
-    
-    public void setSpeed(float speed) {
-        this.speed = speed;
-        // Recalculate velocity with new speed
-        if (velocity.len() > 0) {
-            velocity.nor().scl(speed);
-        }
-    }
-    
-    public void setChangeInterval(float interval) {
-        this.changeInterval = interval;
-    }
-    
-    public float getSpeed() {
-        return speed;
-    }
-    
-    public float getChangeInterval() {
-        return changeInterval;
     }
 }
