@@ -52,7 +52,7 @@ public class StartScene extends Scene {
         );
         
         // CHANGED: Pass screen dimensions to KeyboardMovement
-        circle.setMovementComponent(new KeyboardMovement(300f, worldWidth, worldHeight, playerSize));
+        circle.setMovementComponent(new KeyboardMovement(sceneManager.getIOManager(), 300f, worldWidth, worldHeight, playerSize));
         
         entityManager.addEntity(circle);
         movementManager.register(circle);
