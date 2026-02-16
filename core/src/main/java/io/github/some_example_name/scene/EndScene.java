@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.some_example_name.io.LogCategory;
+
 import io.github.some_example_name.managers.SceneManager;
 
 public class EndScene extends Scene {
@@ -65,16 +67,26 @@ public class EndScene extends Scene {
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "RESTART button clicked");
+
                 sceneManager.setScene(new StartScene(sceneManager, viewport));
             }
         });
 
+
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "MAIN MENU button clicked");
+
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
+
 
         stage.addActor(restartBtn);
         stage.addActor(menuBtn);

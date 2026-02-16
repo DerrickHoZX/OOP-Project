@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.some_example_name.managers.SceneManager;
+import io.github.some_example_name.io.LogCategory;
 
 public class MainMenuScene extends Scene {
 
@@ -65,20 +66,31 @@ public class MainMenuScene extends Scene {
 
         playBtn.setPosition((worldW - playBtn.getWidth()) / 2f, worldH * 0.34f);
         exitBtn.setPosition((worldW - exitBtn.getWidth()) / 2f, worldH * 0.22f);
-
+        
+        // added mouse click logging
         playBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "PLAY button clicked");
+
                 sceneManager.setScene(new StartScene(sceneManager, viewport));
             }
         });
 
+        // added mouse click logging
         exitBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "EXIT button clicked");
+
                 Gdx.app.exit();
             }
         });
+
 
         stage.addActor(playBtn);
         stage.addActor(exitBtn);

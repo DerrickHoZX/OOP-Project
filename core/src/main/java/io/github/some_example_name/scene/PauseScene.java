@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.some_example_name.managers.SceneManager;
+import io.github.some_example_name.io.LogCategory;
 
 public class PauseScene extends Scene {
 
@@ -67,28 +68,43 @@ public class PauseScene extends Scene {
         resumeBtn.setPosition((w - resumeBtn.getWidth()) / 2f, h * 0.56f);
         endBtn.setPosition((w - endBtn.getWidth()) / 2f, h * 0.46f);
         menuBtn.setPosition((w - menuBtn.getWidth()) / 2f, h * 0.36f);
-
+ 
         resumeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.popScene(); // resume underlying scene
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "RESUME button clicked");
+
+                sceneManager.popScene();
             }
         });
+
 
         endBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Replace entire stack with EndScene
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "END GAME button clicked");
+
                 sceneManager.setScene(new EndScene(sceneManager, viewport));
             }
         });
 
+
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
+                sceneManager.getIOManager()
+                        .log(LogCategory.UI, "MAIN MENU button clicked");
+
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
+
+
 
         stage.addActor(resumeBtn);
         stage.addActor(endBtn);

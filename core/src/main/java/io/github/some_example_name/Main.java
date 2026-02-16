@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.some_example_name.io.LogCategory;      // ✅ NEW
 import io.github.some_example_name.managers.IOManager;
 import io.github.some_example_name.managers.SceneManager;
 import io.github.some_example_name.scene.MainMenuScene;
@@ -34,6 +35,10 @@ public class Main extends ApplicationAdapter {
         camera.update();
 
         ioManager = new IOManager();
+
+        // Categorized log
+        ioManager.log(LogCategory.SYSTEM, "Game started successfully");
+
         sceneManager = new SceneManager(ioManager);
 
         sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
@@ -56,13 +61,19 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        sceneManager.resize(width, height); // if you have this method
+        sceneManager.resize(width, height);
     }
 
     @Override
     public void dispose() {
-        if (sceneManager != null) sceneManager.dispose(); // if you have this method
+
+        // Log shutdown BEFORE disposing IO
+        if (ioManager != null) {
+            ioManager.log(LogCategory.SYSTEM, "Game exiting (dispose called)");
+        }
+
+        if (sceneManager != null) sceneManager.dispose();
+        if (ioManager != null) ioManager.dispose();
         if (batch != null) batch.dispose();
     }
 }
-
