@@ -1,6 +1,7 @@
 package io.github.abstractengine.scene;
 
 import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -18,6 +19,7 @@ import io.github.abstractengine.collision.BasicCollisionDetector;
 import io.github.abstractengine.collision.Boundary;
 import io.github.abstractengine.collision.GameCollisionHandler;
 import io.github.abstractengine.managers.CollisionManager;
+import io.github.abstractengine.managers.AssetManager;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -45,7 +47,8 @@ public class StartScene extends Scene {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setAutoShapeType(true);
         bg = new Texture("startscene.png"); 
-        
+        sceneManager.getIOManager().playMusic(AssetManager.MUSIC_START_SCENE, true);
+
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
 
@@ -132,5 +135,7 @@ public class StartScene extends Scene {
         if (shapeRenderer != null) shapeRenderer.dispose();
         movementManager.clear();
         if (collisionManager != null) collisionManager.clear();
+        sceneManager.getIOManager().stopMusic();
+
     }
 }

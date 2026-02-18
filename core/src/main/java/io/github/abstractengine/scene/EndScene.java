@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.SceneManager;
+import io.github.abstractengine.managers.AssetManager;
+
+
 
 public class EndScene extends Scene {
 
@@ -36,6 +39,7 @@ public class EndScene extends Scene {
     public void onEnter() {
 
         bg = new Texture("endscene.jpg"); // must be inside assets root
+        sceneManager.getIOManager().playMusic(AssetManager.MUSIC_END_SCENE, true);
 
         stage = new Stage(viewport);
 
@@ -122,6 +126,8 @@ public class EndScene extends Scene {
         if (bg != null) bg.dispose();
         if (font != null) font.dispose();
         if (buttonTex != null) buttonTex.dispose();
+        sceneManager.getIOManager().stopMusic();
+
     }
 
     private Texture makeSolidTexture(int w, int h, Color c) {

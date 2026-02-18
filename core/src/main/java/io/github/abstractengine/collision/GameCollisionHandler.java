@@ -11,6 +11,7 @@ import io.github.abstractengine.movement.MovementComponent;
 import io.github.abstractengine.scene.EndScene;
 
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.abstractengine.managers.AssetManager;
 
 /**
  * GameCollisionHandler implements specific collision rules:
@@ -76,6 +77,7 @@ public class GameCollisionHandler implements ICollisionHandler {
         // RULE 1: Circle + Triangle = Scene Transition
         if (circle != null && triangle != null) {
             System.out.println("Circle-Triangle collision detected. Transitioning to EndScene.");
+            sceneManager.getIOManager().playSfx(AssetManager.SFX_GAME_OVER);
             sceneManager.setScene(new EndScene(sceneManager, viewport));
             return;
         }
@@ -83,6 +85,7 @@ public class GameCollisionHandler implements ICollisionHandler {
         // RULE 2: Circle + Square = Speed Boost + Remove Square
         if (circle != null && square != null) {
             System.out.println("Circle-Square collision detected. Applying speed boost effect.");
+            sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
             speedBoost.activate();
             entityManager.removeEntity(square);
             return;
