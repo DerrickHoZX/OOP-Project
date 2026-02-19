@@ -1,6 +1,5 @@
 package io.github.abstractengine.collision;
 
-import com.badlogic.gdx.math.Vector2;
 import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;

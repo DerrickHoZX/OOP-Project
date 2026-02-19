@@ -5,6 +5,7 @@ import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
+import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.SceneManager;
 import io.github.abstractengine.movement.MovementComponent;
@@ -76,20 +77,23 @@ public class GameCollisionHandler implements ICollisionHandler {
         
         // RULE 1: Circle + Triangle = Scene Transition
         if (circle != null && triangle != null) {
-            System.out.println("Circle-Triangle collision detected. Transitioning to EndScene.");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_GAME_OVER);
-            sceneManager.setScene(new EndScene(sceneManager, viewport));
-            return;
-        }
-        
+        	sceneManager.getIOManager().log(LogCategory.GAMEPLAY, 
+                    "Circle-Triangle collision detected. Transitioning to EndScene.");
+                
+                sceneManager.getIOManager().playSfx(AssetManager.SFX_GAME_OVER);
+                sceneManager.setScene(new EndScene(sceneManager, viewport));
+                return;
+            }        
         // RULE 2: Circle + Square = Speed Boost + Remove Square
         if (circle != null && square != null) {
-            System.out.println("Circle-Square collision detected. Applying speed boost effect.");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
-            speedBoost.activate();
-            entityManager.removeEntity(square);
-            return;
-        }
+        	sceneManager.getIOManager().log(LogCategory.GAMEPLAY, 
+                    "Circle-Square collision detected. Applying speed boost effect.");
+                
+                sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
+                speedBoost.activate();
+                entityManager.removeEntity(square);
+                return;
+            }
         
         // Additional collision rules can be added here
     }
