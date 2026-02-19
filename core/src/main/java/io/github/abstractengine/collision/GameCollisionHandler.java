@@ -86,8 +86,9 @@ public class GameCollisionHandler implements ICollisionHandler {
             }        
         // RULE 2: Circle + Square = Speed Boost + Remove Square
         if (circle != null && square != null) {
+        	float duration = speedBoost.getDuration();
         	sceneManager.getIOManager().log(LogCategory.GAMEPLAY, 
-                    "Circle-Square collision detected. Applying speed boost effect.");
+                    "Circle-Square collision detected. Applying speed boost effect for"+ duration + " seconds.");
                 
                 sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
                 speedBoost.activate();

@@ -81,4 +81,5 @@ public class SpeedBoostEffect {
     
     public boolean isActive() { return isActive; }
     public float getTimeRemaining() { return timeRemaining; }
+    public float getDuration() { return duration; }  
 }
