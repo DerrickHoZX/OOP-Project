@@ -55,6 +55,9 @@ The engine follows a **manager-based architecture**, where each major responsibi
 - `AssetManager` – loads and caches assets
 - `TimeManager` – provides frame timing
 
+<img width="4362" height="1534" alt="Final oopUML-UML Diagram drawio (1)" src="https://github.com/user-attachments/assets/3e1a1ffa-03fa-48cf-9b14-df9b2cd6e72f" />
+
+
 Scenes orchestrate per-frame execution by coordinating these shared managers, ensuring **clear separation of concerns**.
 
 ---
