@@ -20,7 +20,7 @@ public class SceneManager {
         return ioManager;
     }
 
-    // Replace everything (main menu / new game)
+    // Replace everything (main menu / new session)
     public void setScene(Scene next) {
         while (!stack.isEmpty()) {
             stack.pop().onExit();

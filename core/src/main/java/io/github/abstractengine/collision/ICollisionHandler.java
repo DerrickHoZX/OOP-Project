@@ -4,7 +4,7 @@ import io.github.abstractengine.entities.Entity;
 
 /**
  * ICollisionHandler defines the contract for responding to collisions.
- * Different implementations can have different game rules.
+ * Different implementations can have different simulation rules.
  */
 public interface ICollisionHandler {
     

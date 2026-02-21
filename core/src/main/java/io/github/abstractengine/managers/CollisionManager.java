@@ -2,7 +2,7 @@ package io.github.abstractengine.managers;
 
 import io.github.abstractengine.collision.Boundary;
 import io.github.abstractengine.collision.CollisionInfo;
-import io.github.abstractengine.collision.GameCollisionHandler;
+import io.github.abstractengine.collision.SimulationCollisionHandler;
 import io.github.abstractengine.collision.ICollisionDetector;
 import io.github.abstractengine.collision.ICollisionHandler;
 import io.github.abstractengine.entities.Entity;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * CollisionManager orchestrates collision detection and response.
  * It uses a detector to find collisions and a handler to respond to them.
- * Called every frame from the game loop.
+ * Called every frame from the loop.
  */
 public class CollisionManager {
     
@@ -60,8 +60,8 @@ public class CollisionManager {
         }
         
         // Update any time-based effects (like speed boost timer)
-        if (handler instanceof GameCollisionHandler) {
-            ((GameCollisionHandler) handler).update(deltaTime);
+        if (handler instanceof SimulationCollisionHandler) {
+            ((SimulationCollisionHandler) handler).update(deltaTime);
         }
     }
     

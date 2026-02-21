@@ -37,7 +37,7 @@ public class Main extends ApplicationAdapter {
         ioManager = new IOManager();
 
         // Categorized log
-        ioManager.log(LogCategory.SYSTEM, "Game started successfully");
+        ioManager.log(LogCategory.SYSTEM, "Engine started successfully");
 
         sceneManager = new SceneManager(ioManager);
 
@@ -69,7 +69,7 @@ public class Main extends ApplicationAdapter {
 
         // Log shutdown BEFORE disposing IO
         if (ioManager != null) {
-            ioManager.log(LogCategory.SYSTEM, "Game exiting (dispose called)");
+            ioManager.log(LogCategory.SYSTEM, "Engine exiting (dispose called)");
         }
 
         if (sceneManager != null) sceneManager.dispose();

@@ -53,7 +53,7 @@ public class PauseScene extends Scene {
         style.over = new TextureRegionDrawable(buttonTex);
 
         TextButton resumeBtn = new TextButton("RESUME", style);
-        TextButton endBtn    = new TextButton("END GAME", style);
+        TextButton endBtn    = new TextButton("END SESSION", style);
         TextButton menuBtn   = new TextButton("MAIN MENU", style);
 
         // Button size (same as main menu)
@@ -86,7 +86,7 @@ public class PauseScene extends Scene {
             public void clicked(InputEvent event, float x, float y) {
 
                 sceneManager.getIOManager()
-                        .log(LogCategory.UI, "END GAME button clicked");
+                        .log(LogCategory.UI, "END SESSION button clicked");
 
                 sceneManager.setScene(new EndScene(sceneManager, viewport));
             }

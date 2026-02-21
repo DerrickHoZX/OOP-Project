@@ -23,7 +23,7 @@ public class AssetManager {
     public static final String MUSIC_START_SCENE = "music.startscene";
     public static final String MUSIC_END_SCENE = "music.endscene";
 
-    public static final String SFX_GAME_OVER = "sfx.gameover";
+    public static final String SFX_OVER = "sfx.over";
     public static final String SFX_SPEED_BOOST = "sfx.speedboost";
 
     // ---- Default file paths (put these files under your project's assets/ folder) ----
@@ -32,7 +32,7 @@ public class AssetManager {
     public static final String PATH_MUSIC_START_SCENE = "audio/startscene.wav";
     public static final String PATH_MUSIC_END_SCENE = "audio/endscene.wav";
 
-    public static final String PATH_SFX_GAME_OVER = "audio/gameover.wav";
+    public static final String PATH_SFX_END = "audio/end.wav";
     public static final String PATH_SFX_SPEED_BOOST = "audio/speedboost.wav";
 
     private final com.badlogic.gdx.assets.AssetManager gdxAssets = new com.badlogic.gdx.assets.AssetManager();
@@ -44,7 +44,7 @@ public class AssetManager {
         registerMusic(MUSIC_START_SCENE, PATH_MUSIC_START_SCENE);
         registerMusic(MUSIC_END_SCENE, PATH_MUSIC_END_SCENE);
 
-        registerSound(SFX_GAME_OVER, PATH_SFX_GAME_OVER);
+        registerSound(SFX_OVER, PATH_SFX_END);
         registerSound(SFX_SPEED_BOOST, PATH_SFX_SPEED_BOOST);
     }
 

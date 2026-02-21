@@ -15,12 +15,12 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.abstractengine.managers.AssetManager;
 
 /**
- * GameCollisionHandler implements specific collision rules:
+ *  implements specific collision rules:
  * - Circle + Triangle = Transition to EndScene
  * - Circle + Square = Speed Boost + Remove Square
  * - Any Entity + Boundary = Bounce Back
  */
-public class GameCollisionHandler implements ICollisionHandler {
+public class SimulationCollisionHandler implements ICollisionHandler {
     
     private SceneManager sceneManager;
     private EntityManager entityManager;
@@ -29,13 +29,13 @@ public class GameCollisionHandler implements ICollisionHandler {
     private SpeedBoostEffect speedBoost;
     
     /**
-     * Creates a game collision handler
+     * Creates a collision handler
      * @param sceneManager For scene transitions
      * @param entityManager For entity management
      * @param viewport For creating new scenes
      * @param targetCircle The circle entity that receives effects (speed boost)
      */
-    public GameCollisionHandler(SceneManager sceneManager, EntityManager entityManager, 
+    public SimulationCollisionHandler(SceneManager sceneManager, EntityManager entityManager, 
                                Viewport viewport, Circle targetCircle) {
         this.sceneManager = sceneManager;
         this.entityManager = entityManager;
@@ -77,17 +77,17 @@ public class GameCollisionHandler implements ICollisionHandler {
         
         // RULE 1: Circle + Triangle = Scene Transition
         if (circle != null && triangle != null) {
-        	sceneManager.getIOManager().log(LogCategory.GAMEPLAY, 
+        	sceneManager.getIOManager().log(LogCategory.SESSION, 
                     "Circle-Triangle collision detected. Transitioning to EndScene.");
                 
-                sceneManager.getIOManager().playSfx(AssetManager.SFX_GAME_OVER);
+                sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
                 sceneManager.setScene(new EndScene(sceneManager, viewport));
                 return;
             }        
         // RULE 2: Circle + Square = Speed Boost + Remove Square
         if (circle != null && square != null) {
         	float duration = speedBoost.getDuration();
-        	sceneManager.getIOManager().log(LogCategory.GAMEPLAY, 
+        	sceneManager.getIOManager().log(LogCategory.SESSION, 
                     "Circle-Square collision detected. Applying speed boost effect for"+ duration + " seconds.");
                 
                 sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);

@@ -7,5 +7,5 @@ public enum LogCategory {
     SCENE,
     AUDIO,
     PERSISTENCE,
-    GAMEPLAY
+    SESSION
 }

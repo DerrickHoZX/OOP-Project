@@ -19,7 +19,7 @@ import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.collision.BasicCollisionDetector;
 import io.github.abstractengine.collision.Boundary;
-import io.github.abstractengine.collision.GameCollisionHandler;
+import io.github.abstractengine.collision.SimulationCollisionHandler;
 import io.github.abstractengine.managers.CollisionManager;
 import io.github.abstractengine.managers.AssetManager;
 
@@ -106,7 +106,7 @@ public class StartScene extends Scene {
         // --- 4. INITIALIZE COLLISION SYSTEM ---
         Boundary boundary = new Boundary(0, worldWidth, 0, worldHeight);
         BasicCollisionDetector detector = new BasicCollisionDetector();
-        GameCollisionHandler handler = new GameCollisionHandler(sceneManager, entityManager, viewport, circle);
+        SimulationCollisionHandler handler = new SimulationCollisionHandler(sceneManager, entityManager, viewport, circle);
 
         collisionManager = new CollisionManager(boundary, entityManager, detector, handler);
         
