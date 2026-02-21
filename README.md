@@ -1,33 +1,98 @@
-# OOP Project
+# Abstract Engine (OOP Project)
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+## Overview
+This project implements a **2D Abstract Engine** using **Java and libGDX**, developed to demonstrate core **Object-Oriented Programming (OOP)** concepts and engine-level system design.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+The engine provides a **modular and extensible framework** for managing scenes, entities, movement, collisions, input/output, timing, and asset handling. All components are designed to be **domain-agnostic**, allowing the engine to be reused for different simulations without modifying core logic.
 
-## Platforms
+A lightweight demonstration is included to showcase the engine’s capabilities while keeping all context-specific behavior outside the engine core.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+---
 
-## Gradle
+## Core Engine Features
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+### Scene Management
+- Stack-based scene control (`setScene`, `pushScene`, `popScene`)
+- Supports overlays such as pause scenes
+- Clear lifecycle handling: `onEnter`, `update`, `render`, `onExit`
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+### Entity Management
+- Centralized entity creation, update, and removal
+- Supports both collidable and non-collidable entities
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+### Movement System
+- Delta-time based movement updates
+- Component-based movement handling
+
+### Collision System
+- Entity–entity and boundary collision detection
+- Collision responses delegated via interfaces
+- Easily extensible collision behavior
+
+### Input & Output
+- Centralized keyboard and mouse input handling
+- Abstracted audio output
+- Logging and debug support
+
+### Asset Management
+- Centralized loading and caching of assets
+- Proper asset lifecycle management
+
+### Time Management
+- Shared delta-time provider for frame-based updates
+- Consistent timing across subsystems
+
+---
+
+## Architecture Overview
+The engine follows a **manager-based architecture**, where each major responsibility is encapsulated within a dedicated manager:
+
+- `SceneManager` – controls scene transitions and delegates execution
+- `EntityManager` – manages active entities
+- `MovementManager` – updates entity positions
+- `CollisionManager` – detects and resolves collisions
+- `IOManager` – handles input, audio, and logging
+- `AssetManager` – loads and caches assets
+- `TimeManager` – provides frame timing
+
+Scenes orchestrate per-frame execution by coordinating these shared managers, ensuring **clear separation of concerns**.
+
+---
+
+## Object-Oriented Design
+This project demonstrates the following OOP principles:
+
+- **Abstraction**  
+  Core behaviors are defined using abstract classes and interfaces.
+
+- **Encapsulation**  
+  Internal states are hidden behind controlled public APIs.
+
+- **Inheritance**  
+  All concrete scenes extend a common abstract `Scene` base class.
+
+- **Polymorphism**  
+  Scene behavior varies dynamically based on the active scene.
+
+- **Composition**  
+  Entities are composed of reusable components rather than hard-coded logic.
+
+---
+
+## Demonstration
+A small demonstration is included to showcase:
+- Scene transitions
+- Entity movement
+- Collision handling
+- Input and audio output
+
+The demonstration logic is kept separate from the engine core to maintain reusability.
+
+---
+
+## How to Run
+Ensure **Java 17+** is installed.
+
+From the project root:
+```bash
+./gradlew lwjgl3:run
