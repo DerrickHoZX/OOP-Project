@@ -81,6 +81,10 @@ This project demonstrates the following OOP principles:
 
 ## Demonstration
 A small demonstration is included to showcase:
+<img width="1986" height="2048" alt="image" src="https://github.com/user-attachments/assets/caf33ca8-7dc6-4d0f-8e51-440da3bbcc77" />
+<img width="1986" height="2048" alt="image" src="https://github.com/user-attachments/assets/0261dcfb-fb94-4fa9-a298-64ea03a7df01" />
+<img width="1986" height="2048" alt="image" src="https://github.com/user-attachments/assets/ef6174d4-5a71-4b04-ad81-e489461039d6" />
+
 - Scene transitions
 - Entity movement
 - Collision handling
