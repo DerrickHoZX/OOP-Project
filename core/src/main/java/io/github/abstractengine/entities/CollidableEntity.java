@@ -2,11 +2,11 @@ package io.github.abstractengine.entities;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch; // Add this import
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.interfaces.Movable;
 import io.github.abstractengine.movement.MovementComponent;
-
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class CollidableEntity extends Entity implements Movable { 
 
@@ -27,10 +27,10 @@ public class CollidableEntity extends Entity implements Movable {
         // Movement logic handled by manager or component
     }
 
-    // UPDATED: Implementation of the new abstract method
+    // UPDATED: Now accepts SpriteBatch to match the Entity class
     @Override
-    public void render(ShapeRenderer shapeRenderer) {
-        // Default: Draw nothing. Child classes (Circle/Square) will override this.
+    public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+        // Default: Draw nothing. Child classes (Circle/Square/Triangle) will override this.
     }
 
     public float getWidth() { return width; }

@@ -1,6 +1,7 @@
 package io.github.abstractengine.managers;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.abstractengine.entities.Entity;
 
@@ -37,10 +38,10 @@ public class EntityManager {
     }
 
     // UPDATED: Pass ShapeRenderer
-    public void render(ShapeRenderer shapeRenderer) {
+    public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         for (Entity e : entities) {
             if (e.isActive()) {
-                e.render(shapeRenderer);
+                e.render(batch, shapeRenderer);
             }
         }
     }

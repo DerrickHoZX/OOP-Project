@@ -1,5 +1,5 @@
 package io.github.abstractengine.entities;
-
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer; // Import added
 
 public abstract class Entity {
@@ -21,7 +21,7 @@ public abstract class Entity {
     public abstract void update(float dt);
     
     // UPDATED: Now accepts ShapeRenderer
-    public abstract void render(ShapeRenderer shapeRenderer);
+    public abstract void render(SpriteBatch batch, ShapeRenderer shapeRenderer);
 
     public float getX() { return x; }
     public float getY() { return y; }

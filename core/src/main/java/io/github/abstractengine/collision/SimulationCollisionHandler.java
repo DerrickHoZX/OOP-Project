@@ -8,49 +8,30 @@ import io.github.abstractengine.entities.Triangle;
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.SceneManager;
+import io.github.abstractengine.managers.StatisticsManager;
 import io.github.abstractengine.movement.MovementComponent;
-import io.github.abstractengine.scene.EndScene;
-
+import io.github.abstractengine.scene.StartScene; 
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.abstractengine.managers.AssetManager;
 
-/**
- *  implements specific collision rules:
- * - Circle + Triangle = Transition to EndScene
- * - Circle + Square = Speed Boost + Remove Square
- * - Any Entity + Boundary = Bounce Back
- */
 public class SimulationCollisionHandler implements ICollisionHandler {
     
     private SceneManager sceneManager;
     private EntityManager entityManager;
     private Viewport viewport;
-    private Circle targetCircle;  // The circle entity to apply effects to
-    private SpeedBoostEffect speedBoost;
+    private Circle targetCircle;  
+    private StatisticsManager statsManager; 
+    private StartScene startScene; 
     
-    /**
-     * Creates a collision handler
-     * @param sceneManager For scene transitions
-     * @param entityManager For entity management
-     * @param viewport For creating new scenes
-     * @param targetCircle The circle entity that receives effects (speed boost)
-     */
     public SimulationCollisionHandler(SceneManager sceneManager, EntityManager entityManager, 
-                               Viewport viewport, Circle targetCircle) {
+                                      Viewport viewport, Circle targetCircle, 
+                                      StatisticsManager statsManager, StartScene startScene) {
         this.sceneManager = sceneManager;
         this.entityManager = entityManager;
         this.viewport = viewport;
         this.targetCircle = targetCircle;
-        
-        // Create speed boost effect: 40% increase for 5 seconds
-        this.speedBoost = new SpeedBoostEffect(targetCircle, 1.4f, 5.0f);
-    }
-    
-    /**
-     * Update the speed boost timer (call every frame)
-     */
-    public void update(float dt) {
-        speedBoost.update(dt);
+        this.statsManager = statsManager;
+        this.startScene = startScene; 
     }
     
     @Override
@@ -60,43 +41,42 @@ public class SimulationCollisionHandler implements ICollisionHandler {
     
     @Override
     public void handleEntityCollision(Entity entity1, Entity entity2) {
-        // Identify entity types
         Circle circle = null;
         Triangle triangle = null;
         Square square = null;
         
-        // Check entity1
         if (entity1 instanceof Circle) circle = (Circle) entity1;
         else if (entity1 instanceof Triangle) triangle = (Triangle) entity1;
         else if (entity1 instanceof Square) square = (Square) entity1;
         
-        // Check entity2
         if (entity2 instanceof Circle) circle = (Circle) entity2;
         else if (entity2 instanceof Triangle) triangle = (Triangle) entity2;
         else if (entity2 instanceof Square) square = (Square) entity2;
         
-        // RULE 1: Circle + Triangle = Scene Transition
+        // RULE 1: Enemy Hit
         if (circle != null && triangle != null) {
-        	sceneManager.getIOManager().log(LogCategory.SESSION, 
-                    "Circle-Triangle collision detected. Transitioning to EndScene.");
-                
-                sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
-                sceneManager.setScene(new EndScene(sceneManager, viewport));
-                return;
-            }        
-        // RULE 2: Circle + Square = Speed Boost + Remove Square
-        if (circle != null && square != null) {
-        	float duration = speedBoost.getDuration();
-        	sceneManager.getIOManager().log(LogCategory.SESSION, 
-                    "Circle-Square collision detected. Applying speed boost effect for"+ duration + " seconds.");
-                
-                sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
-                speedBoost.activate();
-                entityManager.removeEntity(square);
-                return;
-            }
+            sceneManager.getIOManager().log(LogCategory.SESSION, "Hit Enemy! Deducting points.");
+            sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER); 
+            statsManager.registerEnemyCollision(); 
+            entityManager.removeEntity(triangle);
+            startScene.spawnEnemy(); 
+            return;
+        }        
         
-        // Additional collision rules can be added here
+        // RULE 2: Answer Hub Hit
+        if (circle != null && square != null) {
+            if (square.isCorrect()) {
+                sceneManager.getIOManager().log(LogCategory.SESSION, "Correct Answer!");
+                sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST); 
+                statsManager.registerCorrectAnswer(); 
+            } else {
+                sceneManager.getIOManager().log(LogCategory.SESSION, "Wrong Answer!");
+                sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER); 
+                statsManager.registerIncorrectAnswer();
+            }
+            startScene.spawnNextQuestion();
+            return;
+        }
     }
     
     @Override
@@ -108,61 +88,45 @@ public class SimulationCollisionHandler implements ICollisionHandler {
         
         if (movement == null) return;
         
-        // Get current velocity
         float vx = movement.getVelocity().x;
         float vy = movement.getVelocity().y;
         
-        // For circles, check from center
         if (entity instanceof Circle) {
             float centerX = collidable.getX() + collidable.getWidth() / 2f;
             float centerY = collidable.getY() + collidable.getHeight() / 2f;
             float radius = collidable.getWidth() / 2f;
             
-            // Left or Right boundary
             if (centerX - radius <= boundary.getMinX()) {
                 collidable.setPosition(boundary.getMinX() + radius - collidable.getWidth() / 2f, collidable.getY());
-                movement.getVelocity().x = Math.abs(vx); // Bounce right
-            } 
-            else if (centerX + radius >= boundary.getMaxX()) {
+                movement.getVelocity().x = Math.abs(vx); 
+            } else if (centerX + radius >= boundary.getMaxX()) {
                 collidable.setPosition(boundary.getMaxX() - radius - collidable.getWidth() / 2f, collidable.getY());
-                movement.getVelocity().x = -Math.abs(vx); // Bounce left
+                movement.getVelocity().x = -Math.abs(vx); 
             }
             
-            // Bottom or Top boundary
             if (centerY - radius <= boundary.getMinY()) {
                 collidable.setPosition(collidable.getX(), boundary.getMinY() + radius - collidable.getHeight() / 2f);
-                movement.getVelocity().y = Math.abs(vy); // Bounce up
-            } 
-            else if (centerY + radius >= boundary.getMaxY()) {
+                movement.getVelocity().y = Math.abs(vy); 
+            } else if (centerY + radius >= boundary.getMaxY()) {
                 collidable.setPosition(collidable.getX(), boundary.getMaxY() - radius - collidable.getHeight() / 2f);
-                movement.getVelocity().y = -Math.abs(vy); // Bounce down
+                movement.getVelocity().y = -Math.abs(vy); 
             }
-        }
-        // For squares/triangles, check bounding box
-        else {
-            // Left or Right boundary
+        } else {
             if (collidable.getX() <= boundary.getMinX()) {
                 collidable.setPosition(boundary.getMinX(), collidable.getY());
-                movement.getVelocity().x = Math.abs(vx); // Bounce right
-            } 
-            else if (collidable.getX() + collidable.getWidth() >= boundary.getMaxX()) {
+                movement.getVelocity().x = Math.abs(vx); 
+            } else if (collidable.getX() + collidable.getWidth() >= boundary.getMaxX()) {
                 collidable.setPosition(boundary.getMaxX() - collidable.getWidth(), collidable.getY());
-                movement.getVelocity().x = -Math.abs(vx); // Bounce left
+                movement.getVelocity().x = -Math.abs(vx); 
             }
             
-            // Bottom or Top boundary
             if (collidable.getY() <= boundary.getMinY()) {
                 collidable.setPosition(collidable.getX(), boundary.getMinY());
-                movement.getVelocity().y = Math.abs(vy); // Bounce up
-            } 
-            else if (collidable.getY() + collidable.getHeight() >= boundary.getMaxY()) {
+                movement.getVelocity().y = Math.abs(vy); 
+            } else if (collidable.getY() + collidable.getHeight() >= boundary.getMaxY()) {
                 collidable.setPosition(collidable.getX(), boundary.getMaxY() - collidable.getHeight());
-                movement.getVelocity().y = -Math.abs(vy); // Bounce down
+                movement.getVelocity().y = -Math.abs(vy); 
             }
         }
-    }
-    
-    public SpeedBoostEffect getSpeedBoost() {
-        return speedBoost;
     }
 }

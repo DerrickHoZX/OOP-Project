@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.SceneManager;
+import io.github.abstractengine.managers.StatisticsManager; // ADDED THIS
 
 public class PauseScene extends Scene {
 
@@ -27,11 +28,15 @@ public class PauseScene extends Scene {
     private Texture overlayTex;
     private Texture buttonTex;
     private BitmapFont font;
+    
+    private StatisticsManager statsManager; // ADDED THIS
 
-    public PauseScene(SceneManager sceneManager, Viewport viewport, Scene previousScene) {
+    // UPDATED: Now requires StatisticsManager
+    public PauseScene(SceneManager sceneManager, Viewport viewport, Scene previousScene, StatisticsManager statsManager) {
         super(sceneManager);
         this.viewport = viewport;
         this.previousScene = previousScene;
+        this.statsManager = statsManager;
     }
 
     @Override
@@ -72,39 +77,27 @@ public class PauseScene extends Scene {
         resumeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-                sceneManager.getIOManager()
-                        .log(LogCategory.UI, "RESUME button clicked");
-
+                sceneManager.getIOManager().log(LogCategory.UI, "RESUME button clicked");
                 sceneManager.popScene();
             }
         });
 
-
         endBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-                sceneManager.getIOManager()
-                        .log(LogCategory.UI, "END SESSION button clicked");
-
-                sceneManager.setScene(new EndScene(sceneManager, viewport));
+                sceneManager.getIOManager().log(LogCategory.UI, "END SESSION button clicked");
+                // UPDATED: Now passes the statsManager to EndScene!
+                sceneManager.setScene(new EndScene(sceneManager, viewport, statsManager));
             }
         });
-
 
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
-                sceneManager.getIOManager()
-                        .log(LogCategory.UI, "MAIN MENU button clicked");
-
+                sceneManager.getIOManager().log(LogCategory.UI, "MAIN MENU button clicked");
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
-
-
 
         stage.addActor(resumeBtn);
         stage.addActor(endBtn);
@@ -157,5 +150,4 @@ public class PauseScene extends Scene {
         pm.dispose();
         return t;
     }
-    
 }

@@ -1,11 +1,11 @@
 package io.github.abstractengine.entities;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch; // Added SpriteBatch import
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.interfaces.Movable;
 import io.github.abstractengine.movement.MovementComponent;
-
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class NonCollidableEntity extends Entity implements Movable {
 
@@ -21,8 +21,9 @@ public class NonCollidableEntity extends Entity implements Movable {
     public void update(float dt) {
     }
 
+    // UPDATED: Now accepts SpriteBatch to match the Entity class
     @Override
-    public void render(ShapeRenderer shapeRenderer) {
+    public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
     }
     
     @Override
