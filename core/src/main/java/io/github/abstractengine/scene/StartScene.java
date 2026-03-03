@@ -140,28 +140,44 @@ public class StartScene extends Scene {
         float sWidth = 160f; 
         float sHeight = 70f;
         float spawnX = 0, spawnY = 0;
-        boolean overlapping;
+        boolean invalidPosition;
         int attempts = 0;
 
-        // Keep trying until we find a non-overlapping spot or hit an attempt limit
+        // Minimum distance from the player to prevent instant spawns
+        float minDistanceFromPlayer = 150f; 
+
         do {
-            overlapping = false;
+            invalidPosition = false;
+            // Generate random coordinates within the playable area
             spawnX = MathUtils.random(50f, viewport.getWorldWidth() - sWidth - 50f);
             spawnY = MathUtils.random(50f, viewport.getWorldHeight() - sHeight - 250f);
 
-            // Check against every square already in the current list
-            for (Square other : currentAnswerSquares) {
-                float buffer = 40f; // Extra space between boxes
-                if (spawnX < other.getX() + other.getWidth() + buffer &&
-                    spawnX + sWidth + buffer > other.getX() &&
-                    spawnY < other.getY() + other.getHeight() + buffer &&
-                    spawnY + sHeight + buffer > other.getY()) {
-                    overlapping = true;
-                    break;
+            // 1. CHECK AGAINST THE PLAYER (Circle)
+            float playerCenterX = circle.getX() + circle.getWidth() / 2f;
+            float playerCenterY = circle.getY() + circle.getHeight() / 2f;
+            float distToPlayer = com.badlogic.gdx.math.Vector2.dst(spawnX + sWidth/2f, spawnY + sHeight/2f, playerCenterX, playerCenterY);
+            
+            if (distToPlayer < minDistanceFromPlayer) {
+                invalidPosition = true;
+            }
+
+            // 2. CHECK AGAINST EXISTING SQUARES (Overlap Protection)
+            if (!invalidPosition) {
+                for (Square other : currentAnswerSquares) {
+                    float buffer = 50f; // Gap between boxes
+                    if (spawnX < other.getX() + other.getWidth() + buffer &&
+                        spawnX + sWidth + buffer > other.getX() &&
+                        spawnY < other.getY() + other.getHeight() + buffer &&
+                        spawnY + sHeight + buffer > other.getY()) {
+                        invalidPosition = true;
+                        break;
+                    }
                 }
             }
+            
             attempts++;
-        } while (overlapping && attempts < 100);
+            // If we can't find a perfect spot in 100 tries, just spawn it anyway to prevent a crash
+        } while (invalidPosition && attempts < 100);
 
         Square square = new Square(spawnX, spawnY, sWidth, sHeight, text, isCorrect);
         entityManager.addEntity(square);
