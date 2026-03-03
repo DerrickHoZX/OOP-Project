@@ -55,12 +55,12 @@ public class CircleSquareCollisionRule implements ICollisionRule {
         }
 
         if (square.isCorrect()) {
-            sceneManager.getIOManager().log(LogCategory.SESSION, "Correct Answer!");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
+        	sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Correct Answer!");
+        	sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
             statisticsManager.registerCorrectAnswer();
         } else {
-            sceneManager.getIOManager().log(LogCategory.SESSION, "Wrong Answer!");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
+        	sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Wrong Answer!");
+        	sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
             statisticsManager.registerIncorrectAnswer();
         }
 

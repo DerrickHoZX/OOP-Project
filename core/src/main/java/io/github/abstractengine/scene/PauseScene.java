@@ -77,16 +77,16 @@ public class PauseScene extends Scene {
         resumeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.getIOManager().log(LogCategory.UI, "RESUME button clicked");
-                sceneManager.popScene();
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESUME button clicked");
+            	sceneManager.popScene();
             }
         });
 
         endBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.getIOManager().log(LogCategory.UI, "END SESSION button clicked");
-                // UPDATED: Now passes the statsManager to EndScene!
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "END SESSION button clicked");
+            	// UPDATED: Now passes the statsManager to EndScene!
                 sceneManager.setScene(new EndScene(sceneManager, viewport, statsManager));
             }
         });
@@ -94,8 +94,8 @@ public class PauseScene extends Scene {
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.getIOManager().log(LogCategory.UI, "MAIN MENU button clicked");
-                sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "MAIN MENU button clicked");
+            	sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
 

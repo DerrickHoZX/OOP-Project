@@ -37,8 +37,8 @@ public class Main extends ApplicationAdapter {
         ioManager = new IOManager();
 
         // Categorized log
-        ioManager.log(LogCategory.SYSTEM, "Engine started successfully");
-
+        ioManager.getLogging().info(LogCategory.SYSTEM, "Engine started successfully");
+        
         sceneManager = new SceneManager(ioManager);
 
         sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
@@ -69,8 +69,8 @@ public class Main extends ApplicationAdapter {
 
         // Log shutdown BEFORE disposing IO
         if (ioManager != null) {
-            ioManager.log(LogCategory.SYSTEM, "Engine exiting (dispose called)");
-        }
+        	ioManager.getLogging().info(LogCategory.SYSTEM, "Engine started successfully");
+        	}
 
         if (sceneManager != null) sceneManager.dispose();
         if (ioManager != null) ioManager.dispose();

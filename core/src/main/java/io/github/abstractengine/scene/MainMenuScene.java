@@ -84,8 +84,7 @@ public class MainMenuScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                sceneManager.getIOManager()
-                        .log(LogCategory.UI, "PLAY button clicked");
+                sceneManager.getIOManager().getLogging().info(LogCategory.UI, "PLAY button clicked");
 
                 sceneManager.setScene(new StartScene(sceneManager, viewport));
             }
@@ -96,8 +95,7 @@ public class MainMenuScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                sceneManager.getIOManager()
-                        .log(LogCategory.UI, "EXIT button clicked");
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "EXIT button clicked");
 
                 Gdx.app.exit();
             }

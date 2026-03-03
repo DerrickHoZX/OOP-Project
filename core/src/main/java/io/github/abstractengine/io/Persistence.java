@@ -3,38 +3,53 @@ package io.github.abstractengine.io;
 public class Persistence {
 
     private final FileIO fileIO;
+    private final String basePath;
+    private final SaveFormat format;
+    private final Logging logging;   // Injected logging
 
-    protected final String basePath;
-    protected final SaveFormat format;
-
-    public Persistence(FileIO fileIO, String basePath, SaveFormat format) {
-        this.fileIO = (fileIO == null) ? new FileIO() : fileIO;
-        this.basePath = (basePath == null) ? "saves/" : basePath;
-        this.format = (format == null) ? SaveFormat.TEXT : format;
+    public Persistence(FileIO fileIO,
+                       String basePath,
+                       SaveFormat format,
+                       Logging logging) {
+        this.fileIO = fileIO;
+        this.basePath = basePath;
+        this.format = format;
+        this.logging = logging;
     }
 
     public void save(String path, String data) {
-        fileIO.writeText(resolve(path), data);
+        String fullPath = basePath + path;
+
+        fileIO.writeText(fullPath, data);
+
+        logging.info(LogCategory.PERSISTENCE,
+                "Saved file: " + fullPath + " (Format: " + format + ")");
     }
 
     public String load(String path) {
-        return fileIO.readText(resolve(path));
+        String fullPath = basePath + path;
+
+        String data = fileIO.readText(fullPath);
+
+        logging.info(LogCategory.PERSISTENCE,
+                "Loaded file: " + fullPath);
+
+        return data;
     }
 
     public boolean exists(String path) {
-        return fileIO.exists(resolve(path));
+        String fullPath = basePath + path;
+
+        boolean exists = fileIO.exists(fullPath);
+
+        logging.info(LogCategory.PERSISTENCE,
+                "Checked file exists: " + fullPath + " -> " + exists);
+
+        return exists;
     }
 
     public void dispose() {
-    }
-
-    private String resolve(String path) {
-        if (path == null || path.isEmpty()) {
-            throw new IllegalArgumentException("path must not be empty");
-        }
-        if (basePath.endsWith("/") || basePath.endsWith("\\")) {
-            return basePath + path;
-        }
-        return basePath + "/" + path;
+        logging.info(LogCategory.PERSISTENCE,
+                "Persistence disposed");
     }
 }

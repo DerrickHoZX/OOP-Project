@@ -22,7 +22,7 @@ public class IOManager {
         Logger logger = new Logger(LogDestination.CONSOLE, null);
         this.logging = new Logging(logger);
 
-        // Assets (audio/images). For now we load audio here.
+        // Assets (audio/images).
         this.assets = new AssetManager();
         this.assets.loadAll(logging);
 
@@ -30,9 +30,8 @@ public class IOManager {
 
         this.input = new Input(logging);
 
-        this.persistence = new Persistence(new FileIO(), "saves/", SaveFormat.TEXT);
-
-        // Load saved audio settings (must be AFTER output is created)
+        this.persistence = new Persistence(new FileIO(), "saves/", SaveFormat.TEXT, logging);
+        // Load saved audio settings 
         loadAudioSettings();
     }
 
@@ -46,11 +45,10 @@ public class IOManager {
         logging.dispose();
         persistence.dispose();
     }
-
-    public void log(LogCategory category, String message) {
-        logging.info(category, message);
+    
+    public Logging getLogging() {
+        return logging;
     }
-
     // -------- Input delegation --------
     public boolean isKeyDown(KeyCode key) { return input.isKeyDown(key); }
 
@@ -91,16 +89,8 @@ public class IOManager {
     public void toggleMute() { output.toggleMute(); }
 
     // -------- Persistence delegation --------
-    public void save(String path, String data) {
-        persistence.save(path, data);
-        logging.info(LogCategory.PERSISTENCE, "Saved file: " + path);
-    }
-
-    public String load(String path) {
-        String data = persistence.load(path);
-        logging.info(LogCategory.PERSISTENCE, "Loaded file: " + path);
-        return data;
-    }
+    public void save(String path, String data) { persistence.save(path, data); }
+    public String load(String path) { return persistence.load(path); }
 
     public boolean exists(String path) {
         return persistence.exists(path);

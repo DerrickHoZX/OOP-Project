@@ -91,16 +91,16 @@ public class EndScene extends Scene {
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.getIOManager().log(LogCategory.UI, "RESTART button clicked");
-                sceneManager.setScene(new StartScene(sceneManager, viewport));
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESTART button clicked");
+            	sceneManager.setScene(new StartScene(sceneManager, viewport));
             }
         });
 
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneManager.getIOManager().log(LogCategory.UI, "MAIN MENU button clicked");
-                // NOTE: Ensure MainMenuScene doesn't require extra parameters in its constructor!
+            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "MAIN MENU button clicked");
+            	// NOTE: Ensure MainMenuScene doesn't require extra parameters in its constructor!
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
