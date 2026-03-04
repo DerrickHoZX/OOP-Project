@@ -28,6 +28,7 @@ import io.github.abstractengine.managers.*;
 import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.collision.*;
+import io.github.abstractengine.effects.ScreenFlash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,9 @@ public class StartScene extends Scene {
     private ShapeRenderer shapeRenderer;
     private BitmapFont font;
     private BitmapFont questionFont;
+    
+    // NEW: Screen flash effect
+    private ScreenFlash screenFlash;
 
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -78,6 +82,9 @@ public class StartScene extends Scene {
     @Override
     public void onEnter() {
         shapeRenderer = new ShapeRenderer();
+        
+        // NEW: Initialize screen flash effect
+        screenFlash = new ScreenFlash();
 
         font = new BitmapFont();
         font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -110,7 +117,16 @@ public class StartScene extends Scene {
             spawnEnemy();
         }
 
-        Boundary boundary = new Boundary(0, viewport.getWorldWidth(), 0, viewport.getWorldHeight());
+        // Define safe play area boundaries (keep entities below UI)
+        float worldW = viewport.getWorldWidth();
+        float worldH = viewport.getWorldHeight();
+        
+        float playAreaMinX = 0f;
+        float playAreaMaxX = worldW;
+        float playAreaMinY = 0f;
+        float playAreaMaxY = worldH - 180f;  // Keep entities below question panel and pause button
+        
+        Boundary boundary = new Boundary(playAreaMinX, playAreaMaxX, playAreaMinY, playAreaMaxY);
         BasicCollisionDetector detector = new BasicCollisionDetector();
         SimulationCollisionHandler handler = new SimulationCollisionHandler(
                 sceneManager,
@@ -171,8 +187,18 @@ public class StartScene extends Scene {
     public void spawnEnemy() {
         float tWidth = 70f;
         float tHeight = 70f;
-        float randomX = MathUtils.random(0, viewport.getWorldWidth() - tWidth);
-        float randomY = MathUtils.random(0, viewport.getWorldHeight() - tHeight);
+        
+        // Define safe spawn area (avoid UI areas)
+        float worldW = viewport.getWorldWidth();
+        float worldH = viewport.getWorldHeight();
+        
+        float safeMinX = 250f;  // Avoid left score panel
+        float safeMaxX = worldW - tWidth - 20f;
+        float safeMinY = 20f;
+        float safeMaxY = worldH - 200f;  // Avoid top UI (question, timer, pause button)
+        
+        float randomX = MathUtils.random(safeMinX, safeMaxX);
+        float randomY = MathUtils.random(safeMinY, safeMaxY);
 
         Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
         triangle.setMovementComponent(new RandomMovement(
@@ -206,6 +232,19 @@ public class StartScene extends Scene {
             spawnAnswerWithOverlapProtection(answers[i], correctness[i]);
         }
     }
+    
+    // NEW: Public methods for collision handler to trigger flash effects
+    public void flashCorrect() {
+        if (screenFlash != null) {
+            screenFlash.flashGreen();
+        }
+    }
+    
+    public void flashWrong() {
+        if (screenFlash != null) {
+            screenFlash.flashRed();
+        }
+    }
 
     private void spawnAnswerWithOverlapProtection(String text, boolean isCorrect) {
         float sWidth = 160f;
@@ -215,12 +254,21 @@ public class StartScene extends Scene {
         int attempts = 0;
 
         float minDistanceFromPlayer = 150f;
+        
+        // Define safe spawn area (avoid UI)
+        float worldW = viewport.getWorldWidth();
+        float worldH = viewport.getWorldHeight();
+        
+        float safeMinX = 250f;  // Avoid left score panel
+        float safeMaxX = worldW - sWidth - 20f;
+        float safeMinY = 50f;
+        float safeMaxY = worldH - 200f;  // Avoid top UI
 
         do {
             invalidPosition = false;
 
-            spawnX = MathUtils.random(50f, viewport.getWorldWidth() - sWidth - 50f);
-            spawnY = MathUtils.random(50f, viewport.getWorldHeight() - sHeight - 250f);
+            spawnX = MathUtils.random(safeMinX, safeMaxX);
+            spawnY = MathUtils.random(safeMinY, safeMaxY);
 
             // Check against player
             float playerCenterX = circle.getX() + circle.getWidth() / 2f;
@@ -268,6 +316,9 @@ public class StartScene extends Scene {
         if (stage != null) {
             stage.act(dt);
         }
+        
+        // NEW: Update screen flash
+        screenFlash.update(dt);
 
         statsManager.update(dt);
         if (statsManager.isTimeUp()) {
@@ -278,6 +329,13 @@ public class StartScene extends Scene {
         movementManager.update(dt);
         entityManager.update(dt);
         collisionManager.update(dt);
+    }
+    
+    // NEW: Called when returning from pause - re-register input
+    public void onResume() {
+        if (stage != null) {
+            Gdx.input.setInputProcessor(new InputMultiplexer(stage));
+        }
     }
 
     @Override
@@ -353,6 +411,19 @@ public class StartScene extends Scene {
         // Draw pause button
         if (stage != null) {
             stage.draw();
+        }
+        
+        // NEW: Draw screen flash overlay (green/red feedback)
+        if (screenFlash.isFlashing()) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(screenFlash.getCurrentColor());
+            shapeRenderer.rect(0, 0, worldW, worldH); // Full screen overlay
+            shapeRenderer.end();
+            
+            Gdx.gl.glDisable(GL20.GL_BLEND);
         }
     }
 

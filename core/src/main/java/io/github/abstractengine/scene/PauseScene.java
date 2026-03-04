@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.StatisticsManager; // ADDED THIS
+import io.github.abstractengine.managers.StatisticsManager;
 
 public class PauseScene extends Scene {
 
@@ -29,9 +29,8 @@ public class PauseScene extends Scene {
     private Texture buttonTex;
     private BitmapFont font;
     
-    private StatisticsManager statsManager; // ADDED THIS
+    private StatisticsManager statsManager;
 
-    // UPDATED: Now requires StatisticsManager
     public PauseScene(SceneManager sceneManager, Viewport viewport, Scene previousScene, StatisticsManager statsManager) {
         super(sceneManager);
         this.viewport = viewport;
@@ -43,10 +42,8 @@ public class PauseScene extends Scene {
     public void onEnter() {
         stage = new Stage(viewport);
 
-        // Full-alpha texture; we apply transparency via batch.setColor in render()
         overlayTex = makeSolidTexture(1, 1, new Color(0f, 0f, 0f, 1f));
 
-        // Button style (simple dark)
         font = new BitmapFont();
         buttonTex = makeSolidTexture(1, 1, new Color(0.15f, 0.15f, 0.15f, 1f));
 
@@ -61,7 +58,6 @@ public class PauseScene extends Scene {
         TextButton endBtn    = new TextButton("END SESSION", style);
         TextButton menuBtn   = new TextButton("MAIN MENU", style);
 
-        // Button size (same as main menu)
         resumeBtn.setSize(320, 60);
         endBtn.setSize(320, 60);
         menuBtn.setSize(320, 60);
@@ -69,7 +65,6 @@ public class PauseScene extends Scene {
         float w = viewport.getWorldWidth();
         float h = viewport.getWorldHeight();
 
-        // Vertical stack
         resumeBtn.setPosition((w - resumeBtn.getWidth()) / 2f, h * 0.56f);
         endBtn.setPosition((w - endBtn.getWidth()) / 2f, h * 0.46f);
         menuBtn.setPosition((w - menuBtn.getWidth()) / 2f, h * 0.36f);
@@ -77,16 +72,21 @@ public class PauseScene extends Scene {
         resumeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESUME button clicked");
-            	sceneManager.popScene();
+                sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESUME button clicked");
+                
+                // FIX: Call onResume on StartScene to re-register input
+                if (previousScene instanceof StartScene) {
+                    ((StartScene) previousScene).onResume();
+                }
+                
+                sceneManager.popScene();
             }
         });
 
         endBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "END SESSION button clicked");
-            	// UPDATED: Now passes the statsManager to EndScene!
+                sceneManager.getIOManager().getLogging().info(LogCategory.UI, "END SESSION button clicked");
                 sceneManager.setScene(new EndScene(sceneManager, viewport, statsManager));
             }
         });
@@ -94,8 +94,8 @@ public class PauseScene extends Scene {
         menuBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-            	sceneManager.getIOManager().getLogging().info(LogCategory.UI, "MAIN MENU button clicked");
-            	sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
+                sceneManager.getIOManager().getLogging().info(LogCategory.UI, "MAIN MENU button clicked");
+                sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
 
@@ -103,7 +103,6 @@ public class PauseScene extends Scene {
         stage.addActor(endBtn);
         stage.addActor(menuBtn);
 
-        // Capture input while paused
         Gdx.input.setInputProcessor(new InputMultiplexer(stage));
     }
 
@@ -114,10 +113,10 @@ public class PauseScene extends Scene {
 
     @Override
     public void render(SpriteBatch batch) {
-        // 1) Draw the previous scene first (so pause overlays it)
+        // Draw the previous scene first
         previousScene.render(batch);
 
-        // 2) Draw 50% transparent overlay (force blending)
+        // Draw 50% transparent overlay
         batch.begin();
         batch.enableBlending();
         batch.setColor(1f, 1f, 1f, 0.50f);
@@ -125,7 +124,7 @@ public class PauseScene extends Scene {
         batch.setColor(1f, 1f, 1f, 1f);
         batch.end();
 
-        // 3) Draw pause UI
+        // Draw pause UI
         if (stage != null) stage.draw();
     }
 
