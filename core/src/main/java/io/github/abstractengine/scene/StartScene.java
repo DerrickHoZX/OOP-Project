@@ -1,8 +1,10 @@
 package io.github.abstractengine.scene;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -11,11 +13,17 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
 import io.github.abstractengine.io.KeyCode;
+import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.*;
 import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
@@ -45,6 +53,10 @@ public class StartScene extends Scene {
     private String currentQuestionPrompt = "";
     private final List<Square> currentAnswerSquares;
 
+    // For pause button
+    private Stage stage;
+    private Texture pauseButtonTex;
+
     public StartScene(SceneManager sceneManager, Viewport viewport) {
         this(sceneManager, viewport, GameCategory.GRAMMAR);
     }
@@ -54,7 +66,7 @@ public class StartScene extends Scene {
         this.viewport = viewport;
         this.category = category;
 
-        // central place to decide background + questions
+        // Get configuration based on category
         this.config = CategoryConfigFactory.get(category);
 
         this.entityManager = new EntityManager();
@@ -111,6 +123,49 @@ public class StartScene extends Scene {
         collisionManager = new CollisionManager(boundary, entityManager, detector, handler);
 
         spawnNextQuestion();
+        createPauseButton();
+    }
+
+    private void createPauseButton() {
+        stage = new Stage(viewport);
+
+        // Create button texture (orange color for visibility)
+        pauseButtonTex = makeSolidTexture(1, 1, new Color(1f, 0.6f, 0f, 1f));
+
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = font;
+        style.fontColor = Color.WHITE;
+        style.up = new TextureRegionDrawable(pauseButtonTex);
+        style.down = new TextureRegionDrawable(pauseButtonTex);
+        style.over = new TextureRegionDrawable(pauseButtonTex);
+
+        TextButton pauseBtn = new TextButton("PAUSE", style);
+        pauseBtn.setSize(120, 50);
+
+        // Position: Top right corner
+        float btnX = viewport.getWorldWidth() - pauseBtn.getWidth() - 15f;
+        float btnY = viewport.getWorldHeight() - pauseBtn.getHeight() - 15f;
+        pauseBtn.setPosition(btnX, btnY);
+
+        pauseBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sceneManager.getIOManager().getLogging().info(LogCategory.UI, "PAUSE button clicked");
+                sceneManager.pushScene(new PauseScene(sceneManager, viewport, StartScene.this, statsManager));
+            }
+        });
+
+        stage.addActor(pauseBtn);
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage));
+    }
+
+    private Texture makeSolidTexture(int w, int h, Color c) {
+        Pixmap pm = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        pm.setColor(c);
+        pm.fill();
+        Texture t = new Texture(pm);
+        pm.dispose();
+        return t;
     }
 
     public void spawnEnemy() {
@@ -140,7 +195,7 @@ public class StartScene extends Scene {
         currentAnswerSquares.clear();
 
         // Pick random question from config
-        Question q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
+        QuestionBank.Question q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
         currentQuestionPrompt = q.prompt;
 
         // Spawn answers (1 correct + 2 decoys)
@@ -203,9 +258,15 @@ public class StartScene extends Scene {
 
     @Override
     public void update(float dt) {
+        // Keyboard ESC still works
         if (sceneManager.getIOManager().isKeyJustPressed(KeyCode.ESCAPE)) {
             sceneManager.pushScene(new PauseScene(sceneManager, viewport, this, statsManager));
             return;
+        }
+
+        // Update stage (for button interactions)
+        if (stage != null) {
+            stage.act(dt);
         }
 
         statsManager.update(dt);
@@ -229,13 +290,13 @@ public class StartScene extends Scene {
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
 
-        // ----- Draw Background + Entities -----
+        // Draw Background + Entities
         batch.begin();
         if (bg != null) batch.draw(bg, 0, 0, worldW, worldH);
         entityManager.render(batch, shapeRenderer);
         batch.end();
 
-        // ----- HUD PANELS (transparent; requires blending) -----
+        // HUD PANELS (transparent)
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -243,28 +304,28 @@ public class StartScene extends Scene {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // Score/Streak panel (top-left) - light
+        // Score/Streak panel (top-left)
         shapeRenderer.setColor(0f, 0f, 0f, 0.20f);
         shapeRenderer.rect(15f, worldH - 95f, 220f, 75f);
 
-        // Time panel (top-center) - light
+        // Time panel (top-center)
         shapeRenderer.rect(worldW / 2f - 90f, worldH - 55f, 180f, 40f);
 
-        // Question panel (center-top) - slightly stronger
-        shapeRenderer.setColor(0f, 0f, 0f, 0.28f);
+        // Question panel (center-top) - WHITE background for clarity
+        shapeRenderer.setColor(1f, 1f, 1f, 0.95f); // White with slight transparency
         shapeRenderer.rect(worldW / 2f - 300f, worldH - 150f, 600f, 55f);
 
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        // ----- TEXT -----
+        // TEXT
         batch.begin();
 
         int seconds = (int) Math.ceil(statsManager.getTimeRemaining());
 
         font.setColor(Color.WHITE);
-        questionFont.setColor(Color.WHITE);
+        questionFont.setColor(Color.BLACK); // BLACK text on white background
 
         // Score
         drawTextWithShadow(batch, font,
@@ -282,12 +343,24 @@ public class StartScene extends Scene {
         float timeX = (worldW - layout.width) / 2f;
         drawTextWithShadow(batch, font, timeText, timeX, worldH - 25f);
 
-        // Question (centered)
+        // Question (centered) - BLACK text on WHITE background
         layout.setText(questionFont, currentQuestionPrompt);
         float qX = (worldW - layout.width) / 2f;
-        drawTextWithShadow(batch, questionFont, currentQuestionPrompt, qX, worldH - 110f);
+        drawBlackTextWithShadow(batch, questionFont, currentQuestionPrompt, qX, worldH - 110f);
 
         batch.end();
+
+        // Draw pause button
+        if (stage != null) {
+            stage.draw();
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        if (stage != null) {
+            stage.getViewport().update(width, height, true);
+        }
     }
 
     @Override
@@ -296,6 +369,8 @@ public class StartScene extends Scene {
         if (shapeRenderer != null) shapeRenderer.dispose();
         if (font != null) font.dispose();
         if (questionFont != null) questionFont.dispose();
+        if (pauseButtonTex != null) pauseButtonTex.dispose();
+        if (stage != null) stage.dispose();
 
         movementManager.clear();
         if (collisionManager != null) collisionManager.clear();
@@ -314,30 +389,28 @@ public class StartScene extends Scene {
         f.setColor(original);
         f.draw(batch, text, x, y);
     }
+    
+    private void drawBlackTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
+        Color original = f.getColor().cpy();
 
-    // ---------------------------
-    // Helpers (same file)
-    // ---------------------------
+        // Light grey shadow for black text on white
+        f.setColor(0.6f, 0.6f, 0.6f, 0.6f);
+        f.draw(batch, text, x + 2f, y - 2f);
 
-    private static final class Question {
-        final String prompt;
-        final String correct;
-        final String decoy1;
-        final String decoy2;
-
-        Question(String prompt, String correct, String decoy1, String decoy2) {
-            this.prompt = prompt;
-            this.correct = correct;
-            this.decoy1 = decoy1;
-            this.decoy2 = decoy2;
-        }
+        // main text
+        f.setColor(original);
+        f.draw(batch, text, x, y);
     }
+
+    // ---------------------------
+    // CONFIGURATION
+    // ---------------------------
 
     private static final class CategoryConfig {
         final String backgroundPath;
-        final List<Question> questions;
+        final List<QuestionBank.Question> questions;
 
-        CategoryConfig(String backgroundPath, List<Question> questions) {
+        CategoryConfig(String backgroundPath, List<QuestionBank.Question> questions) {
             this.backgroundPath = backgroundPath;
             this.questions = questions;
         }
@@ -346,21 +419,17 @@ public class StartScene extends Scene {
     private static final class CategoryConfigFactory {
         static CategoryConfig get(GameCategory category) {
             if (category == GameCategory.CATEGORIZATION) {
-                List<Question> qs = new ArrayList<>();
-                qs.add(new Question("Find an Action Word (Verb)", "Run", "Apple", "Blue"));
-                qs.add(new Question("Find an Adjective", "Happy", "Jump", "Chair"));
-                qs.add(new Question("Find a Noun", "Car", "Quickly", "Run"));
-                qs.add(new Question("Pick a Verb", "Write", "Green", "Dog"));
-                return new CategoryConfig("startscene_category.png", qs);
+                // Load category game questions from QuestionBank
+                return new CategoryConfig(
+                    "startscene_category.png", 
+                    QuestionBank.getCategoryQuestions()
+                );
             } else {
-                List<Question> qs = new ArrayList<>();
-                qs.add(new Question("Find the word that rhymes with Cat", "Hat", "Dog", "Sun"));
-                qs.add(new Question("What is the plural of Mouse?", "Mice", "Mouses", "Meese"));
-                qs.add(new Question("Find the opposite of Happy", "Sad", "Excited", "Fast"));
-                qs.add(new Question("Choose the correct article: ___ apple", "An", "A", "The"));
-                qs.add(new Question("Pick the past tense of 'go'", "Went", "Goed", "Going"));
-                qs.add(new Question("Pick the synonym of 'big'", "Large", "Tiny", "Slow"));
-                return new CategoryConfig("startscene_grammar.png", qs);
+                // Load all language questions (Grammar + Synonyms + Antonyms)
+                return new CategoryConfig(
+                    "startscene_grammar.png", 
+                    QuestionBank.getAllLanguageQuestions()
+                );
             }
         }
     }
