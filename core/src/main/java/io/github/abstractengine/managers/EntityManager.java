@@ -4,17 +4,36 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.abstractengine.entities.Entity;
+import io.github.abstractengine.entities.EntityFactory;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class EntityManager {
 
     private List<Entity> entities;
+    private final Map<Class<? extends Entity>, EntityFactory<? extends Entity>> factories;
 
     public EntityManager() {
         this.entities = new ArrayList<>();
+        this.factories = new HashMap<>();
+    }
+
+    public <T extends Entity> void registerFactory(Class<T> type, EntityFactory<T> factory) {
+        factories.put(type, factory);
+    }
+
+    public <T extends Entity> T createEntity(Class<T> type, float x, float y) {
+        EntityFactory<?> factory = factories.get(type);
+        if (factory != null) {
+            T newEntity = type.cast(factory.createEntity(x, y));
+            addEntity(newEntity);
+            return newEntity;
+        }
+        throw new IllegalArgumentException("Unknown entity type: " + type.getSimpleName());
     }
 
     public void addEntity(Entity entity) {
@@ -37,7 +56,6 @@ public class EntityManager {
         }
     }
 
-    // UPDATED: Pass ShapeRenderer
     public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         for (Entity e : entities) {
             if (e.isActive()) {

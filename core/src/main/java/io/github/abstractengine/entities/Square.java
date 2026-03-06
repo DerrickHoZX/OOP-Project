@@ -13,7 +13,7 @@ public class Square extends CollidableEntity {
     private String answerText;
     private boolean isCorrect;
     private BitmapFont font; 
-    private Texture bgTexture; // Replaces ShapeRenderer
+    private Texture bgTexture; 
 
     public Square(float x, float y, float width, float height, String answerText, boolean isCorrect) {
         super(x, y, width, height);
@@ -25,7 +25,6 @@ public class Square extends CollidableEntity {
         this.font.getData().setScale(1.2f);
         this.font.setColor(Color.BLACK); 
         
-        // Create a custom Yellow Texture so we don't need ShapeRenderer
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.YELLOW);
         pixmap.fill();
@@ -37,19 +36,26 @@ public class Square extends CollidableEntity {
         this(x, y, width, height, "", false); 
     }
 
+    public void setAnswerDetails(String answerText, boolean isCorrect) {
+        this.answerText = answerText;
+        this.isCorrect = isCorrect;
+    }
+
     public boolean isCorrect() {
         return isCorrect;
     }
 
     @Override
+    public void update(float dt) {
+    }
+
+    @Override
     public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
-        // Draw the background texture
         if (bgTexture != null) {
             batch.draw(bgTexture, x, y, width, height);
         }
         
-        // Draw the text cleanly over the background
-        if (answerText != null && font != null) {
+        if (answerText != null && font != null && !answerText.isEmpty()) {
             font.draw(batch, answerText, x + 15f, y + (height / 2) + 10f);
         }
     }
