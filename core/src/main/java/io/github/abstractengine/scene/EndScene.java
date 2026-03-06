@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -34,13 +35,14 @@ public class EndScene extends Scene {
     private Stage stage;
 
     private ShapeRenderer shapeRenderer;
+    private ShapeRenderer debugRenderer;
 
-    private BitmapFont buttonFont;     // for buttons
-    private BitmapFont titleFont;      // "Final Score / Mastery / High Scores"
-    private BitmapFont scoreFont;      // numbers / mastery line
-    private BitmapFont podiumFont;     // podium lines
+    private BitmapFont buttonFont;
+    private BitmapFont titleFont;
+    private BitmapFont scoreFont;
+    private BitmapFont podiumFont;
 
-    private Texture buttonTex;
+    private Texture invisibleTex;
 
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -52,59 +54,85 @@ public class EndScene extends Scene {
 
     @Override
     public void onEnter() {
-        bg = new Texture("endscene.jpg");
+        bg = new Texture("endscene.png");
         sceneManager.getIOManager().playMusic(AssetManager.MUSIC_END_SCENE, true);
 
         stage = new Stage(viewport);
         shapeRenderer = new ShapeRenderer();
+        debugRenderer = new ShapeRenderer();
 
-        // ---- Fonts ----
         titleFont = new BitmapFont();
         titleFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
         titleFont.setUseIntegerPositions(false);
-        titleFont.getData().setScale(2.0f);
-        titleFont.setColor(Color.WHITE);
+        titleFont.getData().setScale(1.7f);
+        titleFont.setColor(Color.BLACK);
 
         scoreFont = new BitmapFont();
         scoreFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
         scoreFont.setUseIntegerPositions(false);
-        scoreFont.getData().setScale(2.1f);
+        scoreFont.getData().setScale(1.45f);
         scoreFont.setColor(Color.WHITE);
 
         podiumFont = new BitmapFont();
         podiumFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
         podiumFont.setUseIntegerPositions(false);
-        podiumFont.getData().setScale(1.7f);
-        podiumFont.setColor(Color.CYAN);
+        podiumFont.getData().setScale(1.25f);
+        podiumFont.setColor(Color.WHITE);
 
-        // ---- Buttons (keep your same style) ----
         buttonFont = new BitmapFont();
-        buttonTex = makeSolidTexture(1, 1, new Color(0.15f, 0.15f, 0.15f, 1f));
+        invisibleTex = makeSolidTexture(2, 2, new Color(1f, 1f, 1f, 0f));
 
+        TextButton.TextButtonStyle invisibleStyle = createInvisibleButtonStyle();
+
+        TextButton restartBtn = new TextButton("", invisibleStyle);
+        TextButton menuBtn = new TextButton("", invisibleStyle);
+
+        addOverlayButtons(restartBtn, menuBtn);
+        wireButtonActions(restartBtn, menuBtn);
+
+        stage.addActor(restartBtn);
+        stage.addActor(menuBtn);
+
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage));
+    }
+
+    private TextButton.TextButtonStyle createInvisibleButtonStyle() {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        TextureRegionDrawable invisibleDrawable = new TextureRegionDrawable(invisibleTex);
         style.font = buttonFont;
-        style.fontColor = Color.WHITE;
-        style.up = new TextureRegionDrawable(buttonTex);
-        style.down = new TextureRegionDrawable(buttonTex);
-        style.over = new TextureRegionDrawable(buttonTex);
+        style.fontColor = new Color(1f, 1f, 1f, 0f);
+        style.up = invisibleDrawable;
+        style.down = invisibleDrawable;
+        style.over = invisibleDrawable;
+        return style;
+    }
 
-        TextButton restartBtn = new TextButton("RESTART", style);
-        TextButton menuBtn = new TextButton("MAIN MENU", style);
-
-        restartBtn.setSize(320, 60);
-        menuBtn.setSize(320, 60);
-
+    private void addOverlayButtons(TextButton restartBtn, TextButton menuBtn) {
         float w = viewport.getWorldWidth();
         float h = viewport.getWorldHeight();
 
-        restartBtn.setPosition((w - restartBtn.getWidth()) / 2f, h * 0.22f);
-        menuBtn.setPosition((w - menuBtn.getWidth()) / 2f, h * 0.12f);
+        float buttonW = w * UI.BUTTON_WIDTH_MULT;
+        float buttonH = h * UI.BUTTON_HEIGHT_MULT;
 
+        float restartX = w * UI.RESTART_X_MULT - buttonW / 2f;
+        float restartY = h * UI.RESTART_Y_MULT;
+
+        float menuX = w * UI.MENU_X_MULT - buttonW / 2f;
+        float menuY = h * UI.MENU_Y_MULT;
+
+        restartBtn.setSize(buttonW, buttonH);
+        menuBtn.setSize(buttonW, buttonH);
+
+        restartBtn.setPosition(restartX, restartY);
+        menuBtn.setPosition(menuX, menuY);
+    }
+
+    private void wireButtonActions(TextButton restartBtn, TextButton menuBtn) {
         restartBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESTART button clicked");
-                sceneManager.setScene(new StartScene(sceneManager, viewport)); // defaults to grammar
+                sceneManager.setScene(new StartScene(sceneManager, viewport));
             }
         });
 
@@ -115,11 +143,6 @@ public class EndScene extends Scene {
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });
-
-        stage.addActor(restartBtn);
-        stage.addActor(menuBtn);
-
-        Gdx.input.setInputProcessor(new InputMultiplexer(stage));
     }
 
     @Override
@@ -137,92 +160,89 @@ public class EndScene extends Scene {
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        // ---- Background ----
         batch.begin();
         batch.draw(bg, 0, 0, w, h);
         batch.end();
 
-        // ---- Panels (semi-transparent, NOT full black) ----
-        // Enable blending so alpha works properly
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // Top stats panel (moved higher up; small height so it doesn't cover "QUIZ ENDED!")
-        float topPanelW = 520f;
-        float topPanelH = 105f;
-        float topPanelX = (w - topPanelW) / 2f;
-        float topPanelY = h - topPanelH - 20f; // <-- higher up
-        shapeRenderer.setColor(0f, 0f, 0f, 0.35f);
-        shapeRenderer.rect(topPanelX, topPanelY, topPanelW, topPanelH);
+        float panelW = w * 0.54f;
+        float panelH = h * 0.48f;
+        float panelX = (w - panelW) / 2f;
+        float panelY = h * 0.17f;
 
-        // High scores panel (bigger, centered mid; softer opacity)
-        float hsPanelW = 560f;
-        float hsPanelH = 230f;
-        float hsPanelX = (w - hsPanelW) / 2f;
-        float hsPanelY = h * 0.42f; // keeps it below the sign area, above buttons
-        shapeRenderer.setColor(0f, 0f, 0f, 0.30f);
-        shapeRenderer.rect(hsPanelX, hsPanelY, hsPanelW, hsPanelH);
+        shapeRenderer.setColor(0f, 0f, 0f, 0.18f);
+        shapeRenderer.rect(panelX, panelY, panelW, panelH);
 
         shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
-        // ---- Text ----
         batch.begin();
 
         int finalScore = statsManager.getScore();
         int stars = statsManager.calculateStarRating();
+        List<Integer> highScores = statsManager.getPodiumScores();
 
-        // Final score + mastery (centered inside top panel)
         String scoreText = "Final Score: " + finalScore;
         String masteryText = "Mastery: " + stars + " / 3 Stars";
+        String hsTitle = "Top Scores";
 
         layout.setText(scoreFont, scoreText);
         float scoreX = (w - layout.width) / 2f;
-        float scoreY = topPanelY + topPanelH - 28f;
+        float scoreY = h * 0.75f;
+        drawTextWithShadow(batch, scoreFont, scoreText, scoreX, scoreY);
 
         layout.setText(scoreFont, masteryText);
         float masteryX = (w - layout.width) / 2f;
-        float masteryY = topPanelY + topPanelH - 74f;
-
-        drawTextWithShadow(batch, scoreFont, scoreText, scoreX, scoreY);
+        float masteryY = h * 0.70f;
         drawTextWithShadow(batch, scoreFont, masteryText, masteryX, masteryY);
 
-        // High scores title
-        String hsTitle = "--- HIGH SCORES ---";
         layout.setText(titleFont, hsTitle);
         float hsTitleX = (w - layout.width) / 2f;
-        float hsTitleY = hsPanelY + hsPanelH - 35f;
-        drawTextWithShadow(batch, titleFont, hsTitle, hsTitleX, hsTitleY);
+        float hsTitleY = h * 0.63f;
+        drawDarkTextWithShadow(batch, titleFont, hsTitle, hsTitleX, hsTitleY);
 
-        // Podium lines (centered)
-        List<Integer> highScores = statsManager.getPodiumScores();
-        float lineY = hsTitleY - 60f;
-
+        float lineY = h * 0.56f;
         for (int i = 0; i < highScores.size(); i++) {
             String line = (i + 1) + ". " + highScores.get(i) + " pts";
             layout.setText(podiumFont, line);
             float lineX = (w - layout.width) / 2f;
-            drawTextWithShadow(batch, podiumFont, line, lineX, lineY - (i * 52f));
+            drawTextWithShadow(batch, podiumFont, line, lineX, lineY - (i * 42f));
         }
 
         batch.end();
 
-        // ---- Buttons on top ----
         stage.draw();
+
+        if (UI.DEBUG_HITBOXES && debugRenderer != null) {
+            debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
+            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+            debugRenderer.setColor(Color.RED);
+
+            for (Actor actor : stage.getActors()) {
+                debugRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+            }
+
+            debugRenderer.end();
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-        if (stage != null) stage.getViewport().update(width, height, true);
+        if (stage != null) {
+            stage.getViewport().update(width, height, true);
+        }
     }
 
     @Override
     public void onExit() {
         if (stage != null) stage.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
+        if (debugRenderer != null) debugRenderer.dispose();
 
         if (bg != null) bg.dispose();
 
@@ -231,7 +251,7 @@ public class EndScene extends Scene {
         if (scoreFont != null) scoreFont.dispose();
         if (podiumFont != null) podiumFont.dispose();
 
-        if (buttonTex != null) buttonTex.dispose();
+        if (invisibleTex != null) invisibleTex.dispose();
 
         sceneManager.getIOManager().stopMusic();
     }
@@ -239,11 +259,19 @@ public class EndScene extends Scene {
     private void drawTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
         Color original = new Color(f.getColor());
 
-        // shadow
         f.setColor(0f, 0f, 0f, 0.85f);
         f.draw(batch, text, x + 2f, y - 2f);
 
-        // main
+        f.setColor(original);
+        f.draw(batch, text, x, y);
+    }
+
+    private void drawDarkTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
+        Color original = new Color(f.getColor());
+
+        f.setColor(1f, 1f, 1f, 0.35f);
+        f.draw(batch, text, x + 2f, y - 2f);
+
         f.setColor(original);
         f.draw(batch, text, x, y);
     }
@@ -255,5 +283,20 @@ public class EndScene extends Scene {
         Texture t = new Texture(pm);
         pm.dispose();
         return t;
+    }
+
+    private static final class UI {
+        static final boolean DEBUG_HITBOXES = false;
+
+        static final float BUTTON_WIDTH_MULT = 0.24f;
+        static final float BUTTON_HEIGHT_MULT = 0.10f;
+
+        static final float RESTART_X_MULT = 0.38f;
+        static final float RESTART_Y_MULT = 0.03f;
+
+        static final float MENU_X_MULT = 0.65f;
+        static final float MENU_Y_MULT = 0.03f;
+
+        private UI() {}
     }
 }

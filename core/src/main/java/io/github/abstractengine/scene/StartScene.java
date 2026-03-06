@@ -472,11 +472,6 @@ public class StartScene extends Scene {
         f.setColor(original);
         f.draw(batch, text, x, y);
     }
-
-    // ---------------------------
-    // CONFIGURATION
-    // ---------------------------
-
     private static final class CategoryConfig {
         final String backgroundPath;
         final List<QuestionBank.Question> questions;
@@ -489,19 +484,23 @@ public class StartScene extends Scene {
 
     private static final class CategoryConfigFactory {
         static CategoryConfig get(GameCategory category) {
+
             if (category == GameCategory.CATEGORIZATION) {
-                // Load category game questions from QuestionBank
                 return new CategoryConfig(
-                    "startscene_category.png", 
-                    QuestionBank.getCategoryQuestions()
+                        "GameMode_Categorization.png",
+                        QuestionBank.getCategoryQuestions()
                 );
-            } else {
-                // Load all language questions (Grammar + Synonyms + Antonyms)
+            } else if (category == GameCategory.GRAMMAR) {
                 return new CategoryConfig(
-                    "startscene_grammar.png", 
-                    QuestionBank.getAllLanguageQuestions()
+                        "GameMode_Grammar.png",
+                        QuestionBank.getAllLanguageQuestions()
                 );
             }
+
+            return new CategoryConfig(
+                    "GameMode_Grammar.png",
+                    QuestionBank.getAllLanguageQuestions()
+            );
         }
     }
 }

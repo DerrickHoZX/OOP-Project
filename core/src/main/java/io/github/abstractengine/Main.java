@@ -14,8 +14,8 @@ import io.github.abstractengine.scene.MainMenuScene;
 
 public class Main extends ApplicationAdapter {
 
-    private static final float VIRTUAL_W = 800f;
-    private static final float VIRTUAL_H = 800f;
+	private static final float VIRTUAL_W = 1280f;
+	private static final float VIRTUAL_H = 720f;
 
     private SpriteBatch batch;
     private OrthographicCamera camera;
