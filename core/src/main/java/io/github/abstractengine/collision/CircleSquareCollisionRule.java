@@ -66,10 +66,10 @@ public class CircleSquareCollisionRule implements ICollisionRule {
             sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
             statisticsManager.registerIncorrectAnswer();
             startScene.flashWrong();
+        }
 
-        }   
-
-        startScene.spawnNextQuestion(wasCorrect);
+        // Remove the collected square and spawn next question
+        square.destroy();
+        startScene.spawnNextQuestion();  // FIXED: No parameters
     }
 }
-

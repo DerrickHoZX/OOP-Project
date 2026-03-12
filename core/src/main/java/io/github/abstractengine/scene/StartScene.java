@@ -22,9 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
-import io.github.abstractengine.entities.PlayerFactory;
-import io.github.abstractengine.entities.EnemyFactory;
-import io.github.abstractengine.entities.SquareFactory;
 import io.github.abstractengine.io.KeyCode;
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.*;
@@ -48,19 +45,19 @@ public class StartScene extends Scene {
     private EntityManager entityManager;
     private MovementManager movementManager;
     private StatisticsManager statsManager;
-    private AlgorithmManager algorithmManager;
     private ShapeRenderer shapeRenderer;
     private BitmapFont font;
     private BitmapFont questionFont;
     
+    // NEW: Screen flash effect
     private ScreenFlash screenFlash;
 
     private final GlyphLayout layout = new GlyphLayout();
 
     private String currentQuestionPrompt = "";
-    private QuestionBank.Question currentQuestion;  // for AlgorithmManager tracking
     private final List<Square> currentAnswerSquares;
 
+    // For pause button
     private Stage stage;
     private Texture pauseButtonTex;
 
@@ -73,6 +70,7 @@ public class StartScene extends Scene {
         this.viewport = viewport;
         this.category = category;
 
+        // Get configuration based on category
         this.config = CategoryConfigFactory.get(category);
 
         this.entityManager = new EntityManager();
@@ -85,6 +83,7 @@ public class StartScene extends Scene {
     public void onEnter() {
         shapeRenderer = new ShapeRenderer();
         
+        // NEW: Initialize screen flash effect
         screenFlash = new ScreenFlash();
 
         font = new BitmapFont();
@@ -97,17 +96,13 @@ public class StartScene extends Scene {
         questionFont.setUseIntegerPositions(false);
         questionFont.getData().setScale(2.0f);
 
+        // Load category-based background
         bg = new Texture(config.backgroundPath);
 
         sceneManager.getIOManager().playMusic(AssetManager.MUSIC_START_SCENE, true);
 
-        // Register factories
-        entityManager.registerFactory(Circle.class, new PlayerFactory());
-        entityManager.registerFactory(Triangle.class, new EnemyFactory());
-        entityManager.registerFactory(Square.class, new SquareFactory());
-
         float circleSize = 60f;
-        circle = entityManager.createEntity(Circle.class, viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+        circle = new Circle(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, circleSize, circleSize);
         circle.setMovementComponent(new KeyboardMovement(
                 sceneManager.getIOManager(),
                 300f,
@@ -115,19 +110,21 @@ public class StartScene extends Scene {
                 viewport.getWorldHeight(),
                 circleSize
         ));
+        entityManager.addEntity(circle);
         movementManager.register(circle);
 
         for (int i = 0; i < 3; i++) {
             spawnEnemy();
         }
 
+        // Define safe play area boundaries (keep entities below UI)
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
         
         float playAreaMinX = 0f;
         float playAreaMaxX = worldW;
         float playAreaMinY = 0f;
-        float playAreaMaxY = worldH - 180f; 
+        float playAreaMaxY = worldH - 180f;  // Keep entities below question panel and pause button
         
         Boundary boundary = new Boundary(playAreaMinX, playAreaMaxX, playAreaMinY, playAreaMaxY);
         BasicCollisionDetector detector = new BasicCollisionDetector();
@@ -141,14 +138,14 @@ public class StartScene extends Scene {
         );
         collisionManager = new CollisionManager(boundary, entityManager, detector, handler);
 
-        algorithmManager = new AlgorithmManager(config.questions);
-        spawnNextQuestion(null);  // first question, no previous answer
+        spawnNextQuestion();
         createPauseButton();
     }
 
     private void createPauseButton() {
         stage = new Stage(viewport);
 
+        // Create button texture (orange color for visibility)
         pauseButtonTex = makeSolidTexture(1, 1, new Color(1f, 0.6f, 0f, 1f));
 
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
@@ -161,6 +158,7 @@ public class StartScene extends Scene {
         TextButton pauseBtn = new TextButton("PAUSE", style);
         pauseBtn.setSize(120, 50);
 
+        // Position: Top right corner
         float btnX = viewport.getWorldWidth() - pauseBtn.getWidth() - 15f;
         float btnY = viewport.getWorldHeight() - pauseBtn.getHeight() - 15f;
         pauseBtn.setPosition(btnX, btnY);
@@ -190,18 +188,19 @@ public class StartScene extends Scene {
         float tWidth = 70f;
         float tHeight = 70f;
         
+        // Define safe spawn area (avoid UI areas)
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
         
-        float safeMinX = 250f;  
+        float safeMinX = 250f;  // Avoid left score panel
         float safeMaxX = worldW - tWidth - 20f;
         float safeMinY = 20f;
-        float safeMaxY = worldH - 200f; 
+        float safeMaxY = worldH - 200f;  // Avoid top UI (question, timer, pause button)
         
         float randomX = MathUtils.random(safeMinX, safeMaxX);
         float randomY = MathUtils.random(safeMinY, safeMaxY);
 
-        Triangle triangle = entityManager.createEntity(Triangle.class, randomX, randomY);
+        Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
         triangle.setMovementComponent(new RandomMovement(
                 150f,
                 2.0f,
@@ -210,50 +209,31 @@ public class StartScene extends Scene {
                 tWidth
         ));
 
+        entityManager.addEntity(triangle);
         movementManager.register(triangle);
     }
 
-    /**
-     * Spawn the next question. Pass null for the first question (game start).
-     * Pass the correctness of the previous answer when triggered by a collision.
-     */
-    public void spawnNextQuestion(Boolean wasCorrect) {
+    public void spawnNextQuestion() {
+        // Clear old squares
         for (Square s : currentAnswerSquares) {
             entityManager.removeEntity(s);
         }
         currentAnswerSquares.clear();
 
-        // Record previous answer for AlgorithmManager (no-repeat, difficulty progression)
-        if (wasCorrect != null && currentQuestion != null && algorithmManager != null) {
-            algorithmManager.recordAnswer(currentQuestion, wasCorrect);
-        }
-
-        QuestionBank.Question q = algorithmManager != null
-                ? algorithmManager.getNextQuestion()
-                : config.questions.get(MathUtils.random(0, config.questions.size() - 1));
-        if (q == null) q = config.questions.get(0);  // fallback
-
-        currentQuestion = q;
+        // Pick random question from config
+        QuestionBank.Question q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
         currentQuestionPrompt = q.prompt;
 
-        // Shuffle answer order
+        // Spawn answers (1 correct + 2 decoys)
         String[] answers = { q.correct, q.decoy1, q.decoy2 };
         boolean[] correctness = { true, false, false };
-        shuffleAnswers(answers, correctness);
 
         for (int i = 0; i < answers.length; i++) {
             spawnAnswerWithOverlapProtection(answers[i], correctness[i]);
         }
     }
-
-    private void shuffleAnswers(String[] answers, boolean[] correctness) {
-        for (int i = answers.length - 1; i > 0; i--) {
-            int j = MathUtils.random(i);
-            String t = answers[i]; answers[i] = answers[j]; answers[j] = t;
-            boolean b = correctness[i]; correctness[i] = correctness[j]; correctness[j] = b;
-        }
-    }
     
+    // NEW: Public methods for collision handler to trigger flash effects
     public void flashCorrect() {
         if (screenFlash != null) {
             screenFlash.flashGreen();
@@ -267,21 +247,32 @@ public class StartScene extends Scene {
     }
 
     private void spawnAnswerWithOverlapProtection(String text, boolean isCorrect) {
-        float sWidth = 160f;
-        float sHeight = 70f;
+        // Dynamic box sizing based on text length
+        GlyphLayout tempLayout = new GlyphLayout();
+        tempLayout.setText(font, text);
+        
+        float padding = 20f; // Padding around text
+        float sWidth = tempLayout.width + padding * 2;   // Width = text width + padding
+        float sHeight = tempLayout.height + padding * 2; // Height = text height + padding
+        
+        // Minimum size to keep boxes clickable
+        sWidth = Math.max(sWidth, 80f);
+        sHeight = Math.max(sHeight, 50f);
+        
         float spawnX = 0, spawnY = 0;
         boolean invalidPosition;
         int attempts = 0;
 
         float minDistanceFromPlayer = 150f;
         
+        // Define safe spawn area (avoid UI)
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
         
-        float safeMinX = 250f;  
+        float safeMinX = 250f;  // Avoid left score panel
         float safeMaxX = worldW - sWidth - 20f;
         float safeMinY = 50f;
-        float safeMaxY = worldH - 200f; 
+        float safeMaxY = worldH - 200f;  // Avoid top UI
 
         do {
             invalidPosition = false;
@@ -289,6 +280,7 @@ public class StartScene extends Scene {
             spawnX = MathUtils.random(safeMinX, safeMaxX);
             spawnY = MathUtils.random(safeMinY, safeMaxY);
 
+            // Check against player
             float playerCenterX = circle.getX() + circle.getWidth() / 2f;
             float playerCenterY = circle.getY() + circle.getHeight() / 2f;
             float distToPlayer = com.badlogic.gdx.math.Vector2.dst(
@@ -300,6 +292,7 @@ public class StartScene extends Scene {
                 invalidPosition = true;
             }
 
+            // Check against existing squares
             if (!invalidPosition) {
                 for (Square other : currentAnswerSquares) {
                     float buffer = 50f;
@@ -316,22 +309,25 @@ public class StartScene extends Scene {
             attempts++;
         } while (invalidPosition && attempts < 100);
 
-        Square square = entityManager.createEntity(Square.class, spawnX, spawnY);
-        square.setAnswerDetails(text, isCorrect);
+        Square square = new Square(spawnX, spawnY, sWidth, sHeight, text, isCorrect);
+        entityManager.addEntity(square);
         currentAnswerSquares.add(square);
     }
 
     @Override
     public void update(float dt) {
+        // Keyboard ESC still works
         if (sceneManager.getIOManager().isKeyJustPressed(KeyCode.ESCAPE)) {
             sceneManager.pushScene(new PauseScene(sceneManager, viewport, this, statsManager));
             return;
         }
 
+        // Update stage (for button interactions)
         if (stage != null) {
             stage.act(dt);
         }
         
+        // NEW: Update screen flash
         screenFlash.update(dt);
 
         statsManager.update(dt);
@@ -345,6 +341,7 @@ public class StartScene extends Scene {
         collisionManager.update(dt);
     }
     
+    // NEW: Called when returning from pause - re-register input
     public void onResume() {
         if (stage != null) {
             Gdx.input.setInputProcessor(new InputMultiplexer(stage));
@@ -361,11 +358,13 @@ public class StartScene extends Scene {
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
 
+        // Draw Background + Entities
         batch.begin();
-        if (bg != null) batch.draw(bg, 0, 0, worldW, worldH);
+        if (bg != null) batch.draw(bg, 0, 0, worldW, worldH);  // Draw background image
         entityManager.render(batch, shapeRenderer);
         batch.end();
 
+        // HUD PANELS (transparent)
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -373,55 +372,65 @@ public class StartScene extends Scene {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+        // Score/Streak panel (top-left)
         shapeRenderer.setColor(0f, 0f, 0f, 0.20f);
         shapeRenderer.rect(15f, worldH - 95f, 220f, 75f);
 
+        // Time panel (top-center)
         shapeRenderer.rect(worldW / 2f - 90f, worldH - 55f, 180f, 40f);
 
-        shapeRenderer.setColor(1f, 1f, 1f, 0.95f); 
+        // Question panel (center-top) - WHITE background for clarity
+        shapeRenderer.setColor(1f, 1f, 1f, 0.95f); // White with slight transparency
         shapeRenderer.rect(worldW / 2f - 300f, worldH - 150f, 600f, 55f);
 
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
+        // TEXT
         batch.begin();
 
         int seconds = (int) Math.ceil(statsManager.getTimeRemaining());
 
         font.setColor(Color.WHITE);
-        questionFont.setColor(Color.BLACK); 
+        questionFont.setColor(Color.BLACK); // BLACK text on white background
 
+        // Score
         drawTextWithShadow(batch, font,
                 "Score: " + statsManager.getScore(),
                 25f, worldH - 25f);
 
+        // Streak
         drawTextWithShadow(batch, font,
                 "Streak: " + statsManager.getCurrentStreak(),
                 25f, worldH - 55f);
 
+        // Time (centered)
         String timeText = "Time: " + seconds + "s";
         layout.setText(font, timeText);
         float timeX = (worldW - layout.width) / 2f;
         drawTextWithShadow(batch, font, timeText, timeX, worldH - 25f);
 
+        // Question (centered) - BLACK text on WHITE background
         layout.setText(questionFont, currentQuestionPrompt);
         float qX = (worldW - layout.width) / 2f;
         drawBlackTextWithShadow(batch, questionFont, currentQuestionPrompt, qX, worldH - 110f);
 
         batch.end();
 
+        // Draw pause button
         if (stage != null) {
             stage.draw();
         }
         
+        // NEW: Draw screen flash overlay (green/red feedback)
         if (screenFlash.isFlashing()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(screenFlash.getCurrentColor());
-            shapeRenderer.rect(0, 0, worldW, worldH); 
+            shapeRenderer.rect(0, 0, worldW, worldH); // Full screen overlay
             shapeRenderer.end();
             
             Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -453,9 +462,11 @@ public class StartScene extends Scene {
     private void drawTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
         Color original = f.getColor().cpy();
 
+        // shadow
         f.setColor(0f, 0f, 0f, 0.85f);
         f.draw(batch, text, x + 2f, y - 2f);
 
+        // main text
         f.setColor(original);
         f.draw(batch, text, x, y);
     }
@@ -463,12 +474,19 @@ public class StartScene extends Scene {
     private void drawBlackTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
         Color original = f.getColor().cpy();
 
+        // Light grey shadow for black text on white
         f.setColor(0.6f, 0.6f, 0.6f, 0.6f);
         f.draw(batch, text, x + 2f, y - 2f);
 
+        // main text
         f.setColor(original);
         f.draw(batch, text, x, y);
     }
+
+    // ---------------------------
+    // CONFIGURATION
+    // ---------------------------
+
     private static final class CategoryConfig {
         final String backgroundPath;
         final List<QuestionBank.Question> questions;
@@ -481,23 +499,19 @@ public class StartScene extends Scene {
 
     private static final class CategoryConfigFactory {
         static CategoryConfig get(GameCategory category) {
-
             if (category == GameCategory.CATEGORIZATION) {
+                // Load category game questions from QuestionBank
                 return new CategoryConfig(
-                        "GameMode_Categorization.png",
-                        QuestionBank.getCategoryQuestions()
+                    "GameMode_Categorization.png",  // Categorization background
+                    QuestionBank.getCategoryQuestions()
                 );
-            } else if (category == GameCategory.GRAMMAR) {
+            } else {
+                // Load all language questions (Grammar + Synonyms + Antonyms)
                 return new CategoryConfig(
-                        "GameMode_Grammar.png",
-                        QuestionBank.getAllLanguageQuestions()
+                    "GameMode_Grammar.png",  // Grammar background
+                    QuestionBank.getAllLanguageQuestions()
                 );
             }
-
-            return new CategoryConfig(
-                    "GameMode_Grammar.png",
-                    QuestionBank.getAllLanguageQuestions()
-            );
         }
     }
 }
