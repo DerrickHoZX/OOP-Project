@@ -62,10 +62,14 @@ public class StartScene extends Scene {
     private Texture pauseButtonTex;
 
     public StartScene(SceneManager sceneManager, Viewport viewport) {
-        this(sceneManager, viewport, GameCategory.GRAMMAR);
+        this(sceneManager, viewport, GameCategory.GRAMMAR, "Player");
     }
 
     public StartScene(SceneManager sceneManager, Viewport viewport, GameCategory category) {
+        this(sceneManager, viewport, category, "Player");
+    }
+
+    public StartScene(SceneManager sceneManager, Viewport viewport, GameCategory category, String username) {
         super(sceneManager);
         this.viewport = viewport;
         this.category = category;
@@ -75,7 +79,13 @@ public class StartScene extends Scene {
 
         this.entityManager = new EntityManager();
         this.movementManager = new MovementManager();
-        this.statsManager = new StatisticsManager(60f);
+        String trimmedUsername = (username != null ? username.trim() : "");
+        this.statsManager = new StatisticsManager(
+                category,
+                trimmedUsername.isEmpty() ? "Player" : trimmedUsername,
+                sceneManager.getIOManager(),
+                60f
+        );
         this.currentAnswerSquares = new ArrayList<>();
     }
 
