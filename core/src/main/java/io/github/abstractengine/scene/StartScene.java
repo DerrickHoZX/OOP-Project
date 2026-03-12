@@ -48,6 +48,7 @@ public class StartScene extends Scene {
     private EntityManager entityManager;
     private MovementManager movementManager;
     private StatisticsManager statsManager;
+    private AlgorithmManager algorithmManager;
     private ShapeRenderer shapeRenderer;
     private BitmapFont font;
     private BitmapFont questionFont;
@@ -57,6 +58,7 @@ public class StartScene extends Scene {
     private final GlyphLayout layout = new GlyphLayout();
 
     private String currentQuestionPrompt = "";
+    private QuestionBank.Question currentQuestion;  // for AlgorithmManager tracking
     private final List<Square> currentAnswerSquares;
 
     private Stage stage;
@@ -139,7 +141,8 @@ public class StartScene extends Scene {
         );
         collisionManager = new CollisionManager(boundary, entityManager, detector, handler);
 
-        spawnNextQuestion();
+        algorithmManager = new AlgorithmManager(config.questions);
+        spawnNextQuestion(null);  // first question, no previous answer
         createPauseButton();
     }
 
@@ -210,20 +213,44 @@ public class StartScene extends Scene {
         movementManager.register(triangle);
     }
 
-    public void spawnNextQuestion() {
+    /**
+     * Spawn the next question. Pass null for the first question (game start).
+     * Pass the correctness of the previous answer when triggered by a collision.
+     */
+    public void spawnNextQuestion(Boolean wasCorrect) {
         for (Square s : currentAnswerSquares) {
             entityManager.removeEntity(s);
         }
         currentAnswerSquares.clear();
 
-        QuestionBank.Question q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
+        // Record previous answer for AlgorithmManager (no-repeat, difficulty progression)
+        if (wasCorrect != null && currentQuestion != null && algorithmManager != null) {
+            algorithmManager.recordAnswer(currentQuestion, wasCorrect);
+        }
+
+        QuestionBank.Question q = algorithmManager != null
+                ? algorithmManager.getNextQuestion()
+                : config.questions.get(MathUtils.random(0, config.questions.size() - 1));
+        if (q == null) q = config.questions.get(0);  // fallback
+
+        currentQuestion = q;
         currentQuestionPrompt = q.prompt;
 
+        // Shuffle answer order
         String[] answers = { q.correct, q.decoy1, q.decoy2 };
         boolean[] correctness = { true, false, false };
+        shuffleAnswers(answers, correctness);
 
         for (int i = 0; i < answers.length; i++) {
             spawnAnswerWithOverlapProtection(answers[i], correctness[i]);
+        }
+    }
+
+    private void shuffleAnswers(String[] answers, boolean[] correctness) {
+        for (int i = answers.length - 1; i > 0; i--) {
+            int j = MathUtils.random(i);
+            String t = answers[i]; answers[i] = answers[j]; answers[j] = t;
+            boolean b = correctness[i]; correctness[i] = correctness[j]; correctness[j] = b;
         }
     }
     
