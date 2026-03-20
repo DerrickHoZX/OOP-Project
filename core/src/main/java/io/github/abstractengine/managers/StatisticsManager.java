@@ -4,11 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// Note: You may need to press Ctrl+Shift+O in Eclipse to auto-resolve these imports
+import io.github.abstractengine.scene.GameCategory;
+import io.github.abstractengine.managers.IOManager;
+
 public class StatisticsManager {
 
     private int score;
     private int currentStreak;
     private float timeRemaining;
+
+    // NEW: Added fields to store the data passed from StartScene
+    private GameCategory category;
+    private String username;
+    private IOManager ioManager;
 
     private List<Integer> podiumScores;
     private final int MAX_PODIUM_SPOTS = 5;
@@ -18,8 +27,14 @@ public class StatisticsManager {
     private final int INCORRECT_PENALTY = 5;
     private final int ENEMY_PENALTY = 15;
 
-    public StatisticsManager(float timeLimitInSeconds) {
+    // UPDATED: Constructor now matches the 4 arguments passed in StartScene
+    public StatisticsManager(GameCategory category, String username, IOManager ioManager, float timeLimitInSeconds) {
+        this.category = category;
+        this.username = username;
+        this.ioManager = ioManager;
+        
         this.podiumScores = new ArrayList<>();
+        // Default dummy scores
         podiumScores.add(500);
         podiumScores.add(250);
         podiumScores.add(100);
@@ -64,6 +79,7 @@ public class StatisticsManager {
     }
 
     public List<Integer> getPodiumScores() { return podiumScores; }
+    
     public boolean isNewHighScore() {
         if (podiumScores.isEmpty()) return false;
         return score >= podiumScores.get(0);
