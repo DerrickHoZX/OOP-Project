@@ -55,7 +55,9 @@ public class StartScene extends Scene {
     private final GlyphLayout layout = new GlyphLayout();
 
     private String currentQuestionPrompt = "";
+    private QuestionBank.Question currentQuestion;
     private final List<Square> currentAnswerSquares;
+    private final AlgorithmManager algorithmManager;
 
     // For pause button
     private Stage stage;
@@ -87,6 +89,7 @@ public class StartScene extends Scene {
                 60f
         );
         this.currentAnswerSquares = new ArrayList<>();
+        this.algorithmManager = new AlgorithmManager(config.questions);
     }
 
     @Override
@@ -223,6 +226,17 @@ public class StartScene extends Scene {
         movementManager.register(triangle);
     }
 
+    /**
+     * Called when the player collides with an answer square.
+     * Records the result in AlgorithmManager, then spawns the next question.
+     */
+    public void onAnswerSubmitted(boolean wasCorrect) {
+        if (currentQuestion != null) {
+            algorithmManager.recordAnswer(currentQuestion, wasCorrect);
+        }
+        spawnNextQuestion();
+    }
+
     public void spawnNextQuestion() {
         // Clear old squares
         for (Square s : currentAnswerSquares) {
@@ -230,8 +244,12 @@ public class StartScene extends Scene {
         }
         currentAnswerSquares.clear();
 
-        // Pick random question from config
-        QuestionBank.Question q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
+        // Use AlgorithmManager to avoid repeating correctly-answered questions
+        QuestionBank.Question q = algorithmManager.getNextQuestion();
+        if (q == null) {
+            q = config.questions.get(MathUtils.random(0, config.questions.size() - 1)); // fallback if empty
+        }
+        currentQuestion = q;
         currentQuestionPrompt = q.prompt;
 
         // Spawn answers (1 correct + 2 decoys)
