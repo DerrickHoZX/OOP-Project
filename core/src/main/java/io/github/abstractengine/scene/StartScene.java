@@ -158,12 +158,12 @@ public class StartScene extends Scene {
     private void createPauseButton() {
         stage = new Stage(viewport);
 
-        // Create button texture (orange color for visibility)
-        pauseButtonTex = makeSolidTexture(1, 1, new Color(1f, 0.6f, 0f, 1f));
+        // Create button texture (white)
+        pauseButtonTex = makeSolidTexture(1, 1, new Color(1f, 1f, 1f, 1f));
 
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.font = font;
-        style.fontColor = Color.WHITE;
+        style.fontColor = Color.BLACK;  // dark text on white button
         style.up = new TextureRegionDrawable(pauseButtonTex);
         style.down = new TextureRegionDrawable(pauseButtonTex);
         style.over = new TextureRegionDrawable(pauseButtonTex);
@@ -400,12 +400,14 @@ public class StartScene extends Scene {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // Score/Streak panel (top-left)
-        shapeRenderer.setColor(0f, 0f, 0f, 0.20f);
-        shapeRenderer.rect(15f, worldH - 95f, 220f, 75f);
+        // Score/Streak panel (styled, positioned below title to avoid overlap)
+        drawScoreStreakPanel(shapeRenderer, worldW, worldH);
 
-        // Time panel (top-center)
-        shapeRenderer.rect(worldW / 2f - 90f, worldH - 55f, 180f, 40f);
+        // Time panel (top-center) - dark background for visibility
+        shapeRenderer.setColor(0.10f, 0.16f, 0.26f, 0.95f);
+        shapeRenderer.rect(worldW / 2f - 100f, worldH - 60f, 200f, 45f);
+        shapeRenderer.setColor(0.25f, 0.45f, 0.75f, 0.95f);
+        shapeRenderer.rect(worldW / 2f - 100f, worldH - 60f + 42f, 200f, 3f);  // accent line
 
         // Question panel (center-top) - WHITE background for clarity
         shapeRenderer.setColor(1f, 1f, 1f, 0.95f); // White with slight transparency
@@ -423,21 +425,17 @@ public class StartScene extends Scene {
         font.setColor(Color.WHITE);
         questionFont.setColor(Color.BLACK); // BLACK text on white background
 
-        // Score
-        drawTextWithShadow(batch, font,
-                "Score: " + statsManager.getScore(),
-                25f, worldH - 25f);
+        // Score and Streak (drawn by panel method for consistent positioning)
+        drawScoreStreakText(batch, worldH);
 
-        // Streak
-        drawTextWithShadow(batch, font,
-                "Streak: " + statsManager.getCurrentStreak(),
-                25f, worldH - 55f);
-
-        // Time (centered)
+        // Time (centered, larger and brighter for visibility)
+        font.getData().setScale(1.8f);
         String timeText = "Time: " + seconds + "s";
         layout.setText(font, timeText);
         float timeX = (worldW - layout.width) / 2f;
-        drawTextWithShadow(batch, font, timeText, timeX, worldH - 25f);
+        font.setColor(1f, 1f, 1f, 1f);
+        drawTextWithShadow(batch, font, timeText, timeX, worldH - 32f);
+        font.getData().setScale(1.5f);  // restore default scale
 
         // Question (centered) - BLACK text on WHITE background
         layout.setText(questionFont, currentQuestionPrompt);
@@ -485,6 +483,77 @@ public class StartScene extends Scene {
         if (collisionManager != null) collisionManager.clear();
 
         sceneManager.getIOManager().stopMusic();
+    }
+
+    /**
+     * Draws the Score/Streak panel background.
+     * Customize position, size, and colors here. Set USE_TOP_LEFT = true
+     * for top-left (may overlap title on some screens), false for bottom-left.
+     */
+    private static final boolean SCORE_PANEL_TOP_LEFT = true;  // true = top-left
+
+    private void drawScoreStreakPanel(ShapeRenderer shape, float worldW, float worldH) {
+        float padLeft = 20f;
+        float padTop = 55f;  // larger = panel sits lower (avoids title overlap)
+        float padBottom = 20f;
+        float panelW = 185f;
+        float panelH = 72f;
+        float innerPad = 20f;
+
+        float x = padLeft;
+        float y = SCORE_PANEL_TOP_LEFT
+                ? worldH - padTop - panelH
+                : padBottom;
+
+        // Main panel - dark semi-transparent with blue tint
+        shape.setColor(0.10f, 0.16f, 0.26f, 0.88f);
+        shape.rect(x, y, panelW, panelH);
+
+        // Accent line at top of panel
+        shape.setColor(0.25f, 0.45f, 0.75f, 0.9f);
+        shape.rect(x, y + panelH - 3f, panelW, 3f);
+
+        // Store for text positioning (we use same values in drawScoreStreakText)
+        scorePanelX = x;
+        scorePanelY = y;
+        scorePanelW = panelW;
+        scorePanelH = panelH;
+    }
+
+    private float scorePanelX, scorePanelY, scorePanelW, scorePanelH;  // used by drawScoreStreakText
+
+    /**
+     * Draws Score and Streak text inside the panel. Centered horizontally.
+     */
+    private void drawScoreStreakText(SpriteBatch batch, float worldH) {
+        // Score near top, Streak lower - block shifted up for balanced padding
+        float scoreY = scorePanelY + scorePanelH - 14f;   // Score: higher in panel
+        float streakY = scorePanelY + 32f;                // Streak: moved up, more room from bottom
+
+        String scoreText = "Score: " + statsManager.getScore();
+        String streakText = "Streak: " + statsManager.getCurrentStreak();
+
+        layout.setText(font, scoreText);
+        float scoreX = scorePanelX + (scorePanelW - layout.width) / 2f;
+        drawScorePanelText(batch, scoreText, scoreX, scoreY);
+
+        layout.setText(font, streakText);
+        float streakX = scorePanelX + (scorePanelW - layout.width) / 2f;
+        drawScorePanelText(batch, streakText, streakX, streakY);
+    }
+
+    /** Softer shadow for score panel text - less harsh than default drop shadow. */
+    private void drawScorePanelText(SpriteBatch batch, String text, float x, float y) {
+        Color original = font.getColor().cpy();
+        font.setColor(1f, 1f, 1f, 1f);
+
+        // Soft shadow (lighter, smaller offset)
+        font.setColor(0f, 0f, 0f, 0.4f);
+        font.draw(batch, text, x + 1f, y - 1f);
+
+        // Main text
+        font.setColor(original);
+        font.draw(batch, text, x, y);
     }
 
     private void drawTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
