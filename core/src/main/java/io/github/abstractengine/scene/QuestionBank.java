@@ -376,7 +376,7 @@ public class QuestionBank {
         questions.add(new Question("Synonym of Time:", "moment", "never", "space", d));
         questions.add(new Question("Synonym of Way:", "method", "block", "stop", d));
         questions.add(new Question("Synonym of Part:", "portion", "whole", "all", d));
-        questions.add(new Question("Synonym of Kind:", "type", "cruel", "mean", d));
+        questions.add(new Question("Synonym of Nice:", "kind", "cruel", "mean", d));
         
         return questions;
     }

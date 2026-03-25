@@ -73,4 +73,9 @@ public class EntityManager {
         }
         return collidables;
     }
+
+    /** Snapshot for read-only iteration (e.g. apply per-entity effects). */
+    public List<Entity> getEntitiesSnapshot() {
+        return new ArrayList<>(entities);
+    }
 }

@@ -3,6 +3,7 @@ package io.github.abstractengine.collision;
 import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;
+import io.github.abstractengine.entities.PowerUpPickup;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
 import io.github.abstractengine.managers.EntityManager;
@@ -82,6 +83,10 @@ public class SimulationCollisionHandler implements ICollisionHandler {
         rules.put(
                 CollisionPairKey.of(Circle.class, Square.class),
                 new CircleSquareCollisionRule(sceneManager, statsManager, startScene)
+        );
+        rules.put(
+                CollisionPairKey.of(Circle.class, PowerUpPickup.class),
+                new CirclePowerUpCollisionRule(sceneManager, startScene)
         );
     }
 

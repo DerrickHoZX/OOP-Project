@@ -3,6 +3,7 @@ package io.github.abstractengine.collision;
 import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;
+import io.github.abstractengine.entities.PowerUpPickup;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
 
@@ -36,6 +37,10 @@ public class BasicCollisionDetector implements ICollisionDetector {
                 }
                 else if (e1 instanceof Triangle && e2 instanceof Triangle) {
                     collision = checkSquare(e1, e2); // Treat triangles as squares
+                }
+                else if ((e1 instanceof Circle && e2 instanceof PowerUpPickup) ||
+                         (e1 instanceof PowerUpPickup && e2 instanceof Circle)) {
+                    collision = checkCircleSquare(e1, e2);
                 }
                 else if ((e1 instanceof Circle && e2 instanceof Square) ||
                          (e1 instanceof Square && e2 instanceof Circle)) {

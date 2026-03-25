@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -20,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
 import io.github.abstractengine.entities.Circle;
+import io.github.abstractengine.entities.Entity;
+import io.github.abstractengine.entities.PowerUpPickup;
+import io.github.abstractengine.entities.PowerUpType;
 import io.github.abstractengine.entities.Square;
 import io.github.abstractengine.entities.Triangle;
 import io.github.abstractengine.io.KeyCode;
@@ -30,11 +34,17 @@ import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.collision.*;
 import io.github.abstractengine.effects.PointsFeedbackEffect;
 import io.github.abstractengine.effects.ScreenFlash;
+import io.github.abstractengine.effects.StreakPowerUpRuntime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class StartScene extends Scene {
+
+    private static final float PLAYER_BASE_MOVE_SPEED = 300f;
+    private static final float ENEMY_BASE_SPEED = 150f;
+    private static final float POWERUP_PICKUP_SIZE = 40f;
 
     private final Viewport viewport;
     private final GameCategory category;
@@ -53,6 +63,9 @@ public class StartScene extends Scene {
     // NEW: Screen flash effect
     private ScreenFlash screenFlash;
     private PointsFeedbackEffect pointsFeedback;
+    private StreakPowerUpRuntime streakPowerUpRuntime;
+    private final List<PowerUpPickup> activePowerUpPickups = new ArrayList<>();
+    private int prevStreakForPowerUps;
 
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -101,6 +114,10 @@ public class StartScene extends Scene {
         // NEW: Initialize screen flash effect
         screenFlash = new ScreenFlash();
         pointsFeedback = new PointsFeedbackEffect();
+        streakPowerUpRuntime = new StreakPowerUpRuntime();
+        streakPowerUpRuntime.reset();
+        activePowerUpPickups.clear();
+        prevStreakForPowerUps = 0;
 
         font = new BitmapFont();
         font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -121,7 +138,7 @@ public class StartScene extends Scene {
         circle = new Circle(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, circleSize, circleSize);
         circle.setMovementComponent(new KeyboardMovement(
                 sceneManager.getIOManager(),
-                300f,
+                PLAYER_BASE_MOVE_SPEED,
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight(),
                 circleSize
@@ -218,7 +235,7 @@ public class StartScene extends Scene {
 
         Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
         triangle.setMovementComponent(new RandomMovement(
-                150f,
+                ENEMY_BASE_SPEED,
                 2.0f,
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight(),
@@ -277,17 +294,139 @@ public class StartScene extends Scene {
         }
     }
 
-    /** Large centered message: points earned (green), fade in/out over 1s. */
+    /** Large centered message: points earned (green), fade in/out (~1s). */
     public void showPointsGained(int points) {
         if (pointsFeedback != null && points > 0) {
             pointsFeedback.showGain(points);
         }
     }
 
-    /** Large centered message: points lost (red), fade in/out over 1s. */
+    /** Large centered message: points lost (red), fade in/out (~1s). */
     public void showPointsLost(int points) {
         if (pointsFeedback != null && points > 0) {
             pointsFeedback.showLoss(points);
+        }
+    }
+
+    public void onPowerUpCollected(PowerUpPickup pickup) {
+        if (pickup == null || !pickup.isActive() || streakPowerUpRuntime == null) {
+            return;
+        }
+        streakPowerUpRuntime.activate(pickup.getPowerUpType());
+        activePowerUpPickups.remove(pickup);
+        pickup.disposeTexture();
+        pickup.destroy();
+        entityManager.removeEntity(pickup);
+    }
+
+    private void handleStreakPowerUpSpawns(int streakNow) {
+        if (streakNow < prevStreakForPowerUps) {
+            clearPowerUpPickups();
+        }
+        if (streakNow > prevStreakForPowerUps) {
+            int c = PowerUpType.CHERRY.streakRequired;
+            int b = PowerUpType.BANANA.streakRequired;
+            int w = PowerUpType.WATERMELON.streakRequired;
+            if (prevStreakForPowerUps < c && streakNow >= c) {
+                spawnPowerUpPickup(PowerUpType.CHERRY);
+            }
+            if (prevStreakForPowerUps < b && streakNow >= b) {
+                spawnPowerUpPickup(PowerUpType.BANANA);
+            }
+            if (prevStreakForPowerUps < w && streakNow >= w) {
+                spawnPowerUpPickup(PowerUpType.WATERMELON);
+            }
+        }
+        prevStreakForPowerUps = streakNow;
+    }
+
+    private void clearPowerUpPickups() {
+        for (PowerUpPickup p : new ArrayList<>(activePowerUpPickups)) {
+            p.disposeTexture();
+            entityManager.removeEntity(p);
+        }
+        activePowerUpPickups.clear();
+    }
+
+    private void spawnPowerUpPickup(PowerUpType type) {
+        float size = POWERUP_PICKUP_SIZE;
+        float worldW = viewport.getWorldWidth();
+        float worldH = viewport.getWorldHeight();
+        float safeMinX = 250f;
+        float safeMaxX = worldW - size - 20f;
+        float safeMinY = 50f;
+        float safeMaxY = worldH - 200f;
+
+        float spawnX = 0f;
+        float spawnY = 0f;
+        boolean invalid;
+        int attempts = 0;
+
+        do {
+            invalid = false;
+            spawnX = MathUtils.random(safeMinX, safeMaxX);
+            spawnY = MathUtils.random(safeMinY, safeMaxY);
+
+            float pcx = circle.getX() + circle.getWidth() / 2f;
+            float pcy = circle.getY() + circle.getHeight() / 2f;
+            float cx = spawnX + size / 2f;
+            float cy = spawnY + size / 2f;
+            if (Vector2.dst(cx, cy, pcx, pcy) < 140f) {
+                invalid = true;
+            }
+
+            if (!invalid) {
+                for (Square s : currentAnswerSquares) {
+                    if (rectsOverlap(spawnX, spawnY, size, size,
+                            s.getX(), s.getY(), s.getWidth(), s.getHeight(), 35f)) {
+                        invalid = true;
+                        break;
+                    }
+                }
+            }
+            if (!invalid) {
+                for (PowerUpPickup p : activePowerUpPickups) {
+                    if (rectsOverlap(spawnX, spawnY, size, size,
+                            p.getX(), p.getY(), p.getWidth(), p.getHeight(), 25f)) {
+                        invalid = true;
+                        break;
+                    }
+                }
+            }
+            attempts++;
+        } while (invalid && attempts < 120);
+
+        PowerUpPickup pickup = new PowerUpPickup(spawnX, spawnY, size, type);
+        entityManager.addEntity(pickup);
+        activePowerUpPickups.add(pickup);
+    }
+
+    private static boolean rectsOverlap(float ax, float ay, float aw, float ah,
+                                      float bx, float by, float bw, float bh, float pad) {
+        return ax < bx + bw + pad
+                && ax + aw + pad > bx
+                && ay < by + bh + pad
+                && ay + ah + pad > by;
+    }
+
+    private void applyActivePowerUpMovement() {
+        if (circle == null || streakPowerUpRuntime == null) {
+            return;
+        }
+        KeyboardMovement km = (KeyboardMovement) circle.getMovementComponent();
+        if (km != null) {
+            km.setSpeed(PLAYER_BASE_MOVE_SPEED * streakPowerUpRuntime.getPlayerSpeedMultiplier());
+        }
+
+        float emult = streakPowerUpRuntime.getEnemySpeedMultiplier();
+        boolean frozen = streakPowerUpRuntime.enemiesFrozen();
+        for (Entity e : entityManager.getEntitiesSnapshot()) {
+            if (e instanceof Triangle) {
+                RandomMovement rm = (RandomMovement) ((Triangle) e).getMovementComponent();
+                if (rm != null) {
+                    rm.setEnemyModifiers(emult, frozen);
+                }
+            }
         }
     }
 
@@ -328,7 +467,7 @@ public class StartScene extends Scene {
             // Check against player
             float playerCenterX = circle.getX() + circle.getWidth() / 2f;
             float playerCenterY = circle.getY() + circle.getHeight() / 2f;
-            float distToPlayer = com.badlogic.gdx.math.Vector2.dst(
+            float distToPlayer = Vector2.dst(
                     spawnX + sWidth / 2f, spawnY + sHeight / 2f,
                     playerCenterX, playerCenterY
             );
@@ -384,9 +523,16 @@ public class StartScene extends Scene {
             return;
         }
 
+        if (streakPowerUpRuntime != null) {
+            streakPowerUpRuntime.update(dt);
+        }
+        applyActivePowerUpMovement();
+
         movementManager.update(dt);
         entityManager.update(dt);
         collisionManager.update(dt);
+
+        handleStreakPowerUpSpawns(statsManager.getCurrentStreak());
     }
     
     // NEW: Called when returning from pause - re-register input
@@ -511,6 +657,8 @@ public class StartScene extends Scene {
 
     @Override
     public void onExit() {
+        clearPowerUpPickups();
+
         if (bg != null) bg.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
         if (font != null) font.dispose();
@@ -536,8 +684,9 @@ public class StartScene extends Scene {
         float padTop = 55f;  // larger = panel sits lower (avoids title overlap)
         float padBottom = 20f;
         float panelW = 185f;
-        float panelH = 72f;
-        float innerPad = 20f;
+        int buffLines = (streakPowerUpRuntime != null) ? streakPowerUpRuntime.countActiveBuffLines() : 0;
+        float basePanelH = 72f;
+        float panelH = basePanelH + (buffLines > 0 ? 8f + buffLines * 17f : 0f);
 
         float x = padLeft;
         float y = SCORE_PANEL_TOP_LEFT
@@ -565,9 +714,9 @@ public class StartScene extends Scene {
      * Draws Score and Streak text inside the panel. Centered horizontally.
      */
     private void drawScoreStreakText(SpriteBatch batch, float worldH) {
-        // Score near top, Streak lower - block shifted up for balanced padding
-        float scoreY = scorePanelY + scorePanelH - 14f;   // Score: higher in panel
-        float streakY = scorePanelY + 32f;                // Streak: moved up, more room from bottom
+        float top = scorePanelY + scorePanelH;
+        float scoreY = top - 14f;
+        float streakY = top - 36f;
 
         String scoreText = "Score: " + statsManager.getScore();
         String streakText = "Streak: " + statsManager.getCurrentStreak();
@@ -579,6 +728,47 @@ public class StartScene extends Scene {
         layout.setText(font, streakText);
         float streakX = scorePanelX + (scorePanelW - layout.width) / 2f;
         drawScorePanelText(batch, streakText, streakX, streakY);
+
+        drawPowerUpBuffTimers(batch);
+    }
+
+    /** One line per active streak buff, bottom of the score panel (color-coded). */
+    private void drawPowerUpBuffTimers(SpriteBatch batch) {
+        if (streakPowerUpRuntime == null || streakPowerUpRuntime.countActiveBuffLines() == 0) {
+            return;
+        }
+
+        float savedScale = font.getData().scaleX;
+        font.getData().setScale(1.05f);
+
+        float y = scorePanelY + 10f;
+
+        if (streakPowerUpRuntime.isCherryActive()) {
+            String t = String.format(Locale.US, "Cherry %.1fs", streakPowerUpRuntime.getCherryTimeLeft());
+            font.setColor(1f, 0.45f, 0.52f, 1f);
+            layout.setText(font, t);
+            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
+            drawScorePanelText(batch, t, tx, y);
+            y += 17f;
+        }
+        if (streakPowerUpRuntime.isBananaActive()) {
+            String t = String.format(Locale.US, "Banana %.1fs", streakPowerUpRuntime.getBananaTimeLeft());
+            font.setColor(1f, 0.88f, 0.38f, 1f);
+            layout.setText(font, t);
+            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
+            drawScorePanelText(batch, t, tx, y);
+            y += 17f;
+        }
+        if (streakPowerUpRuntime.isWatermelonActive()) {
+            String t = String.format(Locale.US, "Watermelon %.1fs", streakPowerUpRuntime.getWatermelonTimeLeft());
+            font.setColor(0.35f, 0.92f, 0.52f, 1f);
+            layout.setText(font, t);
+            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
+            drawScorePanelText(batch, t, tx, y);
+        }
+
+        font.getData().setScale(savedScale);
+        font.setColor(Color.WHITE);
     }
 
     /** Softer shadow for score panel text - less harsh than default drop shadow. */
