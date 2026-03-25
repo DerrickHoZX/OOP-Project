@@ -4,3 +4,4 @@ public enum GameModeType {
     GRAMMAR_SYNONYMS,
     CATEGORIZATION
 }
+

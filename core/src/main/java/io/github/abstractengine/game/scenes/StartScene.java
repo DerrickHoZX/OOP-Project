@@ -1,8 +1,6 @@
 package io.github.abstractengine.game.scenes;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -16,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,8 +33,6 @@ import io.github.abstractengine.game.effects.ScreenFlash;
 import io.github.abstractengine.game.effects.StreakPowerUpRuntime;
 import io.github.abstractengine.game.entities.Circle;
 import io.github.abstractengine.game.entities.PowerUpPickup;
-import io.github.abstractengine.game.entities.PowerUpType;
-import io.github.abstractengine.game.entities.Square;
 import io.github.abstractengine.game.entities.Triangle;
 import io.github.abstractengine.interfaces.GameEventListener;
 import io.github.abstractengine.io.KeyCode;
@@ -50,14 +45,16 @@ import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.scene.Scene;
 
+/**
+ * Main gameplay scene. Coordinates game loop, delegates HUD rendering
+ * to HUDRenderer and entity spawning to EntitySpawner.
+ */
+
 public class StartScene extends Scene implements GameEventListener {
 
     private static final float PLAYER_BASE_MOVE_SPEED = 300f;
-    private static final float ENEMY_BASE_SPEED = 150f;
-    private static final float ENEMY_MOVE_PHASE_SECONDS = 2f;
     private static final float ENEMY_PRETURN_PAUSE_START = 0.5f;
     private static final float ENEMY_PRETURN_PAUSE_END = 0.12f;
-    private static final float POWERUP_PICKUP_SIZE = 60f;
 
     private final Viewport viewport;
     private final GameCategory category;
@@ -76,15 +73,16 @@ public class StartScene extends Scene implements GameEventListener {
     private ScreenFlash screenFlash;
     private PointsFeedbackEffect pointsFeedback;
     private StreakPowerUpRuntime streakPowerUpRuntime;
-    private final List<PowerUpPickup> activePowerUpPickups = new ArrayList<>();
-    private int prevStreakForPowerUps;
 
     private final GlyphLayout layout = new GlyphLayout();
 
     private String currentQuestionPrompt = "";
     private QuestionBank.Question currentQuestion;
-    private final List<Square> currentAnswerSquares;
     private final AlgorithmManager algorithmManager;
+
+    // Delegated helpers
+    private HUDRenderer hudRenderer;
+    private EntitySpawner entitySpawner;
 
     private Stage stage;
     private Texture pauseButtonTex;
@@ -115,7 +113,6 @@ public class StartScene extends Scene implements GameEventListener {
                 sceneManager.getIOManager(),
                 60f
         );
-        this.currentAnswerSquares = new ArrayList<>();
         this.algorithmManager = new AlgorithmManager(config.questions);
     }
 
@@ -126,8 +123,6 @@ public class StartScene extends Scene implements GameEventListener {
         pointsFeedback = new PointsFeedbackEffect();
         streakPowerUpRuntime = new StreakPowerUpRuntime();
         streakPowerUpRuntime.reset();
-        activePowerUpPickups.clear();
-        prevStreakForPowerUps = 0;
 
         font = new BitmapFont();
         font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -139,10 +134,13 @@ public class StartScene extends Scene implements GameEventListener {
         questionFont.setUseIntegerPositions(false);
         questionFont.getData().setScale(2.0f);
 
-        bg = new Texture(config.backgroundPath);
+        // Initialize HUD renderer
+        hudRenderer = new HUDRenderer(font, questionFont, layout);
 
+        bg = new Texture(config.backgroundPath);
         sceneManager.getIOManager().playMusic(GameAssets.MUSIC_START_SCENE, true);
 
+        // Create player
         float circleSize = 60f;
         circle = new Circle(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, circleSize, circleSize);
         circle.setMovementComponent(new KeyboardMovement(
@@ -155,25 +153,25 @@ public class StartScene extends Scene implements GameEventListener {
         entityManager.addEntity(circle);
         movementManager.register(circle);
 
+        // Initialize entity spawner (needs player reference)
+        entitySpawner = new EntitySpawner(viewport, entityManager, movementManager, circle, font);
+
+        // Spawn initial enemies
         for (int i = 0; i < 3; i++) {
-            spawnEnemy();
+            entitySpawner.spawnEnemy();
         }
 
+        // Set up collision system
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
-
         Boundary boundary = new Boundary(0f, worldW, 0f, worldH - 180f);
         BasicCollisionDetector detector = new BasicCollisionDetector();
         SimulationCollisionHandler handler = new SimulationCollisionHandler(
-                sceneManager,
-                entityManager,
-                viewport,
-                circle,
-                statsManager,
-                this
+                sceneManager, entityManager, viewport, circle, statsManager, this
         );
         collisionManager = new CollisionManager(boundary, entityManager, detector, handler);
 
+        // Spawn first question
         spawnNextQuestion();
         createPauseButton();
     }
@@ -260,7 +258,7 @@ public class StartScene extends Scene implements GameEventListener {
 
     @Override
     public void onEnemyDestroyed() {
-        spawnEnemy();
+        entitySpawner.spawnEnemy();
     }
 
     @Override
@@ -269,7 +267,7 @@ public class StartScene extends Scene implements GameEventListener {
             PowerUpPickup pickup = (PowerUpPickup) item;
             if (pickup.isActive() && streakPowerUpRuntime != null) {
                 streakPowerUpRuntime.activate(pickup.getPowerUpType());
-                activePowerUpPickups.remove(pickup);
+                entitySpawner.removePowerUpPickup(pickup);
                 pickup.disposeTexture();
                 pickup.destroy();
                 entityManager.removeEntity(pickup);
@@ -278,141 +276,13 @@ public class StartScene extends Scene implements GameEventListener {
     }
 
     // ---------------------------
-    // SPAWNING
+    // GAME LOGIC
     // ---------------------------
 
-    public void spawnEnemy() {
-        float tWidth = 70f;
-        float tHeight = 70f;
-        float worldW = viewport.getWorldWidth();
-        float worldH = viewport.getWorldHeight();
-
-        float randomX = MathUtils.random(250f, worldW - tWidth - 20f);
-        float randomY = MathUtils.random(20f, worldH - 200f);
-
-        Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
-        triangle.setMovementComponent(new RandomMovement(
-                ENEMY_BASE_SPEED,
-                ENEMY_MOVE_PHASE_SECONDS,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight(),
-                tWidth
-        ));
-
-        entityManager.addEntity(triangle);
-        movementManager.register(triangle);
+    private void spawnNextQuestion() {
+        currentQuestion = entitySpawner.spawnNextQuestion(algorithmManager, config.questions);
+        currentQuestionPrompt = currentQuestion.prompt;
     }
-
-    public void spawnNextQuestion() {
-        for (Square s : currentAnswerSquares) {
-            entityManager.removeEntity(s);
-        }
-        currentAnswerSquares.clear();
-
-        QuestionBank.Question q = algorithmManager.getNextQuestion();
-        if (q == null) {
-            q = config.questions.get(MathUtils.random(0, config.questions.size() - 1));
-        }
-        currentQuestion = q;
-        currentQuestionPrompt = q.prompt;
-
-        String[] answers = { q.correct, q.decoy1, q.decoy2 };
-        boolean[] correctness = { true, false, false };
-
-        for (int i = 0; i < answers.length; i++) {
-            spawnAnswerWithOverlapProtection(answers[i], correctness[i]);
-        }
-    }
-
-    private void handleStreakPowerUpSpawns(int streakNow) {
-        if (streakNow < prevStreakForPowerUps) {
-            clearPowerUpPickups();
-        }
-        if (streakNow > prevStreakForPowerUps) {
-            int c = PowerUpType.CHERRY.streakRequired;
-            int b = PowerUpType.BANANA.streakRequired;
-            int w = PowerUpType.WATERMELON.streakRequired;
-            if (prevStreakForPowerUps < c && streakNow >= c) {
-                spawnPowerUpPickup(PowerUpType.CHERRY);
-            }
-            if (prevStreakForPowerUps < b && streakNow >= b) {
-                spawnPowerUpPickup(PowerUpType.BANANA);
-            }
-            if (prevStreakForPowerUps < w && streakNow >= w) {
-                spawnPowerUpPickup(PowerUpType.WATERMELON);
-            }
-        }
-        prevStreakForPowerUps = streakNow;
-    }
-
-    private void clearPowerUpPickups() {
-        for (PowerUpPickup p : new ArrayList<>(activePowerUpPickups)) {
-            p.disposeTexture();
-            entityManager.removeEntity(p);
-        }
-        activePowerUpPickups.clear();
-    }
-
-    private void spawnPowerUpPickup(PowerUpType type) {
-        float size = POWERUP_PICKUP_SIZE;
-        float worldW = viewport.getWorldWidth();
-        float worldH = viewport.getWorldHeight();
-
-        float spawnX = 0f;
-        float spawnY = 0f;
-        boolean invalid;
-        int attempts = 0;
-
-        do {
-            invalid = false;
-            spawnX = MathUtils.random(250f, worldW - size - 20f);
-            spawnY = MathUtils.random(50f, worldH - 200f);
-
-            float pcx = circle.getX() + circle.getWidth() / 2f;
-            float pcy = circle.getY() + circle.getHeight() / 2f;
-            float cx = spawnX + size / 2f;
-            float cy = spawnY + size / 2f;
-            if (Vector2.dst(cx, cy, pcx, pcy) < 140f) {
-                invalid = true;
-            }
-
-            if (!invalid) {
-                for (Square s : currentAnswerSquares) {
-                    if (rectsOverlap(spawnX, spawnY, size, size,
-                            s.getX(), s.getY(), s.getWidth(), s.getHeight(), 35f)) {
-                        invalid = true;
-                        break;
-                    }
-                }
-            }
-            if (!invalid) {
-                for (PowerUpPickup p : activePowerUpPickups) {
-                    if (rectsOverlap(spawnX, spawnY, size, size,
-                            p.getX(), p.getY(), p.getWidth(), p.getHeight(), 25f)) {
-                        invalid = true;
-                        break;
-                    }
-                }
-            }
-            attempts++;
-        } while (invalid && attempts < 120);
-
-        PowerUpPickup pickup = new PowerUpPickup(spawnX, spawnY, size, type);
-        entityManager.addEntity(pickup);
-        activePowerUpPickups.add(pickup);
-    }
-
-    private static boolean rectsOverlap(float ax, float ay, float aw, float ah,
-                                      float bx, float by, float bw, float bh, float pad) {
-        return ax < bx + bw + pad
-                && ax + aw + pad > bx
-                && ay < by + bh + pad
-                && ay + ah + pad > by;
-    }
-
-    // ---------------------------
-    // DIFFICULTY / MOVEMENT
-    // ---------------------------
 
     private float getEnemyPreTurnPauseSeconds() {
         float total = statsManager.getMatchDurationSeconds();
@@ -444,58 +314,6 @@ public class StartScene extends Scene implements GameEventListener {
                 }
             }
         }
-    }
-
-    private void spawnAnswerWithOverlapProtection(String text, boolean isCorrect) {
-        GlyphLayout tempLayout = new GlyphLayout();
-        tempLayout.setText(font, text);
-
-        float padding = 20f;
-        float sWidth = Math.max(tempLayout.width + padding * 2, 80f);
-        float sHeight = Math.max(tempLayout.height + padding * 2, 50f);
-
-        float spawnX = 0, spawnY = 0;
-        boolean invalidPosition;
-        int attempts = 0;
-        float minDistanceFromPlayer = 150f;
-
-        float worldW = viewport.getWorldWidth();
-        float worldH = viewport.getWorldHeight();
-
-        do {
-            invalidPosition = false;
-            spawnX = MathUtils.random(250f, worldW - sWidth - 20f);
-            spawnY = MathUtils.random(50f, worldH - 200f);
-
-            float playerCenterX = circle.getX() + circle.getWidth() / 2f;
-            float playerCenterY = circle.getY() + circle.getHeight() / 2f;
-            float distToPlayer = Vector2.dst(
-                    spawnX + sWidth / 2f, spawnY + sHeight / 2f,
-                    playerCenterX, playerCenterY
-            );
-
-            if (distToPlayer < minDistanceFromPlayer) {
-                invalidPosition = true;
-            }
-
-            if (!invalidPosition) {
-                for (Square other : currentAnswerSquares) {
-                    float buffer = 50f;
-                    if (spawnX < other.getX() + other.getWidth() + buffer &&
-                            spawnX + sWidth + buffer > other.getX() &&
-                            spawnY < other.getY() + other.getHeight() + buffer &&
-                            spawnY + sHeight + buffer > other.getY()) {
-                        invalidPosition = true;
-                        break;
-                    }
-                }
-            }
-            attempts++;
-        } while (invalidPosition && attempts < 100);
-
-        Square square = new Square(spawnX, spawnY, sWidth, sHeight, text, isCorrect);
-        entityManager.addEntity(square);
-        currentAnswerSquares.add(square);
     }
 
     // ---------------------------
@@ -533,7 +351,7 @@ public class StartScene extends Scene implements GameEventListener {
         entityManager.update(dt);
         collisionManager.update(dt);
 
-        handleStreakPowerUpSpawns(statsManager.getCurrentStreak());
+        entitySpawner.handleStreakPowerUpSpawns(statsManager.getCurrentStreak());
     }
 
     public void onResume() {
@@ -548,58 +366,35 @@ public class StartScene extends Scene implements GameEventListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
 
+        // Draw background + entities
         batch.begin();
         if (bg != null) batch.draw(bg, 0, 0, worldW, worldH);
         entityManager.render(batch, shapeRenderer);
         batch.end();
 
+        // Draw HUD panels
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
-
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        drawScoreStreakPanel(shapeRenderer, worldW, worldH);
-
-        shapeRenderer.setColor(0.10f, 0.16f, 0.26f, 0.95f);
-        shapeRenderer.rect(worldW / 2f - 100f, worldH - 60f, 200f, 45f);
-        shapeRenderer.setColor(0.25f, 0.45f, 0.75f, 0.95f);
-        shapeRenderer.rect(worldW / 2f - 100f, worldH - 60f + 42f, 200f, 3f);
-
-        shapeRenderer.setColor(1f, 1f, 1f, 0.95f);
-        shapeRenderer.rect(worldW / 2f - 300f, worldH - 150f, 600f, 55f);
+        hudRenderer.drawPanels(shapeRenderer, worldW, worldH, streakPowerUpRuntime);
         shapeRenderer.end();
-
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
+        // Draw HUD text
         batch.begin();
-        int seconds = (int) Math.ceil(statsManager.getTimeRemaining());
-        font.setColor(Color.WHITE);
-        questionFont.setColor(Color.BLACK);
-
-        drawScoreStreakText(batch, worldH);
-
-        font.getData().setScale(1.8f);
-        String timeText = "Time: " + seconds + "s";
-        layout.setText(font, timeText);
-        float timeX = (worldW - layout.width) / 2f;
-        font.setColor(1f, 1f, 1f, 1f);
-        drawTextWithShadow(batch, font, timeText, timeX, worldH - 32f);
-        font.getData().setScale(1.5f);
-
-        layout.setText(questionFont, currentQuestionPrompt);
-        float qX = (worldW - layout.width) / 2f;
-        drawBlackTextWithShadow(batch, questionFont, currentQuestionPrompt, qX, worldH - 110f);
+        hudRenderer.drawText(batch, worldW, worldH, statsManager, currentQuestionPrompt, streakPowerUpRuntime);
         batch.end();
 
+        // Draw pause button
         if (stage != null) {
             stage.draw();
         }
 
+        // Draw screen flash overlay
         if (screenFlash.isFlashing()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -610,19 +405,12 @@ public class StartScene extends Scene implements GameEventListener {
             Gdx.gl.glDisable(GL20.GL_BLEND);
         }
 
+        // Draw points feedback
         if (pointsFeedback != null && pointsFeedback.isActive()) {
             batch.begin();
             batch.setProjectionMatrix(viewport.getCamera().combined);
-            float prevX = questionFont.getData().scaleX;
-            float prevY = questionFont.getData().scaleY;
-            questionFont.getData().setScale(2.8f);
-            String t = pointsFeedback.getText();
-            Color c = pointsFeedback.getTint();
-            layout.setText(questionFont, t);
-            float fx = (worldW - layout.width) / 2f;
-            float fy = worldH * 0.52f;
-            drawPointsFeedbackLabel(batch, questionFont, t, fx, fy, c);
-            questionFont.getData().setScale(prevX, prevY);
+            hudRenderer.drawPointsFeedback(batch, worldW, worldH,
+                    pointsFeedback.getText(), pointsFeedback.getTint());
             batch.end();
         }
     }
@@ -636,7 +424,7 @@ public class StartScene extends Scene implements GameEventListener {
 
     @Override
     public void onExit() {
-        clearPowerUpPickups();
+        entitySpawner.clearPowerUpPickups();
         if (bg != null) bg.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
         if (font != null) font.dispose();
@@ -649,132 +437,10 @@ public class StartScene extends Scene implements GameEventListener {
     }
 
     // ---------------------------
-    // HUD RENDERING
-    // ---------------------------
-
-    private static final boolean SCORE_PANEL_TOP_LEFT = true;
-    private float scorePanelX, scorePanelY, scorePanelW, scorePanelH;
-
-    private void drawScoreStreakPanel(ShapeRenderer shape, float worldW, float worldH) {
-        float padLeft = 20f;
-        float padTop = 55f;
-        float padBottom = 20f;
-        float panelW = 185f;
-        int buffLines = (streakPowerUpRuntime != null) ? streakPowerUpRuntime.countActiveBuffLines() : 0;
-        float basePanelH = 72f;
-        float panelH = basePanelH + (buffLines > 0 ? 14f + buffLines * 20f : 0f);
-
-        float x = padLeft;
-        float y = SCORE_PANEL_TOP_LEFT
-                ? worldH - padTop - panelH
-                : padBottom;
-
-        shape.setColor(0.10f, 0.16f, 0.26f, 0.88f);
-        shape.rect(x, y, panelW, panelH);
-        shape.setColor(0.25f, 0.45f, 0.75f, 0.9f);
-        shape.rect(x, y + panelH - 3f, panelW, 3f);
-
-        scorePanelX = x;
-        scorePanelY = y;
-        scorePanelW = panelW;
-        scorePanelH = panelH;
-    }
-
-    private void drawScoreStreakText(SpriteBatch batch, float worldH) {
-        float top = scorePanelY + scorePanelH;
-        float scoreY = top - 14f;
-        float streakY = top - 36f;
-
-        String scoreText = "Score: " + statsManager.getScore();
-        String streakText = "Streak: " + statsManager.getCurrentStreak();
-
-        layout.setText(font, scoreText);
-        float scoreX = scorePanelX + (scorePanelW - layout.width) / 2f;
-        drawScorePanelText(batch, scoreText, scoreX, scoreY);
-
-        layout.setText(font, streakText);
-        float streakX = scorePanelX + (scorePanelW - layout.width) / 2f;
-        drawScorePanelText(batch, streakText, streakX, streakY);
-
-        drawPowerUpBuffTimers(batch);
-    }
-
-    private void drawPowerUpBuffTimers(SpriteBatch batch) {
-        if (streakPowerUpRuntime == null || streakPowerUpRuntime.countActiveBuffLines() == 0) {
-            return;
-        }
-
-        float savedScale = font.getData().scaleX;
-        font.getData().setScale(1.05f);
-        float lineSpacing = 18f;
-        float y = (scorePanelY + scorePanelH) - 58f;
-
-        if (streakPowerUpRuntime.isCherryActive()) {
-            String t = String.format(Locale.US, "Cherry %.1fs", streakPowerUpRuntime.getCherryTimeLeft());
-            font.setColor(1f, 0.45f, 0.52f, 1f);
-            layout.setText(font, t);
-            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
-            drawScorePanelText(batch, t, tx, y);
-            y -= lineSpacing;
-        }
-        if (streakPowerUpRuntime.isBananaActive()) {
-            String t = String.format(Locale.US, "Banana %.1fs", streakPowerUpRuntime.getBananaTimeLeft());
-            font.setColor(1f, 0.88f, 0.38f, 1f);
-            layout.setText(font, t);
-            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
-            drawScorePanelText(batch, t, tx, y);
-            y -= lineSpacing;
-        }
-        if (streakPowerUpRuntime.isWatermelonActive()) {
-            String t = String.format(Locale.US, "Watermelon %.1fs", streakPowerUpRuntime.getWatermelonTimeLeft());
-            font.setColor(0.35f, 0.92f, 0.52f, 1f);
-            layout.setText(font, t);
-            float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
-            drawScorePanelText(batch, t, tx, y);
-        }
-
-        font.getData().setScale(savedScale);
-        font.setColor(Color.WHITE);
-    }
-
-    private void drawScorePanelText(SpriteBatch batch, String text, float x, float y) {
-        Color original = font.getColor().cpy();
-        font.setColor(0f, 0f, 0f, 0.4f);
-        font.draw(batch, text, x + 1f, y - 1f);
-        font.setColor(original);
-        font.draw(batch, text, x, y);
-    }
-
-    private void drawTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
-        Color original = f.getColor().cpy();
-        f.setColor(0f, 0f, 0f, 0.85f);
-        f.draw(batch, text, x + 2f, y - 2f);
-        f.setColor(original);
-        f.draw(batch, text, x, y);
-    }
-
-    private void drawBlackTextWithShadow(SpriteBatch batch, BitmapFont f, String text, float x, float y) {
-        Color original = f.getColor().cpy();
-        f.setColor(0.6f, 0.6f, 0.6f, 0.6f);
-        f.draw(batch, text, x + 2f, y - 2f);
-        f.setColor(original);
-        f.draw(batch, text, x, y);
-    }
-
-    private void drawPointsFeedbackLabel(SpriteBatch batch, BitmapFont f, String text, float x, float y, Color c) {
-        Color original = f.getColor().cpy();
-        f.setColor(0f, 0f, 0f, c.a * 0.55f);
-        f.draw(batch, text, x + 4f, y - 4f);
-        f.setColor(c);
-        f.draw(batch, text, x, y);
-        f.setColor(original);
-    }
-
-    // ---------------------------
     // CONFIGURATION
     // ---------------------------
 
-    private static final class CategoryConfig {
+    static final class CategoryConfig {
         final String backgroundPath;
         final List<QuestionBank.Question> questions;
 
@@ -784,7 +450,7 @@ public class StartScene extends Scene implements GameEventListener {
         }
     }
 
-    private static final class CategoryConfigFactory {
+    static final class CategoryConfigFactory {
         static CategoryConfig get(GameCategory category) {
             if (category == GameCategory.CATEGORIZATION) {
                 return new CategoryConfig(
