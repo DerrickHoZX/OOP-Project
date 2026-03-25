@@ -63,22 +63,34 @@ public class StatisticsManager {
         }
     }
 
-    public void registerCorrectAnswer() {
+    /** @return Points added to the score this call (for UI feedback). */
+    public int registerCorrectAnswer() {
         currentStreak++;
         int pointsEarned = BASE_POINTS + (currentStreak * STREAK_MULTIPLIER);
         score += pointsEarned;
+        return pointsEarned;
     }
 
-    public void registerIncorrectAnswer() {
+    /** @return Points actually deducted (may be less than penalty if score was low). */
+    public int registerIncorrectAnswer() {
         currentStreak = 0;
+        int before = score;
         score -= INCORRECT_PENALTY;
-        if (score < 0) score = 0; 
+        if (score < 0) {
+            score = 0;
+        }
+        return before - score;
     }
 
-    public void registerEnemyCollision() {
+    /** @return Points actually deducted (may be less than penalty if score was low). */
+    public int registerEnemyCollision() {
         currentStreak = 0;
+        int before = score;
         score -= ENEMY_PENALTY;
-        if (score < 0) score = 0;
+        if (score < 0) {
+            score = 0;
+        }
+        return before - score;
     }
 
     public void recordFinalScoreForPodium() {

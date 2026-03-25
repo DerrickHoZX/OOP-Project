@@ -60,7 +60,8 @@ public class CircleTriangleCollisionRule implements ICollisionRule {
 
         sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Hit Enemy! Deducting points.");
         sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
-        statisticsManager.registerEnemyCollision();
+        int lost = statisticsManager.registerEnemyCollision();
+        startScene.showPointsLost(lost);
         startScene.flashWrong();
         entityManager.removeEntity(triangle);
         startScene.spawnEnemy();

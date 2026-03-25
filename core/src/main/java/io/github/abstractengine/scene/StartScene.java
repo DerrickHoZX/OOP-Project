@@ -28,6 +28,7 @@ import io.github.abstractengine.managers.*;
 import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.collision.*;
+import io.github.abstractengine.effects.PointsFeedbackEffect;
 import io.github.abstractengine.effects.ScreenFlash;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class StartScene extends Scene {
     
     // NEW: Screen flash effect
     private ScreenFlash screenFlash;
+    private PointsFeedbackEffect pointsFeedback;
 
     private final GlyphLayout layout = new GlyphLayout();
 
@@ -98,6 +100,7 @@ public class StartScene extends Scene {
         
         // NEW: Initialize screen flash effect
         screenFlash = new ScreenFlash();
+        pointsFeedback = new PointsFeedbackEffect();
 
         font = new BitmapFont();
         font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -274,6 +277,20 @@ public class StartScene extends Scene {
         }
     }
 
+    /** Large centered message: points earned (green), fade in/out over 1s. */
+    public void showPointsGained(int points) {
+        if (pointsFeedback != null && points > 0) {
+            pointsFeedback.showGain(points);
+        }
+    }
+
+    /** Large centered message: points lost (red), fade in/out over 1s. */
+    public void showPointsLost(int points) {
+        if (pointsFeedback != null && points > 0) {
+            pointsFeedback.showLoss(points);
+        }
+    }
+
     private void spawnAnswerWithOverlapProtection(String text, boolean isCorrect) {
         // Dynamic box sizing based on text length
         GlyphLayout tempLayout = new GlyphLayout();
@@ -357,6 +374,9 @@ public class StartScene extends Scene {
         
         // NEW: Update screen flash
         screenFlash.update(dt);
+        if (pointsFeedback != null) {
+            pointsFeedback.update(dt);
+        }
 
         statsManager.update(dt);
         if (statsManager.isTimeUp()) {
@@ -460,6 +480,25 @@ public class StartScene extends Scene {
             shapeRenderer.end();
             
             Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
+
+        if (pointsFeedback != null && pointsFeedback.isActive()) {
+            batch.begin();
+            batch.setProjectionMatrix(viewport.getCamera().combined);
+
+            float prevX = questionFont.getData().scaleX;
+            float prevY = questionFont.getData().scaleY;
+            questionFont.getData().setScale(2.8f);
+
+            String t = pointsFeedback.getText();
+            Color c = pointsFeedback.getTint();
+            layout.setText(questionFont, t);
+            float fx = (worldW - layout.width) / 2f;
+            float fy = worldH * 0.52f;
+            drawPointsFeedbackLabel(batch, questionFont, t, fx, fy, c);
+
+            questionFont.getData().setScale(prevX, prevY);
+            batch.end();
         }
     }
 
@@ -578,6 +617,15 @@ public class StartScene extends Scene {
         // main text
         f.setColor(original);
         f.draw(batch, text, x, y);
+    }
+
+    private void drawPointsFeedbackLabel(SpriteBatch batch, BitmapFont f, String text, float x, float y, Color c) {
+        Color original = f.getColor().cpy();
+        f.setColor(0f, 0f, 0f, c.a * 0.55f);
+        f.draw(batch, text, x + 4f, y - 4f);
+        f.setColor(c);
+        f.draw(batch, text, x, y);
+        f.setColor(original);
     }
 
     // ---------------------------
