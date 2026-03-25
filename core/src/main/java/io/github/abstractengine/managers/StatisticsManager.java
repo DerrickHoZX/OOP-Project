@@ -23,6 +23,8 @@ public class StatisticsManager {
     private int score;
     private int currentStreak;
     private float timeRemaining;
+    /** Length of the current round in seconds (set in {@link #reset(float)}). */
+    private float matchDurationSeconds;
 
     private GameCategory category;
     private String username;
@@ -137,9 +139,20 @@ public class StatisticsManager {
     public float getTimeRemaining() { return timeRemaining; }
     public boolean isTimeUp() { return timeRemaining <= 0; }
 
+    /** Total seconds for this match (e.g. 60); used for difficulty scaling. */
+    public float getMatchDurationSeconds() {
+        return matchDurationSeconds;
+    }
+
+    /** Seconds since round start (0 at beginning of match). */
+    public float getRoundElapsedSeconds() {
+        return Math.max(0f, matchDurationSeconds - timeRemaining);
+    }
+
     public void reset(float timeLimitInSeconds) {
         this.score = 0;
         this.currentStreak = 0;
+        this.matchDurationSeconds = Math.max(0.01f, timeLimitInSeconds);
         this.timeRemaining = timeLimitInSeconds;
         this.finalScoreRecordedForSession = false;
     }

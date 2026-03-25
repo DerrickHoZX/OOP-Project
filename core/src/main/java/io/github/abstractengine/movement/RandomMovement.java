@@ -10,8 +10,8 @@ public class RandomMovement extends MovementComponent {
 
     private final float baseSpeed;
     private float speed;
-    private float changeInterval;
-    private float timeSinceLastChange;
+    /** Seconds of movement in the current direction before the pre-turn pause. */
+    private final float movePhaseDuration;
 
     private float screenWidth;
     private float screenHeight;
@@ -20,20 +20,35 @@ public class RandomMovement extends MovementComponent {
     private final Random random;
     private boolean frozen;
 
-    public RandomMovement(float speed, float changeInterval, float screenW, float screenH, float entitySize) {
+    /** Seconds to stand still before picking a new direction (telegraph; scaled by difficulty from scene). */
+    private float preTurnPauseSeconds;
+
+    private float moveTimer;
+    private boolean inPauseBeforeTurn;
+    private float pauseTimer;
+
+    public RandomMovement(float speed, float movePhaseDuration, float screenW, float screenH, float entitySize) {
         super();
         this.baseSpeed = speed;
         this.speed = speed;
-        this.changeInterval = changeInterval;
+        this.movePhaseDuration = movePhaseDuration;
         this.screenWidth = screenW;
         this.screenHeight = screenH;
         this.entitySize = entitySize;
 
-        this.timeSinceLastChange = 0;
         this.random = new Random();
         this.frozen = false;
+        this.preTurnPauseSeconds = 1f;
+
+        this.moveTimer = 0f;
+        this.inPauseBeforeTurn = false;
+        this.pauseTimer = 0f;
 
         pickRandomDirection();
+    }
+
+    public void setPreTurnPauseSeconds(float seconds) {
+        this.preTurnPauseSeconds = Math.max(0f, seconds);
     }
 
     /**
@@ -45,12 +60,26 @@ public class RandomMovement extends MovementComponent {
         this.frozen = frozen;
         this.speed = baseSpeed * speedMultiplier;
 
-        if (!frozen) {
-            if (wasFrozen || velocity.len2() < 1e-4f) {
-                pickRandomDirection();
-            } else {
-                velocity.nor().scl(speed);
-            }
+        if (frozen) {
+            return;
+        }
+
+        if (wasFrozen) {
+            inPauseBeforeTurn = false;
+            pauseTimer = 0f;
+            moveTimer = 0f;
+            pickRandomDirection();
+            return;
+        }
+
+        if (inPauseBeforeTurn) {
+            return;
+        }
+
+        if (velocity.len2() < 1e-4f) {
+            pickRandomDirection();
+        } else {
+            velocity.nor().scl(speed);
         }
     }
 
@@ -60,12 +89,18 @@ public class RandomMovement extends MovementComponent {
             return;
         }
 
-        timeSinceLastChange += dt;
-
-        if (timeSinceLastChange >= changeInterval) {
-            pickRandomDirection();
-            timeSinceLastChange -= changeInterval;
+        if (inPauseBeforeTurn) {
+            pauseTimer += dt;
+            velocity.setZero();
+            if (pauseTimer >= preTurnPauseSeconds) {
+                inPauseBeforeTurn = false;
+                pauseTimer = 0f;
+                pickRandomDirection();
+            }
+            return;
         }
+
+        moveTimer += dt;
 
         Vector2 currentPos = entity.getPosition();
         float newX = currentPos.x + velocity.x * dt;
@@ -88,6 +123,13 @@ public class RandomMovement extends MovementComponent {
         }
 
         entity.setPosition(newX, newY);
+
+        if (moveTimer >= movePhaseDuration) {
+            moveTimer = 0f;
+            inPauseBeforeTurn = true;
+            pauseTimer = 0f;
+            velocity.setZero();
+        }
     }
 
     private void pickRandomDirection() {

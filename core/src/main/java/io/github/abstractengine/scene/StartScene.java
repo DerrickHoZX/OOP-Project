@@ -44,6 +44,11 @@ public class StartScene extends Scene {
 
     private static final float PLAYER_BASE_MOVE_SPEED = 300f;
     private static final float ENEMY_BASE_SPEED = 150f;
+    /** Seconds enemy drifts before pausing to telegraph a direction change. */
+    private static final float ENEMY_MOVE_PHASE_SECONDS = 2f;
+    /** Pre-turn stop at round start (easy) → shorter near time-up (harder). */
+    private static final float ENEMY_PRETURN_PAUSE_START = 0.5f;
+    private static final float ENEMY_PRETURN_PAUSE_END = 0.05f;
     private static final float POWERUP_PICKUP_SIZE = 40f;
 
     private final Viewport viewport;
@@ -236,7 +241,7 @@ public class StartScene extends Scene {
         Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
         triangle.setMovementComponent(new RandomMovement(
                 ENEMY_BASE_SPEED,
-                2.0f,
+                ENEMY_MOVE_PHASE_SECONDS,
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight(),
                 tWidth
@@ -409,6 +414,15 @@ public class StartScene extends Scene {
                 && ay + ah + pad > by;
     }
 
+    private float getEnemyPreTurnPauseSeconds() {
+        float total = statsManager.getMatchDurationSeconds();
+        if (total <= 0.01f) {
+            return ENEMY_PRETURN_PAUSE_START;
+        }
+        float t = MathUtils.clamp(statsManager.getRoundElapsedSeconds() / total, 0f, 1f);
+        return MathUtils.lerp(ENEMY_PRETURN_PAUSE_START, ENEMY_PRETURN_PAUSE_END, t);
+    }
+
     private void applyActivePowerUpMovement() {
         if (circle == null || streakPowerUpRuntime == null) {
             return;
@@ -420,11 +434,13 @@ public class StartScene extends Scene {
 
         float emult = streakPowerUpRuntime.getEnemySpeedMultiplier();
         boolean frozen = streakPowerUpRuntime.enemiesFrozen();
+        float preTurnPause = getEnemyPreTurnPauseSeconds();
         for (Entity e : entityManager.getEntitiesSnapshot()) {
             if (e instanceof Triangle) {
                 RandomMovement rm = (RandomMovement) ((Triangle) e).getMovementComponent();
                 if (rm != null) {
                     rm.setEnemyModifiers(emult, frozen);
+                    rm.setPreTurnPauseSeconds(preTurnPause);
                 }
             }
         }
