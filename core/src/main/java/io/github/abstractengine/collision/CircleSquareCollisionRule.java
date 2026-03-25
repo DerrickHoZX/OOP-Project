@@ -58,18 +58,20 @@ public class CircleSquareCollisionRule implements ICollisionRule {
         if (wasCorrect) {
             sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Correct Answer!");
             sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
-            statisticsManager.registerCorrectAnswer();
+            int gained = statisticsManager.registerCorrectAnswer();
+            startScene.showPointsGained(gained);
             startScene.flashCorrect();
 
         } else {
             sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Wrong Answer!");
             sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
-            statisticsManager.registerIncorrectAnswer();
+            int lost = statisticsManager.registerIncorrectAnswer();
+            startScene.showPointsLost(lost);
             startScene.flashWrong();
         }
 
-        // Remove the collected square and spawn next question
+        // Remove the collected square, record answer, and spawn next question
         square.destroy();
-        startScene.spawnNextQuestion();  // FIXED: No parameters
+        startScene.onAnswerSubmitted(wasCorrect);
     }
 }

@@ -67,4 +67,3 @@ public class CircleTriangleCollisionRule implements ICollisionRule {
         startScene.spawnEnemy();
     }
 }
-
