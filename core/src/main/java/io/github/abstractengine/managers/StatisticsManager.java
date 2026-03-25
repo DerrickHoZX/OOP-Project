@@ -10,17 +10,29 @@ import io.github.abstractengine.managers.IOManager;
 
 public class StatisticsManager {
 
+    public static final class LeaderboardEntry {
+        public final String username;
+        public final int score;
+
+        public LeaderboardEntry(String username, int score) {
+            this.username = username;
+            this.score = score;
+        }
+    }
+
     private int score;
     private int currentStreak;
     private float timeRemaining;
 
-    // NEW: Added fields to store the data passed from StartScene
     private GameCategory category;
     private String username;
     private IOManager ioManager;
 
-    private List<Integer> podiumScores;
+    private List<LeaderboardEntry> podiumEntries;
     private final int MAX_PODIUM_SPOTS = 5;
+
+    /** One commit per play session; avoids double insert when timer and end screen both record. */
+    private boolean finalScoreRecordedForSession;
 
     private final int BASE_POINTS = 10;
     private final int STREAK_MULTIPLIER = 5; 
@@ -33,11 +45,10 @@ public class StatisticsManager {
         this.username = username;
         this.ioManager = ioManager;
         
-        this.podiumScores = new ArrayList<>();
-        // Default dummy scores
-        podiumScores.add(500);
-        podiumScores.add(250);
-        podiumScores.add(100);
+        this.podiumEntries = new ArrayList<>();
+        podiumEntries.add(new LeaderboardEntry("Lancea", 500));
+        podiumEntries.add(new LeaderboardEntry("Wileen", 250));
+        podiumEntries.add(new LeaderboardEntry("Derrick", 100));
         
         reset(timeLimitInSeconds);
     }
@@ -71,18 +82,35 @@ public class StatisticsManager {
     }
 
     public void recordFinalScoreForPodium() {
-        podiumScores.add(score);
-        Collections.sort(podiumScores, Collections.reverseOrder());
-        if (podiumScores.size() > MAX_PODIUM_SPOTS) {
-            podiumScores = podiumScores.subList(0, MAX_PODIUM_SPOTS);
+        if (finalScoreRecordedForSession) {
+            return;
+        }
+        finalScoreRecordedForSession = true;
+        podiumEntries.add(new LeaderboardEntry(username, score));
+        Collections.sort(podiumEntries, (a, b) -> Integer.compare(b.score, a.score));
+        if (podiumEntries.size() > MAX_PODIUM_SPOTS) {
+            podiumEntries = new ArrayList<>(podiumEntries.subList(0, MAX_PODIUM_SPOTS));
         }
     }
 
-    public List<Integer> getPodiumScores() { return podiumScores; }
-    
+    public List<LeaderboardEntry> getLeaderboard(GameCategory cat) {
+        if (cat != category) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(podiumEntries);
+    }
+
+    public GameCategory getCategory() {
+        return category;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     public boolean isNewHighScore() {
-        if (podiumScores.isEmpty()) return false;
-        return score >= podiumScores.get(0);
+        if (podiumEntries.isEmpty()) return false;
+        return score >= podiumEntries.get(0).score;
     }
 
     public int calculateStarRating() {
@@ -101,5 +129,6 @@ public class StatisticsManager {
         this.score = 0;
         this.currentStreak = 0;
         this.timeRemaining = timeLimitInSeconds;
+        this.finalScoreRecordedForSession = false;
     }
 }
