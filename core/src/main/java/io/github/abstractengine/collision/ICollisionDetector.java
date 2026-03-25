@@ -4,9 +4,11 @@ import io.github.abstractengine.entities.Entity;
 import java.util.List;
 
 /**
- * ICollisionDetector defines the contract for collision detection.
- * Different implementations can use different algorithms (AABB, Circle, SAT, etc.)
+ * Strategy interface for collision detection algorithms.
+ * Implementations can use different approaches such as
+ * AABB, circle-based, or SAT collision detection.
  */
+
 public interface ICollisionDetector {
     
     /**

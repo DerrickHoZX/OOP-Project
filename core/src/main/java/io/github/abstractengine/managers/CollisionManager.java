@@ -7,6 +7,12 @@ import io.github.abstractengine.collision.ICollisionHandler;
 import io.github.abstractengine.entities.Entity;
 import java.util.List;
 
+/**
+ * Coordinates collision detection and response each frame.
+ * Delegates detection to an ICollisionDetector and response
+ * handling to an ICollisionHandler, following the Strategy pattern.
+ */
+
 public class CollisionManager {
     
     private ICollisionDetector detector;

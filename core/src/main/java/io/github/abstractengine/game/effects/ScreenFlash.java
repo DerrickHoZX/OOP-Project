@@ -1,4 +1,4 @@
-package io.github.abstractengine.effects;
+package io.github.abstractengine.game.effects;
 
 import com.badlogic.gdx.graphics.Color;
 

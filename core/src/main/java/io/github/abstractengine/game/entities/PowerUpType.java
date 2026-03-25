@@ -1,4 +1,4 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 /**
  * Streak milestones that spawn a pickup. Effects last 10 seconds when collected.

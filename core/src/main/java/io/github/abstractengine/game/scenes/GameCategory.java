@@ -1,4 +1,4 @@
-package io.github.abstractengine.scene;
+package io.github.abstractengine.game.scenes;
 
 public enum GameCategory {
     GRAMMAR,

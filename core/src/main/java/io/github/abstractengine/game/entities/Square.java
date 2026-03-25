@@ -1,4 +1,4 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import io.github.abstractengine.entities.CollidableEntity;
 
 public class Square extends CollidableEntity {
     
@@ -30,11 +32,16 @@ public class Square extends CollidableEntity {
         this.layout = new GlyphLayout();  // NEW: Initialize layout
         
         // Create yellow background
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.YELLOW);
-        pixmap.fill();
-        this.bgTexture = new Texture(pixmap);
-        pixmap.dispose();
+        try {
+            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pixmap.setColor(Color.YELLOW);
+            pixmap.fill();
+            this.bgTexture = new Texture(pixmap);
+            pixmap.dispose();
+        } catch (Exception e) {
+            System.out.println("Could not create Square background texture.");
+            this.bgTexture = null;
+        }
     }
     
     public Square(float x, float y, float width, float height) {

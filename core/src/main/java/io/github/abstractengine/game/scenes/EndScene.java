@@ -1,4 +1,7 @@
-package io.github.abstractengine.scene;
+package io.github.abstractengine.game.scenes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -19,13 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.abstractengine.game.GameAssets;
+import io.github.abstractengine.game.StatisticsManager;
 import io.github.abstractengine.io.LogCategory;
-import io.github.abstractengine.managers.AssetManager;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.StatisticsManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.github.abstractengine.scene.Scene;
 
 public class EndScene extends Scene {
 
@@ -61,7 +62,7 @@ public class EndScene extends Scene {
         statsManager.recordFinalScoreForPodium();
         cachedLeaderboard = statsManager.getLeaderboard(statsManager.getCategory());
         bg = new Texture("endscene.png");
-        sceneManager.getIOManager().playMusic(AssetManager.MUSIC_END_SCENE, true);
+        sceneManager.getIOManager().playMusic(GameAssets.MUSIC_END_SCENE, true);
 
         stage = new Stage(viewport);
         shapeRenderer = new ShapeRenderer();

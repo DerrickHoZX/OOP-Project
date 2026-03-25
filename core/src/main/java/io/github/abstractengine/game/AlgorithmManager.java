@@ -1,7 +1,8 @@
-package io.github.abstractengine.managers;
+package io.github.abstractengine.game;
 
 import com.badlogic.gdx.math.MathUtils;
-import io.github.abstractengine.scene.QuestionBank;
+
+import io.github.abstractengine.game.scenes.QuestionBank;
 
 import java.util.ArrayList;
 import java.util.HashSet;

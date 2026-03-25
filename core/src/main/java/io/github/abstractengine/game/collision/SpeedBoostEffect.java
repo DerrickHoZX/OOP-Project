@@ -1,5 +1,9 @@
-package io.github.abstractengine.collision;
-
+package io.github.abstractengine.game.collision;
+import io.github.abstractengine.collision.Boundary;
+import io.github.abstractengine.collision.CollisionInfo;
+import io.github.abstractengine.collision.CollisionPairKey;
+import io.github.abstractengine.collision.ICollisionHandler;
+import io.github.abstractengine.collision.ICollisionRule;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.movement.KeyboardMovement;
 

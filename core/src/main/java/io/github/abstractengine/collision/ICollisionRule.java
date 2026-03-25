@@ -1,12 +1,11 @@
 package io.github.abstractengine.collision;
 
 /**
- * ICollisionRule represents a single game rule that should be applied
- * when two specific kinds of entities collide.
- *
- * By encapsulating rules in their own classes, we avoid long
- * procedural if/else chains in collision handlers.
+ * Encapsulates a single collision response rule for a specific
+ * pair of entity types. Avoids long if/else chains in handlers
+ * by isolating each rule into its own class.
  */
+
 public interface ICollisionRule {
 
     /**

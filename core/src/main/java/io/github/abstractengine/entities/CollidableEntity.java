@@ -2,11 +2,17 @@ package io.github.abstractengine.entities;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch; // Add this import
+import com.badlogic.gdx.graphics.g2d.SpriteBatch; 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.interfaces.Movable;
 import io.github.abstractengine.movement.MovementComponent;
+
+/**
+ * An entity that participates in collision detection.
+ * Extends Entity with width, height, collision box, and
+ * an optional MovementComponent for position updates.
+ */
 
 public class CollidableEntity extends Entity implements Movable { 
 

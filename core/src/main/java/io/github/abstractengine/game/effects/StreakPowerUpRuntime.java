@@ -1,6 +1,6 @@
-package io.github.abstractengine.effects;
+package io.github.abstractengine.game.effects;
 
-import io.github.abstractengine.entities.PowerUpType;
+import io.github.abstractengine.game.entities.PowerUpType;
 
 /**
  * Timed streak pickup buffs (player speed, enemy slow, freeze). Lives with other short-lived

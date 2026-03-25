@@ -1,13 +1,17 @@
-package io.github.abstractengine.collision;
+package io.github.abstractengine.game.collision;
+import io.github.abstractengine.collision.CollisionInfo;
+import io.github.abstractengine.collision.ICollisionRule;
 
-import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.Entity;
-import io.github.abstractengine.entities.Square;
+import io.github.abstractengine.game.StatisticsManager;
+import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.Square;
+
+import io.github.abstractengine.interfaces.GameEventListener;
+
 import io.github.abstractengine.io.LogCategory;
-import io.github.abstractengine.managers.AssetManager;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.StatisticsManager;
-import io.github.abstractengine.scene.StartScene;
+import io.github.abstractengine.game.GameAssets;
 
 /**
  * Handles collisions between the player circle and an answer hub square.
@@ -19,14 +23,14 @@ public class CircleSquareCollisionRule implements ICollisionRule {
 
     private final SceneManager sceneManager;
     private final StatisticsManager statisticsManager;
-    private final StartScene startScene;
+    private final GameEventListener listener;
 
     public CircleSquareCollisionRule(SceneManager sceneManager,
                                      StatisticsManager statisticsManager,
-                                     StartScene startScene) {
+                                     GameEventListener listener) {
         this.sceneManager = sceneManager;
         this.statisticsManager = statisticsManager;
-        this.startScene = startScene;
+        this.listener = listener;
     }
 
     @Override
@@ -37,41 +41,27 @@ public class CircleSquareCollisionRule implements ICollisionRule {
         Circle circle = null;
         Square square = null;
 
-        if (e1 instanceof Circle) {
-            circle = (Circle) e1;
-        } else if (e1 instanceof Square) {
-            square = (Square) e1;
-        }
+        if (e1 instanceof Circle) circle = (Circle) e1;
+        else if (e1 instanceof Square) square = (Square) e1;
+        if (e2 instanceof Circle) circle = (Circle) e2;
+        else if (e2 instanceof Square) square = (Square) e2;
 
-        if (e2 instanceof Circle) {
-            circle = (Circle) e2;
-        } else if (e2 instanceof Square) {
-            square = (Square) e2;
-        }
-
-        // Safety check – rule should only run for Circle–Square pairs
-        if (circle == null || square == null) {
-            return;
-        }
+        if (circle == null || square == null) return;
 
         boolean wasCorrect = square.isCorrect();
         if (wasCorrect) {
             sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Correct Answer!");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_SPEED_BOOST);
+            sceneManager.getIOManager().playSfx(GameAssets.SFX_SPEED_BOOST);
             int gained = statisticsManager.registerCorrectAnswer();
-            startScene.showPointsGained(gained);
-            startScene.flashCorrect();
-
+            listener.onCorrectAnswer(gained);
         } else {
             sceneManager.getIOManager().getLogging().info(LogCategory.SESSION, "Wrong Answer!");
-            sceneManager.getIOManager().playSfx(AssetManager.SFX_OVER);
+            sceneManager.getIOManager().playSfx(GameAssets.SFX_OVER);
             int lost = statisticsManager.registerIncorrectAnswer();
-            startScene.showPointsLost(lost);
-            startScene.flashWrong();
+            listener.onWrongAnswer(lost);
         }
 
-        // Remove the collected square, record answer, and spawn next question
         square.destroy();
-        startScene.onAnswerSubmitted(wasCorrect);
+        listener.onAnswerSubmitted(wasCorrect);
     }
 }

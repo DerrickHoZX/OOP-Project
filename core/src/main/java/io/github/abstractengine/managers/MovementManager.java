@@ -5,6 +5,12 @@ import java.util.List;
 
 import io.github.abstractengine.interfaces.Movable;
 
+/**
+ * Updates all registered Movable entities each frame.
+ * Each entity's MovementComponent determines its movement
+ * behavior, following the Strategy pattern.
+ */
+
 public class MovementManager {
     
     private List<Movable> movables; // All entities that can move

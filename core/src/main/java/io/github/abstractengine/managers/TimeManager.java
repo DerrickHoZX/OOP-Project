@@ -2,6 +2,12 @@ package io.github.abstractengine.managers;
 
 import io.github.abstractengine.time.Timer;
 
+/**
+ * Manages game timing via a Timer instance.
+ * Provides duration-based countdown with start, pause,
+ * reset, and elapsed/remaining time queries.
+ */
+
 public class TimeManager {
     
     private Timer timer;

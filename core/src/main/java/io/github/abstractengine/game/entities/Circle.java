@@ -1,8 +1,12 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import io.github.abstractengine.entities.CollidableEntity;
 
 public class Circle extends CollidableEntity {
 
@@ -10,8 +14,17 @@ public class Circle extends CollidableEntity {
 
     public Circle(float x, float y, float width, float height) {
         super(x, y, width, height);
-        // Load the transparent PNG from your assets folder
-        playerTexture = new Texture("Player.png"); 
+        try {
+            playerTexture = new Texture("Player.png");
+        } catch (Exception e) {
+            System.out.println("Could not load Player.png! Using fallback blue square.");
+            playerTexture = null;
+            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pixmap.setColor(Color.BLUE);
+            pixmap.fill();
+            playerTexture = new Texture(pixmap);
+            pixmap.dispose();
+        }
     }
     
     public float getRadius() {

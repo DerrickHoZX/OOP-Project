@@ -7,6 +7,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.abstractengine.interfaces.Movable;
 import io.github.abstractengine.movement.MovementComponent;
 
+/**
+ * An entity that does not participate in collision detection.
+ * Useful for visual-only elements such as backgrounds or UI decorations.
+ */
+
 public class NonCollidableEntity extends Entity implements Movable {
 
     protected MovementComponent movementComponent;

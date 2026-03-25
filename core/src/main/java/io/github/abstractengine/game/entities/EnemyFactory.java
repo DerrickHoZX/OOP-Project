@@ -1,4 +1,6 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
+
+import io.github.abstractengine.entities.EntityFactory;
 
 public class EnemyFactory implements EntityFactory<Triangle> {
     @Override

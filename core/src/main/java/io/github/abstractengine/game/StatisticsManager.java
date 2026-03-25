@@ -1,11 +1,10 @@
-package io.github.abstractengine.managers;
+package io.github.abstractengine.game;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// Note: You may need to press Ctrl+Shift+O in Eclipse to auto-resolve these imports
-import io.github.abstractengine.scene.GameCategory;
+import io.github.abstractengine.game.scenes.GameCategory;
 import io.github.abstractengine.managers.IOManager;
 
 public class StatisticsManager {

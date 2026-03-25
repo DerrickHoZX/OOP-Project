@@ -1,16 +1,17 @@
 package io.github.abstractengine;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import io.github.abstractengine.game.GameAssets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.abstractengine.game.scenes.MainMenuScene;
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.IOManager;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.scene.MainMenuScene;
 
 public class Main extends ApplicationAdapter {
 
@@ -27,7 +28,6 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-
         camera = new OrthographicCamera();
         viewport = new FitViewport(VIRTUAL_W, VIRTUAL_H, camera);
         viewport.apply();
@@ -35,12 +35,12 @@ public class Main extends ApplicationAdapter {
         camera.update();
 
         ioManager = new IOManager();
+        GameAssets.registerAll(ioManager.getAssets());
+        ioManager.loadAssets();
 
-        // Categorized log
         ioManager.getLogging().info(LogCategory.SYSTEM, "Engine started successfully");
-        
-        sceneManager = new SceneManager(ioManager);
 
+        sceneManager = new SceneManager(ioManager);
         sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
     }
 

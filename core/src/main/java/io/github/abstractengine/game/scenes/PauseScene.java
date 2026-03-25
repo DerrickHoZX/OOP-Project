@@ -1,4 +1,4 @@
-package io.github.abstractengine.scene;
+package io.github.abstractengine.game.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -14,9 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.abstractengine.game.StatisticsManager;
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.StatisticsManager;
+import io.github.abstractengine.scene.Scene;
 
 public class PauseScene extends Scene {
 

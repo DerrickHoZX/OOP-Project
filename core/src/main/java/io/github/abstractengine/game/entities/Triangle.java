@@ -1,10 +1,12 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import io.github.abstractengine.entities.CollidableEntity;
 
 public class Triangle extends CollidableEntity {
 

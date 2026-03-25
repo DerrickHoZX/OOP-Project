@@ -4,6 +4,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.abstractengine.interfaces.Movable;
 
+/**
+ * Abstract base class for movement behaviors.
+ * Concrete implementations (KeyboardMovement, LinearMovement,
+ * RandomMovement) define specific movement strategies,
+ * following the Strategy design pattern.
+ */
+
 public abstract class MovementComponent {
     
     protected Vector2 velocity; // Speed + direction combined

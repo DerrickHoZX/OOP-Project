@@ -2,6 +2,12 @@ package io.github.abstractengine.managers;
 
 import io.github.abstractengine.io.*;
 
+/**
+ * Facade for all input, output, and persistence operations.
+ * Centralizes keyboard/mouse input, audio playback, logging,
+ * and file-based persistence with saved audio settings.
+ */
+
 public class IOManager {
 
     private final Input input;
@@ -18,21 +24,20 @@ public class IOManager {
     private static final float DEFAULT_SFX_VOL = 1.0f;
 
     public IOManager() {
-
         Logger logger = new Logger(LogDestination.CONSOLE, null);
         this.logging = new Logging(logger);
 
-        // Assets (audio/images).
         this.assets = new AssetManager();
-        this.assets.loadAll(logging);
+        // REMOVED: this.assets.loadAll(logging);  ← delete this line
 
         this.output = new Output(assets, logging);
-
         this.input = new Input(logging);
-
         this.persistence = new Persistence(new FileIO(), "saves/", SaveFormat.TEXT, logging);
-        // Load saved audio settings 
         loadAudioSettings();
+    }   // ← constructor ends here
+
+    public void loadAssets() {
+        assets.loadAll(logging);
     }
 
     public void update() {

@@ -1,16 +1,21 @@
-package io.github.abstractengine.collision;
-
-import io.github.abstractengine.entities.Circle;
+package io.github.abstractengine.game.collision;
+import io.github.abstractengine.collision.Boundary;
+import io.github.abstractengine.collision.CollisionInfo;
+import io.github.abstractengine.collision.CollisionPairKey;
+import io.github.abstractengine.collision.ICollisionHandler;
+import io.github.abstractengine.collision.ICollisionRule;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;
-import io.github.abstractengine.entities.PowerUpPickup;
-import io.github.abstractengine.entities.Square;
-import io.github.abstractengine.entities.Triangle;
+import io.github.abstractengine.game.StatisticsManager;
+import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.PowerUpPickup;
+import io.github.abstractengine.game.entities.Square;
+import io.github.abstractengine.game.entities.Triangle;
+import io.github.abstractengine.interfaces.GameEventListener;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.StatisticsManager;
 import io.github.abstractengine.movement.MovementComponent;
-import io.github.abstractengine.scene.StartScene;
+
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.HashMap;
@@ -23,7 +28,7 @@ public class SimulationCollisionHandler implements ICollisionHandler {
     private Viewport viewport;
     private Circle targetCircle;  
     private StatisticsManager statsManager; 
-    private StartScene startScene;
+    private GameEventListener listener;
 
     /**
      * Map from unordered entity type pairs to the rule that should
@@ -33,13 +38,13 @@ public class SimulationCollisionHandler implements ICollisionHandler {
     
     public SimulationCollisionHandler(SceneManager sceneManager, EntityManager entityManager, 
                                       Viewport viewport, Circle targetCircle, 
-                                      StatisticsManager statsManager, StartScene startScene) {
+                                      StatisticsManager statsManager, GameEventListener listener) {
         this.sceneManager = sceneManager;
         this.entityManager = entityManager;
         this.viewport = viewport;
         this.targetCircle = targetCircle;
         this.statsManager = statsManager;
-        this.startScene = startScene;
+        this.listener = listener;
 
         registerRules();
     }
@@ -78,15 +83,15 @@ public class SimulationCollisionHandler implements ICollisionHandler {
     private void registerRules() {
         rules.put(
                 CollisionPairKey.of(Circle.class, Triangle.class),
-                new CircleTriangleCollisionRule(sceneManager, entityManager, statsManager, startScene)
+                new CircleTriangleCollisionRule(sceneManager, entityManager, statsManager, listener)
         );
         rules.put(
                 CollisionPairKey.of(Circle.class, Square.class),
-                new CircleSquareCollisionRule(sceneManager, statsManager, startScene)
+                new CircleSquareCollisionRule(sceneManager, statsManager, listener)
         );
         rules.put(
                 CollisionPairKey.of(Circle.class, PowerUpPickup.class),
-                new CirclePowerUpCollisionRule(sceneManager, startScene)
+                new CirclePowerUpCollisionRule(sceneManager, listener)
         );
     }
 

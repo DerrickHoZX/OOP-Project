@@ -12,6 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Centralized manager for creating, updating, rendering,
+ * and removing entities. Supports the Factory pattern via
+ * registered EntityFactory instances for type-safe entity creation.
+ */
+
 public class EntityManager {
 
     private List<Entity> entities;

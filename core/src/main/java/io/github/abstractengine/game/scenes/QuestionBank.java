@@ -1,4 +1,4 @@
-package io.github.abstractengine.scene;
+package io.github.abstractengine.game.scenes;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,5 @@
-package io.github.abstractengine.scene;
+package io.github.abstractengine.game.scenes;
+import io.github.abstractengine.game.GameAssets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -23,7 +24,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.SceneManager;
-import io.github.abstractengine.managers.AssetManager;
+import io.github.abstractengine.scene.Scene;
 
 public class MainMenuScene extends Scene {
 
@@ -50,7 +51,7 @@ public class MainMenuScene extends Scene {
     @Override
     public void onEnter() {
         bg = new Texture(Assets.MAIN_MENU_BG);
-        sceneManager.getIOManager().playMusic(AssetManager.MUSIC_MAIN_MENU, true);
+        sceneManager.getIOManager().playMusic(GameAssets.MUSIC_MAIN_MENU, true);
 
         stage = new Stage(viewport);
         debugRenderer = new ShapeRenderer();

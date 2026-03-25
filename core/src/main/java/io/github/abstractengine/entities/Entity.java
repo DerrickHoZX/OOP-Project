@@ -2,6 +2,12 @@ package io.github.abstractengine.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer; // Import added
 
+/**
+ * Abstract base class for all entities in the engine.
+ * Provides position, active state, and collidability.
+ * Subclasses must implement update and render logic.
+ */
+
 public abstract class Entity {
     
     protected float x;

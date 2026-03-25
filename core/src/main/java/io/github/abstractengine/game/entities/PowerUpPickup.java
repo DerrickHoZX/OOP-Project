@@ -1,4 +1,4 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import io.github.abstractengine.entities.CollidableEntity;
 
 /**
  * Collectible streak reward; drawn from a sprite when the asset exists, otherwise a colored disc.

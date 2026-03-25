@@ -4,6 +4,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.abstractengine.managers.SceneManager;
 
+/**
+ * Abstract base class for all scenes in the engine.
+ * Scenes represent distinct application states (menus, gameplay, overlays).
+ * Each scene has a clear lifecycle: onEnter, update, render, onExit.
+ */
+
 public abstract class Scene {
 
     protected final SceneManager sceneManager;

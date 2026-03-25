@@ -1,11 +1,11 @@
 package io.github.abstractengine.collision;
 
-import io.github.abstractengine.entities.Circle;
 import io.github.abstractengine.entities.CollidableEntity;
 import io.github.abstractengine.entities.Entity;
-import io.github.abstractengine.entities.PowerUpPickup;
-import io.github.abstractengine.entities.Square;
-import io.github.abstractengine.entities.Triangle;
+import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.PowerUpPickup;
+import io.github.abstractengine.game.entities.Square;
+import io.github.abstractengine.game.entities.Triangle;
 
 import java.util.ArrayList;
 import java.util.List;

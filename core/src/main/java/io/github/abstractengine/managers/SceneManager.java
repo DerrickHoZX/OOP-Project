@@ -7,6 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.github.abstractengine.scene.Scene;
 
+/**
+ * Manages scene transitions using a stack-based approach.
+ * Supports setScene (replace all), pushScene (overlay),
+ * and popScene (resume previous). Delegates update and
+ * render calls to the active (top) scene.
+ */
+
 public class SceneManager {
 
     private final IOManager ioManager;

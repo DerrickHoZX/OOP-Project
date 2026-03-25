@@ -11,7 +11,7 @@ import java.util.Objects;
  * The ordering of the two types does not matter – (A, B) is
  * considered equal to (B, A).
  */
-final class CollisionPairKey {
+	public final class CollisionPairKey {
 
     private final Class<? extends Entity> typeA;
     private final Class<? extends Entity> typeB;
@@ -25,7 +25,7 @@ final class CollisionPairKey {
     /**
      * Creates an unordered key for the two entity types.
      */
-    static CollisionPairKey of(Class<? extends Entity> t1,
+    public static CollisionPairKey of(Class<? extends Entity> t1,
                                Class<? extends Entity> t2) {
         if (t1 == null || t2 == null) {
             throw new IllegalArgumentException("Types must not be null");

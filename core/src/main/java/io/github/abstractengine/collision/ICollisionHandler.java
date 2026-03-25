@@ -3,9 +3,11 @@ package io.github.abstractengine.collision;
 import io.github.abstractengine.entities.Entity;
 
 /**
- * ICollisionHandler defines the contract for responding to collisions.
- * Different implementations can have different simulation rules.
+ * Strategy interface for collision response handling.
+ * Implementations define what happens when entities collide
+ * with each other or with boundaries.
  */
+
 public interface ICollisionHandler {
     
     /**
