@@ -24,12 +24,16 @@ import io.github.abstractengine.managers.AssetManager;
 import io.github.abstractengine.managers.SceneManager;
 import io.github.abstractengine.managers.StatisticsManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EndScene extends Scene {
 
     private final Viewport viewport;
     private final StatisticsManager statsManager;
+
+    /** Cached leaderboard loaded once on enter; avoids per-frame file I/O and log spam */
+    private List<StatisticsManager.LeaderboardEntry> cachedLeaderboard = new ArrayList<>();
 
     private Texture bg;
     private Stage stage;
@@ -54,6 +58,8 @@ public class EndScene extends Scene {
 
     @Override
     public void onEnter() {
+        statsManager.recordFinalScoreForPodium();
+        cachedLeaderboard = statsManager.getLeaderboard(statsManager.getCategory());
         bg = new Texture("endscene.png");
         sceneManager.getIOManager().playMusic(AssetManager.MUSIC_END_SCENE, true);
 
@@ -132,7 +138,8 @@ public class EndScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "RESTART button clicked");
-                sceneManager.setScene(new StartScene(sceneManager, viewport));
+                sceneManager.setScene(new StartScene(sceneManager, viewport,
+                        statsManager.getCategory(), statsManager.getUsername()));
             }
         });
 
@@ -185,11 +192,11 @@ public class EndScene extends Scene {
 
         int finalScore = statsManager.getScore();
         int stars = statsManager.calculateStarRating();
-        List<Integer> highScores = statsManager.getPodiumScores();
 
-        String scoreText = "Final Score: " + finalScore;
+        String scoreText = "Final Score: " + finalScore + " (" + statsManager.getUsername() + ")";
         String masteryText = "Mastery: " + stars + " / 3 Stars";
-        String hsTitle = "Top Scores";
+        String hsTitle = "Top Scores - " + statsManager.getCategory().name().charAt(0)
+                + statsManager.getCategory().name().substring(1).toLowerCase();
 
         layout.setText(scoreFont, scoreText);
         float scoreX = (w - layout.width) / 2f;
@@ -207,8 +214,15 @@ public class EndScene extends Scene {
         drawDarkTextWithShadow(batch, titleFont, hsTitle, hsTitleX, hsTitleY);
 
         float lineY = h * 0.56f;
-        for (int i = 0; i < highScores.size(); i++) {
-            String line = (i + 1) + ". " + highScores.get(i) + " pts";
+        String currentUsername = statsManager.getUsername();
+        for (int i = 0; i < cachedLeaderboard.size(); i++) {
+            StatisticsManager.LeaderboardEntry e = cachedLeaderboard.get(i);
+            String storedName = (e.username == null || e.username.trim().isEmpty()) ? "" : e.username;
+            // Use current player's name when entry matches their score and stored name is missing/placeholder
+            boolean isCurrentPlayer = (e.score == finalScore)
+                    && (storedName.isEmpty() || "Player".equalsIgnoreCase(storedName));
+            String displayName = isCurrentPlayer ? currentUsername : (storedName.isEmpty() ? "Player" : storedName);
+            String line = (i + 1) + ". " + displayName + " - " + e.score + " pts";
             layout.setText(podiumFont, line);
             float lineX = (w - layout.width) / 2f;
             drawTextWithShadow(batch, podiumFont, line, lineX, lineY - (i * 42f));
