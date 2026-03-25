@@ -22,6 +22,7 @@ import io.github.abstractengine.managers.SceneManager;
 public class GameModeScene extends Scene {
 
     private final Viewport viewport;
+    private final String username;
 
     private Stage stage;
     private Texture bg;
@@ -29,8 +30,18 @@ public class GameModeScene extends Scene {
     private Texture invisibleTex;
 
     public GameModeScene(SceneManager sceneManager, Viewport viewport) {
+        this(sceneManager, viewport, "Player");
+    }
+
+    public GameModeScene(SceneManager sceneManager, Viewport viewport, String username) {
         super(sceneManager);
         this.viewport = viewport;
+        String trimmed = (username != null ? username.trim() : "");
+        if (trimmed.isEmpty()) {
+            trimmed = sceneManager.getSessionUsername().trim();
+        }
+        this.username = trimmed.isEmpty() ? "Player" : trimmed;
+        sceneManager.setSessionUsername(this.username);
     }
 
     @Override
@@ -62,7 +73,7 @@ public class GameModeScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "GRAMMAR mode selected");
-                sceneManager.setScene(new StartScene(sceneManager, viewport, GameCategory.GRAMMAR));
+                sceneManager.setScene(new StartScene(sceneManager, viewport, GameCategory.GRAMMAR, username));
             }
         });
 
@@ -70,7 +81,7 @@ public class GameModeScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "CATEGORIZATION mode selected");
-                sceneManager.setScene(new StartScene(sceneManager, viewport, GameCategory.CATEGORIZATION));
+                sceneManager.setScene(new StartScene(sceneManager, viewport, GameCategory.CATEGORIZATION, username));
             }
         });
 

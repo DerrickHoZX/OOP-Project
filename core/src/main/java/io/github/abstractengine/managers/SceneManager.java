@@ -12,8 +12,23 @@ public class SceneManager {
     private final IOManager ioManager;
     private final Deque<Scene> stack = new ArrayDeque<>();
 
+    /** Last non-empty username from the username screen; used if a scene omits the name argument. */
+    private String sessionUsername = "Player";
+
     public SceneManager(IOManager ioManager) {
         this.ioManager = ioManager;
+    }
+
+    public void setSessionUsername(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            sessionUsername = "Player";
+        } else {
+            sessionUsername = name.trim();
+        }
+    }
+
+    public String getSessionUsername() {
+        return sessionUsername;
     }
 
     public IOManager getIOManager() {

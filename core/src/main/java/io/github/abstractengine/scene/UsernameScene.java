@@ -106,15 +106,17 @@ public class UsernameScene extends Scene {
         confirmBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String username = usernameField.getText().trim();
+                String username = usernameField.getText();
+                if (username != null) username = username.trim();
 
-                if (username.isEmpty()) {
+                if (username == null || username.isEmpty()) {
                     sceneManager.getIOManager().getLogging().info(LogCategory.UI, "Username empty");
                     return;
                 }
 
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "Username entered: " + username);
-                sceneManager.setScene(new GameModeScene(sceneManager, viewport));
+                sceneManager.setSessionUsername(username);
+                sceneManager.setScene(new GameModeScene(sceneManager, viewport, username));
             }
         });
 
@@ -122,6 +124,7 @@ public class UsernameScene extends Scene {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneManager.getIOManager().getLogging().info(LogCategory.UI, "Username entry cancelled");
+                sceneManager.setSessionUsername("Player");
                 sceneManager.setScene(new MainMenuScene(sceneManager, viewport));
             }
         });

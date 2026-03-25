@@ -48,7 +48,7 @@ public class StartScene extends Scene {
     private static final float ENEMY_MOVE_PHASE_SECONDS = 2f;
     /** Pre-turn stop at round start (easy) → shorter near time-up (harder). */
     private static final float ENEMY_PRETURN_PAUSE_START = 0.5f;
-    private static final float ENEMY_PRETURN_PAUSE_END = 0.05f;
+    private static final float ENEMY_PRETURN_PAUSE_END = 0.12f;
     private static final float POWERUP_PICKUP_SIZE = 40f;
 
     private final Viewport viewport;
@@ -102,9 +102,13 @@ public class StartScene extends Scene {
         this.entityManager = new EntityManager();
         this.movementManager = new MovementManager();
         String trimmedUsername = (username != null ? username.trim() : "");
+        if (trimmedUsername.isEmpty()) {
+            trimmedUsername = sceneManager.getSessionUsername().trim();
+        }
+        String displayUsername = trimmedUsername.isEmpty() ? "Player" : trimmedUsername;
         this.statsManager = new StatisticsManager(
                 category,
-                trimmedUsername.isEmpty() ? "Player" : trimmedUsername,
+                displayUsername,
                 sceneManager.getIOManager(),
                 60f
         );
