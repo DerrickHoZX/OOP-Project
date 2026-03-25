@@ -361,7 +361,7 @@ public class QuestionBank {
         questions.add(new Question("Synonym of Catch:", "grab", "throw", "release", d));
         questions.add(new Question("Synonym of Open:", "unlock", "close", "shut", d));
         questions.add(new Question("Synonym of Close:", "shut", "open", "widen", d));
-        questions.add(new Question("Synonym of Call:", "phone", "ignore", "hang up", d));
+        questions.add(new Question("Synonym of Shout:", "yell", "whisper", "murmur", d));
         questions.add(new Question("Synonym of Send:", "dispatch", "receive", "keep", d));
         questions.add(new Question("Synonym of Receive:", "get", "send", "give", d));
         questions.add(new Question("Synonym of Wait:", "stay", "leave", "rush", d));

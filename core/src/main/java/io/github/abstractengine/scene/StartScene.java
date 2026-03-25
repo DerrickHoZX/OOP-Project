@@ -49,7 +49,7 @@ public class StartScene extends Scene {
     /** Pre-turn stop at round start (easy) → shorter near time-up (harder). */
     private static final float ENEMY_PRETURN_PAUSE_START = 0.5f;
     private static final float ENEMY_PRETURN_PAUSE_END = 0.12f;
-    private static final float POWERUP_PICKUP_SIZE = 40f;
+    private static final float POWERUP_PICKUP_SIZE = 60f;
 
     private final Viewport viewport;
     private final GameCategory category;
@@ -706,7 +706,7 @@ public class StartScene extends Scene {
         float panelW = 185f;
         int buffLines = (streakPowerUpRuntime != null) ? streakPowerUpRuntime.countActiveBuffLines() : 0;
         float basePanelH = 72f;
-        float panelH = basePanelH + (buffLines > 0 ? 8f + buffLines * 17f : 0f);
+        float panelH = basePanelH + (buffLines > 0 ? 14f + buffLines * 20f : 0f);
 
         float x = padLeft;
         float y = SCORE_PANEL_TOP_LEFT
@@ -761,7 +761,9 @@ public class StartScene extends Scene {
         float savedScale = font.getData().scaleX;
         font.getData().setScale(1.05f);
 
-        float y = scorePanelY + 10f;
+        // Start below "Streak" and place each buff line downward.
+        float lineSpacing = 18f;
+        float y = (scorePanelY + scorePanelH) - 58f;
 
         if (streakPowerUpRuntime.isCherryActive()) {
             String t = String.format(Locale.US, "Cherry %.1fs", streakPowerUpRuntime.getCherryTimeLeft());
@@ -769,7 +771,7 @@ public class StartScene extends Scene {
             layout.setText(font, t);
             float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
             drawScorePanelText(batch, t, tx, y);
-            y += 17f;
+            y -= lineSpacing;
         }
         if (streakPowerUpRuntime.isBananaActive()) {
             String t = String.format(Locale.US, "Banana %.1fs", streakPowerUpRuntime.getBananaTimeLeft());
@@ -777,7 +779,7 @@ public class StartScene extends Scene {
             layout.setText(font, t);
             float tx = scorePanelX + (scorePanelW - layout.width) / 2f;
             drawScorePanelText(batch, t, tx, y);
-            y += 17f;
+            y -= lineSpacing;
         }
         if (streakPowerUpRuntime.isWatermelonActive()) {
             String t = String.format(Locale.US, "Watermelon %.1fs", streakPowerUpRuntime.getWatermelonTimeLeft());

@@ -1,5 +1,6 @@
 package io.github.abstractengine.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
- * Collectible streak reward; drawn as a colored disc (no movement).
+ * Collectible streak reward; drawn from a sprite when the asset exists, otherwise a colored disc.
  */
 public class PowerUpPickup extends CollidableEntity {
 
@@ -18,7 +19,30 @@ public class PowerUpPickup extends CollidableEntity {
     public PowerUpPickup(float x, float y, float size, PowerUpType type) {
         super(x, y, size, size);
         this.powerUpType = type;
-        this.texture = createDiscTexture(type, (int) Math.ceil(size));
+        this.texture = loadTexture(type, (int) Math.ceil(size));
+    }
+
+    private static String texturePathFor(PowerUpType type) {
+        switch (type) {
+            case CHERRY:
+                return "Cherry.png";
+            case BANANA:
+                return "Banana.png";
+            case WATERMELON:
+                return "Watermelon.png";
+            default:
+                throw new IllegalArgumentException("Unknown PowerUpType: " + type);
+        }
+    }
+
+    private static Texture loadTexture(PowerUpType type, int pixelSize) {
+        String path = texturePathFor(type);
+        if (Gdx.files.internal(path).exists()) {
+            Texture t = new Texture(path);
+            t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+            return t;
+        }
+        return createDiscTexture(type, pixelSize);
     }
 
     private static Texture createDiscTexture(PowerUpType type, int pixelSize) {
