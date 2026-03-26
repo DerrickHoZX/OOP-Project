@@ -24,6 +24,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.abstractengine.collision.BasicCollisionDetector;
 import io.github.abstractengine.collision.Boundary;
 import io.github.abstractengine.entities.Entity;
+
+// --- Added Factory Imports ---
+import io.github.abstractengine.game.entities.PlayerFactory;
+import io.github.abstractengine.game.entities.EnemyFactory;
+import io.github.abstractengine.game.entities.SquareFactory;
+import io.github.abstractengine.game.entities.Square;
+import io.github.abstractengine.game.entities.PowerUpFactory;
+// -----------------------------
+
 import io.github.abstractengine.game.AlgorithmManager;
 import io.github.abstractengine.game.GameAssets;
 import io.github.abstractengine.game.StatisticsManager;
@@ -49,7 +58,6 @@ import io.github.abstractengine.scene.Scene;
  * Main gameplay scene. Coordinates game loop, delegates HUD rendering
  * to HUDRenderer and entity spawning to EntitySpawner.
  */
-
 public class StartScene extends Scene implements GameEventListener {
 
     private static final float PLAYER_BASE_MOVE_SPEED = 300f;
@@ -140,9 +148,15 @@ public class StartScene extends Scene implements GameEventListener {
         bg = new Texture(config.backgroundPath);
         sceneManager.getIOManager().playMusic(GameAssets.MUSIC_START_SCENE, true);
 
-        // Create player
+        // --- NEW FACTORY REGISTRATIONS ---
+        entityManager.registerFactory(Circle.class, new PlayerFactory());
+        entityManager.registerFactory(Triangle.class, new EnemyFactory());
+        entityManager.registerFactory(Square.class, new SquareFactory());
+        entityManager.registerFactory(PowerUpPickup.class, new PowerUpFactory());
+
+        // Create player using the Factory System
         float circleSize = 60f;
-        circle = new Circle(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f, circleSize, circleSize);
+        circle = entityManager.createEntity(Circle.class, viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
         circle.setMovementComponent(new KeyboardMovement(
                 sceneManager.getIOManager(),
                 PLAYER_BASE_MOVE_SPEED,
@@ -150,7 +164,7 @@ public class StartScene extends Scene implements GameEventListener {
                 viewport.getWorldHeight(),
                 circleSize
         ));
-        entityManager.addEntity(circle);
+        // entityManager.addEntity(circle); <--- Removed because createEntity automatically adds it
         movementManager.register(circle);
 
         // Initialize entity spawner (needs player reference)
