@@ -10,8 +10,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
+import io.github.abstractengine.entities.DisposableEntity;
 
-public class Square extends CollidableEntity {
+public class Square extends CollidableEntity implements DisposableEntity {
     
     private String answerText;
     private boolean isCorrect;
@@ -85,5 +86,12 @@ public class Square extends CollidableEntity {
     public void dispose() {
         if (font != null) font.dispose();
         if (bgTexture != null) bgTexture.dispose();
+        font = null;
+        bgTexture = null;
+    }
+
+    @Override
+    public void disposeEntity() {
+        dispose();
     }
 }

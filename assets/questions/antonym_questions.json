@@ -1,0 +1,520 @@
+[
+  {
+    "prompt": "Opposite of Happy:",
+    "correct": "sad",
+    "decoy1": "excited",
+    "decoy2": "smiling",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Big:",
+    "correct": "small",
+    "decoy1": "huge",
+    "decoy2": "tall",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Hot:",
+    "correct": "cold",
+    "decoy1": "warm",
+    "decoy2": "spicy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Fast:",
+    "correct": "slow",
+    "decoy1": "quick",
+    "decoy2": "speedy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Loud:",
+    "correct": "quiet",
+    "decoy1": "noisy",
+    "decoy2": "talking",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Early:",
+    "correct": "late",
+    "decoy1": "soon",
+    "decoy2": "first",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Strong:",
+    "correct": "weak",
+    "decoy1": "tough",
+    "decoy2": "big",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Open:",
+    "correct": "closed",
+    "decoy1": "wide",
+    "decoy2": "free",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Full:",
+    "correct": "empty",
+    "decoy1": "packed",
+    "decoy2": "busy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Bright:",
+    "correct": "dark",
+    "decoy1": "shiny",
+    "decoy2": "clear",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Hard:",
+    "correct": "soft",
+    "decoy1": "solid",
+    "decoy2": "rough",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Clean:",
+    "correct": "dirty",
+    "decoy1": "wet",
+    "decoy2": "dark",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Young:",
+    "correct": "old",
+    "decoy1": "teen",
+    "decoy2": "child",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Up:",
+    "correct": "down",
+    "decoy1": "low",
+    "decoy2": "flat",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Begin:",
+    "correct": "end",
+    "decoy1": "stop",
+    "decoy2": "start",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Inside:",
+    "correct": "outside",
+    "decoy1": "inner",
+    "decoy2": "within",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Sweet:",
+    "correct": "sour",
+    "decoy1": "nice",
+    "decoy2": "kind",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Rich:",
+    "correct": "poor",
+    "decoy1": "wealthy",
+    "decoy2": "full",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Win:",
+    "correct": "lose",
+    "decoy1": "gain",
+    "decoy2": "get",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Love:",
+    "correct": "hate",
+    "decoy1": "like",
+    "decoy2": "care",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Day:",
+    "correct": "night",
+    "decoy1": "noon",
+    "decoy2": "dawn",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of True:",
+    "correct": "false",
+    "decoy1": "real",
+    "decoy2": "right",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Give:",
+    "correct": "take",
+    "decoy1": "send",
+    "decoy2": "offer",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Buy:",
+    "correct": "sell",
+    "decoy1": "get",
+    "decoy2": "trade",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Enter:",
+    "correct": "exit",
+    "decoy1": "leave",
+    "decoy2": "go",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Forward:",
+    "correct": "backward",
+    "decoy1": "ahead",
+    "decoy2": "onward",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Long:",
+    "correct": "short",
+    "decoy1": "tall",
+    "decoy2": "wide",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Wide:",
+    "correct": "narrow",
+    "decoy1": "broad",
+    "decoy2": "big",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Heavy:",
+    "correct": "light",
+    "decoy1": "weight",
+    "decoy2": "solid",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Thick:",
+    "correct": "thin",
+    "decoy1": "fat",
+    "decoy2": "wide",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of New:",
+    "correct": "old",
+    "decoy1": "fresh",
+    "decoy2": "modern",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Right:",
+    "correct": "left",
+    "decoy1": "correct",
+    "decoy2": "wrong",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of East:",
+    "correct": "west",
+    "decoy1": "north",
+    "decoy2": "south",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of North:",
+    "correct": "south",
+    "decoy1": "east",
+    "decoy2": "west",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Top:",
+    "correct": "bottom",
+    "decoy1": "peak",
+    "decoy2": "high",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Front:",
+    "correct": "back",
+    "decoy1": "rear",
+    "decoy2": "behind",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of First:",
+    "correct": "last",
+    "decoy1": "beginning",
+    "decoy2": "start",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Near:",
+    "correct": "far",
+    "decoy1": "close",
+    "decoy2": "next",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Here:",
+    "correct": "there",
+    "decoy1": "where",
+    "decoy2": "away",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of In:",
+    "correct": "out",
+    "decoy1": "inside",
+    "decoy2": "within",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of War:",
+    "correct": "peace",
+    "decoy1": "fight",
+    "decoy2": "battle",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Life:",
+    "correct": "death",
+    "decoy1": "living",
+    "decoy2": "alive",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Push:",
+    "correct": "pull",
+    "decoy1": "press",
+    "decoy2": "move",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Build:",
+    "correct": "destroy",
+    "decoy1": "make",
+    "decoy2": "create",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Start:",
+    "correct": "stop",
+    "decoy1": "begin",
+    "decoy2": "go",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Add:",
+    "correct": "subtract",
+    "decoy1": "plus",
+    "decoy2": "sum",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Multiply:",
+    "correct": "divide",
+    "decoy1": "times",
+    "decoy2": "add",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Increase:",
+    "correct": "decrease",
+    "decoy1": "grow",
+    "decoy2": "rise",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Expand:",
+    "correct": "shrink",
+    "decoy1": "grow",
+    "decoy2": "spread",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Attack:",
+    "correct": "defend",
+    "decoy1": "fight",
+    "decoy2": "strike",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Question:",
+    "correct": "answer",
+    "decoy1": "ask",
+    "decoy2": "query",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Problem:",
+    "correct": "solution",
+    "decoy1": "issue",
+    "decoy2": "trouble",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Arrive:",
+    "correct": "depart",
+    "decoy1": "come",
+    "decoy2": "reach",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Arrival:",
+    "correct": "departure",
+    "decoy1": "coming",
+    "decoy2": "leaving",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Alive:",
+    "correct": "dead",
+    "decoy1": "living",
+    "decoy2": "lively",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Asleep:",
+    "correct": "awake",
+    "decoy1": "sleeping",
+    "decoy2": "tired",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Empty:",
+    "correct": "full",
+    "decoy1": "blank",
+    "decoy2": "vacant",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Female:",
+    "correct": "male",
+    "decoy1": "woman",
+    "decoy2": "girl",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Male:",
+    "correct": "female",
+    "decoy1": "man",
+    "decoy2": "boy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Safe:",
+    "correct": "dangerous",
+    "decoy1": "secure",
+    "decoy2": "sound",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Same:",
+    "correct": "different",
+    "decoy1": "alike",
+    "decoy2": "equal",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Similar:",
+    "correct": "different",
+    "decoy1": "alike",
+    "decoy2": "same",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Natural:",
+    "correct": "artificial",
+    "decoy1": "real",
+    "decoy2": "normal",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Possible:",
+    "correct": "impossible",
+    "decoy1": "likely",
+    "decoy2": "probable",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Legal:",
+    "correct": "illegal",
+    "decoy1": "lawful",
+    "decoy2": "valid",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Polite:",
+    "correct": "rude",
+    "decoy1": "kind",
+    "decoy2": "nice",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Patient:",
+    "correct": "impatient",
+    "decoy1": "calm",
+    "decoy2": "waiting",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Honest:",
+    "correct": "dishonest",
+    "decoy1": "true",
+    "decoy2": "fair",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Kind:",
+    "correct": "cruel",
+    "decoy1": "nice",
+    "decoy2": "gentle",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Careful:",
+    "correct": "careless",
+    "decoy1": "cautious",
+    "decoy2": "safe",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Certain:",
+    "correct": "uncertain",
+    "decoy1": "sure",
+    "decoy2": "definite",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Visible:",
+    "correct": "invisible",
+    "decoy1": "seen",
+    "decoy2": "clear",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Perfect:",
+    "correct": "imperfect",
+    "decoy1": "flawless",
+    "decoy2": "ideal",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Opposite of Regular:",
+    "correct": "irregular",
+    "decoy1": "normal",
+    "decoy2": "usual",
+    "difficulty": 2
+  }
+]

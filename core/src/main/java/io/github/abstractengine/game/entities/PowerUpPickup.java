@@ -9,11 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
+import io.github.abstractengine.entities.DisposableEntity;
 
 /**
  * Collectible streak reward; drawn from a sprite when the asset exists, otherwise a colored disc.
  */
-public class PowerUpPickup extends CollidableEntity {
+public class PowerUpPickup extends CollidableEntity implements DisposableEntity {
 
     private final PowerUpType powerUpType;
     private Texture texture;
@@ -118,5 +119,10 @@ public class PowerUpPickup extends CollidableEntity {
             texture.dispose();
             texture = null;
         }
+    }
+
+    @Override
+    public void disposeEntity() {
+        disposeTexture();
     }
 }

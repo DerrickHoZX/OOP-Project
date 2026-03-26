@@ -1,0 +1,100 @@
+[
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Run",
+    "decoy1": "Apple",
+    "decoy2": "Blue",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Jump",
+    "decoy1": "Chair",
+    "decoy2": "Happy",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Swim",
+    "decoy1": "Table",
+    "decoy2": "Tall",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Eat",
+    "decoy1": "Dog",
+    "decoy2": "River",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Laugh",
+    "decoy1": "School",
+    "decoy2": "Pencil",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Write",
+    "decoy1": "Apple",
+    "decoy2": "Blue",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Climb",
+    "decoy1": "Chair",
+    "decoy2": "Happy",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Throw",
+    "decoy1": "Table",
+    "decoy2": "Tall",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Dance",
+    "decoy1": "Dog",
+    "decoy2": "River",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Sing",
+    "decoy1": "School",
+    "decoy2": "Pencil",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Sleep",
+    "decoy1": "Bed",
+    "decoy2": "Night",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Read",
+    "decoy1": "Book",
+    "decoy2": "Page",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Think",
+    "decoy1": "Brain",
+    "decoy2": "Mind",
+    "difficulty": 1
+  },
+  {
+    "prompt": "Find an Action Word",
+    "correct": "Walk",
+    "decoy1": "Shoe",
+    "decoy2": "Street",
+    "difficulty": 1
+  }
+]

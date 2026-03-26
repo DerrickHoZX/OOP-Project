@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
+import io.github.abstractengine.entities.DisposableEntity;
 
-public class Circle extends CollidableEntity {
+public class Circle extends CollidableEntity implements DisposableEntity {
 
     private Texture playerTexture;
 
@@ -42,6 +43,14 @@ public class Circle extends CollidableEntity {
     
     // Good OOP practice: Clean up textures when the entity is destroyed
     public void dispose() {
-        playerTexture.dispose();
+        if (playerTexture != null) {
+            playerTexture.dispose();
+            playerTexture = null;
+        }
+    }
+
+    @Override
+    public void disposeEntity() {
+        dispose();
     }
 }

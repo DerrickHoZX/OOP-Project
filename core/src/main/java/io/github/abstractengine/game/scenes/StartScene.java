@@ -1,6 +1,9 @@
 package io.github.abstractengine.game.scenes;
 
 import java.util.List;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -112,6 +115,7 @@ public class StartScene extends Scene implements GameEventListener {
         this.config = CategoryConfigFactory.get(category);
         this.entityManager = new EntityManager();
         this.movementManager = new MovementManager();
+        this.entityManager.setMovementManager(this.movementManager);
         String trimmedUsername = (username != null ? username.trim() : "");
         if (trimmedUsername.isEmpty()) {
             trimmedUsername = sceneManager.getSessionUsername().trim();
@@ -529,18 +533,35 @@ public class StartScene extends Scene implements GameEventListener {
     }
 
     static final class CategoryConfigFactory {
+        private static final QuestionRepository REPOSITORY = new JsonQuestionRepository();
+
         static CategoryConfig get(GameCategory category) {
-            if (category == GameCategory.CATEGORIZATION) {
-                return new CategoryConfig(
-                    "GameMode_Categorization.png",
-                    QuestionBank.getCategoryQuestions()
-                );
-            } else {
-                return new CategoryConfig(
-                    "GameMode_Grammar.png",
-                    QuestionBank.getAllLanguageQuestions()
-                );
+            Map<GameCategory, CategoryConfig> configs = new EnumMap<>(GameCategory.class);
+
+            configs.put(
+                    GameCategory.CATEGORIZATION,
+                    build("GameMode_Categorization.png", REPOSITORY::getCategoryQuestions)
+            );
+            configs.put(
+                    GameCategory.GRAMMAR,
+                    build("GameMode_Grammar.png", REPOSITORY::getLanguageQuestions)
+            );
+
+            CategoryConfig config = configs.get(category);
+            if (config != null) {
+                return config;
             }
+            // Defensive fallback in case a new category is added but not mapped yet.
+            return build("GameMode_Grammar.png", REPOSITORY::getLanguageQuestions);
+        }
+
+        private static CategoryConfig build(String backgroundPath, Supplier<List<QuestionBank.Question>> questionsSupplier) {
+            List<QuestionBank.Question> questions = questionsSupplier.get();
+            if (questions == null || questions.isEmpty()) {
+                // Keep game playable if external files are malformed/empty.
+                questions = QuestionBank.getAllLanguageQuestions();
+            }
+            return new CategoryConfig(backgroundPath, questions);
         }
     }
 }

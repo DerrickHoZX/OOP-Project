@@ -1,0 +1,1241 @@
+[
+  {
+    "prompt": "She ___ to school every day.",
+    "correct": "goes",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The cat is ___ the table.",
+    "correct": "on",
+    "decoy1": "at",
+    "decoy2": "in",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ playing soccer now.",
+    "correct": "are",
+    "decoy1": "is",
+    "decoy2": "am",
+    "difficulty": 3
+  },
+  {
+    "prompt": "This is ___ apple.",
+    "correct": "an",
+    "decoy1": "a",
+    "decoy2": "the",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He runs ___ than me.",
+    "correct": "faster",
+    "decoy1": "fast",
+    "decoy2": "fastest",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I have ___ homework to do.",
+    "correct": "much",
+    "decoy1": "many",
+    "decoy2": "few",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ finished our project.",
+    "correct": "have",
+    "decoy1": "has",
+    "decoy2": "having",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She is the ___ student in class.",
+    "correct": "smartest",
+    "decoy1": "smart",
+    "decoy2": "smarter",
+    "difficulty": 3
+  },
+  {
+    "prompt": "There ___ three dogs outside.",
+    "correct": "are",
+    "decoy1": "is",
+    "decoy2": "was",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He didn't ___ his lunch.",
+    "correct": "eat",
+    "decoy1": "ate",
+    "decoy2": "eating",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I am taller ___ my brother.",
+    "correct": "than",
+    "decoy1": "then",
+    "decoy2": "that",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The baby ___ crying loudly.",
+    "correct": "is",
+    "decoy1": "are",
+    "decoy2": "be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She bought ___ umbrella.",
+    "correct": "an",
+    "decoy1": "a",
+    "decoy2": "the",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We went to the park ___ Sunday.",
+    "correct": "on",
+    "decoy1": "in",
+    "decoy2": "at",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I will call you ___ later.",
+    "correct": "back",
+    "decoy1": "much",
+    "decoy2": "very",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ a letter yesterday.",
+    "correct": "wrote",
+    "decoy1": "write",
+    "decoy2": "writing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "That book is ___ interesting.",
+    "correct": "very",
+    "decoy1": "many",
+    "decoy2": "more",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I have lived here ___ 2015.",
+    "correct": "since",
+    "decoy1": "for",
+    "decoy2": "at",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She can ___ very well.",
+    "correct": "sing",
+    "decoy1": "sings",
+    "decoy2": "singing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The dog wagged ___ tail.",
+    "correct": "its",
+    "decoy1": "it's",
+    "decoy2": "it",
+    "difficulty": 3
+  },
+  {
+    "prompt": "If it ___ tomorrow, we'll stay home.",
+    "correct": "rains",
+    "decoy1": "rain",
+    "decoy2": "rained",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My sister ___ medicine at university.",
+    "correct": "studies",
+    "decoy1": "study",
+    "decoy2": "studying",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They have ___ to the beach many times.",
+    "correct": "been",
+    "decoy1": "be",
+    "decoy2": "being",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The movie was ___ than I expected.",
+    "correct": "better",
+    "decoy1": "good",
+    "decoy2": "best",
+    "difficulty": 3
+  },
+  {
+    "prompt": "Neither Tom nor Jerry ___ here today.",
+    "correct": "is",
+    "decoy1": "are",
+    "decoy2": "be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She asked me ___ I could help her.",
+    "correct": "if",
+    "decoy1": "that",
+    "decoy2": "what",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We need ___ water for the trip.",
+    "correct": "some",
+    "decoy1": "any",
+    "decoy2": "many",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The book ___ on the shelf yesterday.",
+    "correct": "was",
+    "decoy1": "is",
+    "decoy2": "are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He speaks English ___ than before.",
+    "correct": "better",
+    "decoy1": "well",
+    "decoy2": "good",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The children ___ in the garden now.",
+    "correct": "are playing",
+    "decoy1": "is playing",
+    "decoy2": "playing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her keys yesterday.",
+    "correct": "lost",
+    "decoy1": "lose",
+    "decoy2": "losing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "Would you like ___ tea?",
+    "correct": "some",
+    "decoy1": "any",
+    "decoy2": "many",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ to work by bus every day.",
+    "correct": "goes",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The door ___ closed when I left.",
+    "correct": "was",
+    "decoy1": "is",
+    "decoy2": "were",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I wish I ___ speak French.",
+    "correct": "could",
+    "decoy1": "can",
+    "decoy2": "will",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She made ___ mistakes on the test.",
+    "correct": "many",
+    "decoy1": "much",
+    "decoy2": "lot",
+    "difficulty": 3
+  },
+  {
+    "prompt": "___ you like to join us?",
+    "correct": "Would",
+    "decoy1": "Do",
+    "decoy2": "Are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ dinner when I arrived.",
+    "correct": "were having",
+    "decoy1": "had",
+    "decoy2": "have",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The weather ___ nice yesterday.",
+    "correct": "was",
+    "decoy1": "is",
+    "decoy2": "are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ to the cinema last weekend.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She has ___ finished her homework.",
+    "correct": "already",
+    "decoy1": "yet",
+    "decoy2": "still",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ to leave early tomorrow.",
+    "correct": "need",
+    "decoy1": "needs",
+    "decoy2": "needing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The train ___ at 6 PM every day.",
+    "correct": "departs",
+    "decoy1": "depart",
+    "decoy2": "departing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "___ your homework before playing.",
+    "correct": "Finish",
+    "decoy1": "Finishes",
+    "decoy2": "Finishing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ never been to Japan.",
+    "correct": "has",
+    "decoy1": "have",
+    "decoy2": "had",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The students ___ the exam tomorrow.",
+    "correct": "will take",
+    "decoy1": "take",
+    "decoy2": "takes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ breakfast at 7 AM every day.",
+    "correct": "have",
+    "decoy1": "has",
+    "decoy2": "having",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The movie ___ interesting.",
+    "correct": "was",
+    "decoy1": "were",
+    "decoy2": "are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ football in the park.",
+    "correct": "play",
+    "decoy1": "plays",
+    "decoy2": "playing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My brother ___ taller than me.",
+    "correct": "is",
+    "decoy1": "are",
+    "decoy2": "be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the house last year.",
+    "correct": "bought",
+    "decoy1": "buy",
+    "decoy2": "buying",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ to music while studying.",
+    "correct": "listens",
+    "decoy1": "listen",
+    "decoy2": "listening",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The dog ___ in the garden.",
+    "correct": "is sleeping",
+    "decoy1": "sleep",
+    "decoy2": "sleeps",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ my phone at home.",
+    "correct": "left",
+    "decoy1": "leave",
+    "decoy2": "leaving",
+    "difficulty": 3
+  },
+  {
+    "prompt": "___ we go to the cinema?",
+    "correct": "Shall",
+    "decoy1": "Do",
+    "decoy2": "Are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ football since he was a child.",
+    "correct": "has played",
+    "decoy1": "play",
+    "decoy2": "plays",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The shop ___ at 9 PM.",
+    "correct": "closes",
+    "decoy1": "close",
+    "decoy2": "closing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ a doctor when she grows up.",
+    "correct": "wants to be",
+    "decoy1": "want to be",
+    "decoy2": "wanted to be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ for the bus when it started raining.",
+    "correct": "were waiting",
+    "decoy1": "waited",
+    "decoy2": "wait",
+    "difficulty": 3
+  },
+  {
+    "prompt": "___ you seen my glasses?",
+    "correct": "Have",
+    "decoy1": "Has",
+    "decoy2": "Do",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The cake ___ delicious.",
+    "correct": "tastes",
+    "decoy1": "taste",
+    "decoy2": "tasting",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ him at the party last night.",
+    "correct": "saw",
+    "decoy1": "see",
+    "decoy2": "seeing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ to Paris next month.",
+    "correct": "will travel",
+    "decoy1": "travel",
+    "decoy2": "travelled",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her grandmother every Sunday.",
+    "correct": "visits",
+    "decoy1": "visit",
+    "decoy2": "visiting",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The baby ___ all night.",
+    "correct": "cried",
+    "decoy1": "cry",
+    "decoy2": "cries",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ pizza for dinner.",
+    "correct": "ordered",
+    "decoy1": "order",
+    "decoy2": "ordering",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ to the gym three times a week.",
+    "correct": "goes",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The meeting ___ at 3 PM.",
+    "correct": "starts",
+    "decoy1": "start",
+    "decoy2": "starting",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ tired. I need to rest.",
+    "correct": "am",
+    "decoy1": "is",
+    "decoy2": "are",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ a book when I called her.",
+    "correct": "was reading",
+    "decoy1": "read",
+    "decoy2": "reads",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ their homework yet.",
+    "correct": "haven't finished",
+    "decoy1": "didn't finish",
+    "decoy2": "don't finish",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The teacher ___ us a test tomorrow.",
+    "correct": "will give",
+    "decoy1": "gives",
+    "decoy2": "gave",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My parents ___ in London.",
+    "correct": "live",
+    "decoy1": "lives",
+    "decoy2": "living",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ his car to work every day.",
+    "correct": "drives",
+    "decoy1": "drive",
+    "decoy2": "drove",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the movie yesterday.",
+    "correct": "watched",
+    "decoy1": "watch",
+    "decoy2": "watching",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The sun ___ in the east.",
+    "correct": "rises",
+    "decoy1": "rise",
+    "decoy2": "rising",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her bag on the bus.",
+    "correct": "forgot",
+    "decoy1": "forget",
+    "decoy2": "forgets",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ to the party if I have time.",
+    "correct": "will go",
+    "decoy1": "go",
+    "decoy2": "went",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ each other for five years.",
+    "correct": "have known",
+    "decoy1": "know",
+    "decoy2": "knew",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The dog ___ when someone knocks.",
+    "correct": "barks",
+    "decoy1": "bark",
+    "decoy2": "barking",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ a new house next year.",
+    "correct": "will buy",
+    "decoy1": "buy",
+    "decoy2": "bought",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ soccer when he was young.",
+    "correct": "played",
+    "decoy1": "play",
+    "decoy2": "plays",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The children ___ to school by bus.",
+    "correct": "go",
+    "decoy1": "goes",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her birthday last week.",
+    "correct": "celebrated",
+    "decoy1": "celebrate",
+    "decoy2": "celebrates",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ you at the station.",
+    "correct": "will meet",
+    "decoy1": "meet",
+    "decoy2": "met",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the project by Friday.",
+    "correct": "will finish",
+    "decoy1": "finish",
+    "decoy2": "finished",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The phone ___ while I was cooking.",
+    "correct": "rang",
+    "decoy1": "ring",
+    "decoy2": "rings",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ to the concert last week.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ English fluently.",
+    "correct": "speaks",
+    "decoy1": "speak",
+    "decoy2": "spoke",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ in the pool right now.",
+    "correct": "is swimming",
+    "decoy1": "swim",
+    "decoy2": "swims",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My sister ___ a new job.",
+    "correct": "got",
+    "decoy1": "get",
+    "decoy2": "gets",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The flight ___ at 10 AM.",
+    "correct": "departs",
+    "decoy1": "depart",
+    "decoy2": "departed",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I have never ___ such a beautiful sunset.",
+    "correct": "seen",
+    "decoy1": "see",
+    "decoy2": "saw",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ their grandparents next week.",
+    "correct": "will visit",
+    "decoy1": "visit",
+    "decoy2": "visited",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The cat ___ on the sofa.",
+    "correct": "is sleeping",
+    "decoy1": "sleep",
+    "decoy2": "sleeps",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ dinner when the lights went out.",
+    "correct": "were having",
+    "decoy1": "had",
+    "decoy2": "have",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ his homework every evening.",
+    "correct": "does",
+    "decoy1": "do",
+    "decoy2": "did",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ to university in Oxford.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "goes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The bus ___ every 15 minutes.",
+    "correct": "comes",
+    "decoy1": "come",
+    "decoy2": "came",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ my keys. Can you help me look?",
+    "correct": "lost",
+    "decoy1": "lose",
+    "decoy2": "losing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ football in the rain.",
+    "correct": "were playing",
+    "decoy1": "played",
+    "decoy2": "play",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The restaurant ___ at midnight.",
+    "correct": "closes",
+    "decoy1": "close",
+    "decoy2": "closed",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the house at 8 AM.",
+    "correct": "left",
+    "decoy1": "leave",
+    "decoy2": "leaving",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ to school by bike.",
+    "correct": "cycles",
+    "decoy1": "cycle",
+    "decoy2": "cycled",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her exam last month.",
+    "correct": "passed",
+    "decoy1": "pass",
+    "decoy2": "passes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My brother ___ his room yesterday.",
+    "correct": "cleaned",
+    "decoy1": "clean",
+    "decoy2": "cleans",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The movie ___ for two hours.",
+    "correct": "lasts",
+    "decoy1": "last",
+    "decoy2": "lasted",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ coffee in the morning.",
+    "correct": "drink",
+    "decoy1": "drinks",
+    "decoy2": "drank",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the game by 3 goals.",
+    "correct": "won",
+    "decoy1": "win",
+    "decoy2": "wins",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The plane ___ in an hour.",
+    "correct": "takes off",
+    "decoy1": "take off",
+    "decoy2": "took off",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her hair every morning.",
+    "correct": "washes",
+    "decoy1": "wash",
+    "decoy2": "washed",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the meeting at 2 PM.",
+    "correct": "have",
+    "decoy1": "has",
+    "decoy2": "had",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ a letter to his friend.",
+    "correct": "wrote",
+    "decoy1": "write",
+    "decoy2": "writes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The baby ___ to walk.",
+    "correct": "is learning",
+    "decoy1": "learn",
+    "decoy2": "learns",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ to bed early last night.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "going",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the problem together.",
+    "correct": "solved",
+    "decoy1": "solve",
+    "decoy2": "solves",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The store ___ on Sundays.",
+    "correct": "is closed",
+    "decoy1": "closed",
+    "decoy2": "closes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her brother at the airport.",
+    "correct": "met",
+    "decoy1": "meet",
+    "decoy2": "meets",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ a lot of rain last week.",
+    "correct": "had",
+    "decoy1": "have",
+    "decoy2": "has",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ in New York for 10 years.",
+    "correct": "has lived",
+    "decoy1": "live",
+    "decoy2": "lived",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The teacher ___ the lesson clearly.",
+    "correct": "explained",
+    "decoy1": "explain",
+    "decoy2": "explains",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My father ___ the newspaper every morning.",
+    "correct": "reads",
+    "decoy1": "read",
+    "decoy2": "reading",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ my friends at the café.",
+    "correct": "am meeting",
+    "decoy1": "meet",
+    "decoy2": "met",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ to the beach last summer.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "goes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The dog ___ its tail.",
+    "correct": "wagged",
+    "decoy1": "wag",
+    "decoy2": "wags",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ the piano beautifully.",
+    "correct": "plays",
+    "decoy1": "play",
+    "decoy2": "played",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the bus to work.",
+    "correct": "take",
+    "decoy1": "takes",
+    "decoy2": "took",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ his hand when he saw me.",
+    "correct": "waved",
+    "decoy1": "wave",
+    "decoy2": "waves",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The concert ___ next Saturday.",
+    "correct": "is",
+    "decoy1": "are",
+    "decoy2": "be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ a new car last month.",
+    "correct": "bought",
+    "decoy1": "buy",
+    "decoy2": "buys",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ football every weekend.",
+    "correct": "play",
+    "decoy1": "plays",
+    "decoy2": "played",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The children ___ TV right now.",
+    "correct": "are watching",
+    "decoy1": "watch",
+    "decoy2": "watches",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her passport.",
+    "correct": "has lost",
+    "decoy1": "lose",
+    "decoy2": "lost",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the project next month.",
+    "correct": "will complete",
+    "decoy1": "complete",
+    "decoy2": "completed",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ to work yesterday.",
+    "correct": "didn't go",
+    "decoy1": "don't go",
+    "decoy2": "doesn't go",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The book ___ on the desk.",
+    "correct": "lies",
+    "decoy1": "lie",
+    "decoy2": "lay",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My mother ___ a cake for my birthday.",
+    "correct": "baked",
+    "decoy1": "bake",
+    "decoy2": "bakes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ my homework when she called.",
+    "correct": "was doing",
+    "decoy1": "did",
+    "decoy2": "do",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the house before we arrived.",
+    "correct": "had left",
+    "decoy1": "left",
+    "decoy2": "leave",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The bird ___ across the sky.",
+    "correct": "flew",
+    "decoy1": "fly",
+    "decoy2": "flies",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ to become a teacher.",
+    "correct": "hopes",
+    "decoy1": "hope",
+    "decoy2": "hoped",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ to London next year.",
+    "correct": "will move",
+    "decoy1": "move",
+    "decoy2": "moved",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ the door and left.",
+    "correct": "closed",
+    "decoy1": "close",
+    "decoy2": "closes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The river ___ through the valley.",
+    "correct": "flows",
+    "decoy1": "flow",
+    "decoy2": "flowed",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ him since 2010.",
+    "correct": "haven't seen",
+    "decoy1": "didn't see",
+    "decoy2": "don't see",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the mountain last year.",
+    "correct": "climbed",
+    "decoy1": "climb",
+    "decoy2": "climbs",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The wind ___ strongly last night.",
+    "correct": "blew",
+    "decoy1": "blow",
+    "decoy2": "blows",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her room every week.",
+    "correct": "cleans",
+    "decoy1": "clean",
+    "decoy2": "cleaned",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ a taxi to the airport.",
+    "correct": "took",
+    "decoy1": "take",
+    "decoy2": "takes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ his meal and left.",
+    "correct": "finished",
+    "decoy1": "finish",
+    "decoy2": "finishes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The lights ___ out during the storm.",
+    "correct": "went",
+    "decoy1": "go",
+    "decoy2": "goes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My sister ___ medicine at university.",
+    "correct": "is studying",
+    "decoy1": "study",
+    "decoy2": "studies",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ to the doctor tomorrow.",
+    "correct": "am going",
+    "decoy1": "go",
+    "decoy2": "went",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ their breakfast.",
+    "correct": "have eaten",
+    "decoy1": "eat",
+    "decoy2": "ate",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The clock ___ twelve.",
+    "correct": "struck",
+    "decoy1": "strike",
+    "decoy2": "strikes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ a picture of the sunset.",
+    "correct": "took",
+    "decoy1": "take",
+    "decoy2": "takes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the news on TV.",
+    "correct": "saw",
+    "decoy1": "see",
+    "decoy2": "seeing",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ the window because it was hot.",
+    "correct": "opened",
+    "decoy1": "open",
+    "decoy2": "opens",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The team ___ the championship.",
+    "correct": "won",
+    "decoy1": "win",
+    "decoy2": "wins",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ you to be careful.",
+    "correct": "want",
+    "decoy1": "wants",
+    "decoy2": "wanted",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ at the hotel for a week.",
+    "correct": "stayed",
+    "decoy1": "stay",
+    "decoy2": "stays",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The snow ___ heavily last winter.",
+    "correct": "fell",
+    "decoy1": "fall",
+    "decoy2": "falls",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her dress for the party.",
+    "correct": "chose",
+    "decoy1": "choose",
+    "decoy2": "chooses",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ our best.",
+    "correct": "tried",
+    "decoy1": "try",
+    "decoy2": "tries",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ his appointment.",
+    "correct": "missed",
+    "decoy1": "miss",
+    "decoy2": "misses",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The flowers ___ beautiful.",
+    "correct": "smell",
+    "decoy1": "smells",
+    "decoy2": "smelled",
+    "difficulty": 3
+  },
+  {
+    "prompt": "My brother ___ to music all day.",
+    "correct": "listens",
+    "decoy1": "listen",
+    "decoy2": "listened",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ the answer to the question.",
+    "correct": "knew",
+    "decoy1": "know",
+    "decoy2": "knows",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ the bridge last month.",
+    "correct": "built",
+    "decoy1": "build",
+    "decoy2": "builds",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The bell ___ at 9 AM.",
+    "correct": "rings",
+    "decoy1": "ring",
+    "decoy2": "rang",
+    "difficulty": 3
+  },
+  {
+    "prompt": "She ___ her homework before dinner.",
+    "correct": "finished",
+    "decoy1": "finish",
+    "decoy2": "finishes",
+    "difficulty": 3
+  },
+  {
+    "prompt": "We ___ the museum yesterday.",
+    "correct": "visited",
+    "decoy1": "visit",
+    "decoy2": "visits",
+    "difficulty": 3
+  },
+  {
+    "prompt": "He ___ a shower every morning.",
+    "correct": "takes",
+    "decoy1": "take",
+    "decoy2": "took",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The car ___ in the garage.",
+    "correct": "is",
+    "decoy1": "are",
+    "decoy2": "be",
+    "difficulty": 3
+  },
+  {
+    "prompt": "I ___ my wallet. Have you seen it?",
+    "correct": "have lost",
+    "decoy1": "lose",
+    "decoy2": "lost",
+    "difficulty": 3
+  },
+  {
+    "prompt": "They ___ English at school.",
+    "correct": "learn",
+    "decoy1": "learns",
+    "decoy2": "learned",
+    "difficulty": 3
+  },
+  {
+    "prompt": "The moon ___ at night.",
+    "correct": "shines",
+    "decoy1": "shine",
+    "decoy2": "shone",
+    "difficulty": 3
+  }
+]

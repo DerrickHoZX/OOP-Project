@@ -43,7 +43,7 @@ public class MovementManager {
     
     // Get all registered movables (useful for debugging)
     public List<Movable> getMovables() {
-        return movables;
+        return new ArrayList<>(movables);
     }
     
     // Clear all movables (useful for scene changes)

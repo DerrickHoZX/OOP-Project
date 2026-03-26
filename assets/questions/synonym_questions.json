@@ -1,0 +1,576 @@
+[
+  {
+    "prompt": "Synonym of Smart:",
+    "correct": "clever",
+    "decoy1": "silly",
+    "decoy2": "loud",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Angry:",
+    "correct": "mad",
+    "decoy1": "happy",
+    "decoy2": "sleepy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Tiny:",
+    "correct": "small",
+    "decoy1": "huge",
+    "decoy2": "wide",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Begin:",
+    "correct": "start",
+    "decoy1": "end",
+    "decoy2": "break",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of End:",
+    "correct": "finish",
+    "decoy1": "start",
+    "decoy2": "begin",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Brave:",
+    "correct": "courageous",
+    "decoy1": "afraid",
+    "decoy2": "weak",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Quick:",
+    "correct": "fast",
+    "decoy1": "slow",
+    "decoy2": "quiet",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Silent:",
+    "correct": "quiet",
+    "decoy1": "loud",
+    "decoy2": "angry",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Large:",
+    "correct": "big",
+    "decoy1": "tiny",
+    "decoy2": "short",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Happy:",
+    "correct": "joyful",
+    "decoy1": "sad",
+    "decoy2": "tired",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Beautiful:",
+    "correct": "pretty",
+    "decoy1": "ugly",
+    "decoy2": "plain",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Tired:",
+    "correct": "exhausted",
+    "decoy1": "awake",
+    "decoy2": "lazy",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Funny:",
+    "correct": "hilarious",
+    "decoy1": "sad",
+    "decoy2": "boring",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Scared:",
+    "correct": "afraid",
+    "decoy1": "brave",
+    "decoy2": "calm",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Difficult:",
+    "correct": "hard",
+    "decoy1": "easy",
+    "decoy2": "simple",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Big:",
+    "correct": "huge",
+    "decoy1": "tiny",
+    "decoy2": "little",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Small:",
+    "correct": "little",
+    "decoy1": "giant",
+    "decoy2": "tall",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Sad:",
+    "correct": "unhappy",
+    "decoy1": "joyful",
+    "decoy2": "cheerful",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Easy:",
+    "correct": "simple",
+    "decoy1": "hard",
+    "decoy2": "tough",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Wrong:",
+    "correct": "incorrect",
+    "decoy1": "right",
+    "decoy2": "true",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Right:",
+    "correct": "correct",
+    "decoy1": "wrong",
+    "decoy2": "bad",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Help:",
+    "correct": "assist",
+    "decoy1": "hurt",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Choose:",
+    "correct": "select",
+    "decoy1": "drop",
+    "decoy2": "lose",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Try:",
+    "correct": "attempt",
+    "decoy1": "quit",
+    "decoy2": "stop",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Find:",
+    "correct": "discover",
+    "decoy1": "lose",
+    "decoy2": "drop",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Hide:",
+    "correct": "conceal",
+    "decoy1": "show",
+    "decoy2": "reveal",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Buy:",
+    "correct": "purchase",
+    "decoy1": "sell",
+    "decoy2": "give",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Sell:",
+    "correct": "vend",
+    "decoy1": "buy",
+    "decoy2": "keep",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Tell:",
+    "correct": "inform",
+    "decoy1": "hide",
+    "decoy2": "lie",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Ask:",
+    "correct": "request",
+    "decoy1": "answer",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Give:",
+    "correct": "provide",
+    "decoy1": "take",
+    "decoy2": "keep",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Take:",
+    "correct": "receive",
+    "decoy1": "give",
+    "decoy2": "leave",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Make:",
+    "correct": "create",
+    "decoy1": "destroy",
+    "decoy2": "break",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Break:",
+    "correct": "shatter",
+    "decoy1": "fix",
+    "decoy2": "mend",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Fix:",
+    "correct": "repair",
+    "decoy1": "break",
+    "decoy2": "damage",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Leave:",
+    "correct": "depart",
+    "decoy1": "arrive",
+    "decoy2": "stay",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Arrive:",
+    "correct": "reach",
+    "decoy1": "leave",
+    "decoy2": "depart",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Start:",
+    "correct": "begin",
+    "decoy1": "end",
+    "decoy2": "stop",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Stop:",
+    "correct": "cease",
+    "decoy1": "start",
+    "decoy2": "continue",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Show:",
+    "correct": "display",
+    "decoy1": "hide",
+    "decoy2": "cover",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Change:",
+    "correct": "alter",
+    "decoy1": "keep",
+    "decoy2": "stay",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Use:",
+    "correct": "utilize",
+    "decoy1": "waste",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Need:",
+    "correct": "require",
+    "decoy1": "want",
+    "decoy2": "have",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Want:",
+    "correct": "desire",
+    "decoy1": "hate",
+    "decoy2": "reject",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Like:",
+    "correct": "enjoy",
+    "decoy1": "hate",
+    "decoy2": "dislike",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Love:",
+    "correct": "adore",
+    "decoy1": "hate",
+    "decoy2": "dislike",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Hate:",
+    "correct": "detest",
+    "decoy1": "love",
+    "decoy2": "like",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Know:",
+    "correct": "understand",
+    "decoy1": "ignore",
+    "decoy2": "forget",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Think:",
+    "correct": "believe",
+    "decoy1": "know",
+    "decoy2": "doubt",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Remember:",
+    "correct": "recall",
+    "decoy1": "forget",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Forget:",
+    "correct": "overlook",
+    "decoy1": "remember",
+    "decoy2": "recall",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Work:",
+    "correct": "labor",
+    "decoy1": "rest",
+    "decoy2": "play",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Rest:",
+    "correct": "relax",
+    "decoy1": "work",
+    "decoy2": "run",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Run:",
+    "correct": "sprint",
+    "decoy1": "walk",
+    "decoy2": "stop",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Walk:",
+    "correct": "stroll",
+    "decoy1": "run",
+    "decoy2": "fly",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Talk:",
+    "correct": "speak",
+    "decoy1": "listen",
+    "decoy2": "silent",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Listen:",
+    "correct": "hear",
+    "decoy1": "ignore",
+    "decoy2": "speak",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Look:",
+    "correct": "gaze",
+    "decoy1": "ignore",
+    "decoy2": "hide",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of See:",
+    "correct": "observe",
+    "decoy1": "miss",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Hear:",
+    "correct": "listen",
+    "decoy1": "ignore",
+    "decoy2": "deaf",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Feel:",
+    "correct": "touch",
+    "decoy1": "numb",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Hold:",
+    "correct": "grasp",
+    "decoy1": "drop",
+    "decoy2": "release",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Throw:",
+    "correct": "toss",
+    "decoy1": "catch",
+    "decoy2": "hold",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Catch:",
+    "correct": "grab",
+    "decoy1": "throw",
+    "decoy2": "release",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Open:",
+    "correct": "unlock",
+    "decoy1": "close",
+    "decoy2": "shut",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Close:",
+    "correct": "shut",
+    "decoy1": "open",
+    "decoy2": "widen",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Shout:",
+    "correct": "yell",
+    "decoy1": "whisper",
+    "decoy2": "murmur",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Send:",
+    "correct": "dispatch",
+    "decoy1": "receive",
+    "decoy2": "keep",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Receive:",
+    "correct": "get",
+    "decoy1": "send",
+    "decoy2": "give",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Wait:",
+    "correct": "stay",
+    "decoy1": "leave",
+    "decoy2": "rush",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Hurry:",
+    "correct": "rush",
+    "decoy1": "slow",
+    "decoy2": "wait",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Answer:",
+    "correct": "reply",
+    "decoy1": "ask",
+    "decoy2": "ignore",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Reply:",
+    "correct": "respond",
+    "decoy1": "ignore",
+    "decoy2": "ask",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Say:",
+    "correct": "utter",
+    "decoy1": "listen",
+    "decoy2": "silent",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Word:",
+    "correct": "term",
+    "decoy1": "silence",
+    "decoy2": "nothing",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Idea:",
+    "correct": "concept",
+    "decoy1": "fact",
+    "decoy2": "reality",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Thing:",
+    "correct": "object",
+    "decoy1": "nothing",
+    "decoy2": "idea",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Place:",
+    "correct": "location",
+    "decoy1": "nowhere",
+    "decoy2": "time",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Time:",
+    "correct": "moment",
+    "decoy1": "never",
+    "decoy2": "space",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Way:",
+    "correct": "method",
+    "decoy1": "block",
+    "decoy2": "stop",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Part:",
+    "correct": "portion",
+    "decoy1": "whole",
+    "decoy2": "all",
+    "difficulty": 2
+  },
+  {
+    "prompt": "Synonym of Nice:",
+    "correct": "kind",
+    "decoy1": "cruel",
+    "decoy2": "mean",
+    "difficulty": 2
+  }
+]

@@ -3,8 +3,10 @@ package io.github.abstractengine.managers;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.abstractengine.entities.DisposableEntity;
 import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.entities.EntityFactory;
+import io.github.abstractengine.interfaces.Movable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,10 +24,16 @@ public class EntityManager {
 
     private List<Entity> entities;
     private final Map<Class<? extends Entity>, EntityFactory<? extends Entity>> factories;
+    private MovementManager movementManager;
 
     public EntityManager() {
         this.entities = new ArrayList<>();
         this.factories = new HashMap<>();
+        this.movementManager = null;
+    }
+
+    public void setMovementManager(MovementManager movementManager) {
+        this.movementManager = movementManager;
     }
 
     public <T extends Entity> void registerFactory(Class<T> type, EntityFactory<T> factory) {
@@ -47,7 +55,9 @@ public class EntityManager {
     }
 
     public void removeEntity(Entity entity) {
+        if (entity == null) return;
         entities.remove(entity);
+        cleanupEntity(entity);
     }
 
     public void update(float dt) {
@@ -57,6 +67,7 @@ public class EntityManager {
             if (e.isActive()) {
                 e.update(dt);
             } else {
+                cleanupEntity(e);
                 iterator.remove();
             }
         }
@@ -83,5 +94,14 @@ public class EntityManager {
     /** Snapshot for read-only iteration (e.g. apply per-entity effects). */
     public List<Entity> getEntitiesSnapshot() {
         return new ArrayList<>(entities);
+    }
+
+    private void cleanupEntity(Entity entity) {
+        if (movementManager != null && entity instanceof Movable) {
+            movementManager.unregister((Movable) entity);
+        }
+        if (entity instanceof DisposableEntity) {
+            ((DisposableEntity) entity).disposeEntity();
+        }
     }
 }
