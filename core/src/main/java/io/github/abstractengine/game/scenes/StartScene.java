@@ -69,7 +69,6 @@ public class StartScene extends Scene implements GameEventListener {
     private static final float ENEMY_PRETURN_PAUSE_END = 0.12f;
 
     private final Viewport viewport;
-    private final GameCategory category;
     private final CategoryConfig config;
 
     private SafeZone safeZone;
@@ -111,7 +110,6 @@ public class StartScene extends Scene implements GameEventListener {
     public StartScene(SceneManager sceneManager, Viewport viewport, GameCategory category, String username) {
         super(sceneManager);
         this.viewport = viewport;
-        this.category = category;
         this.config = CategoryConfigFactory.get(category);
         this.entityManager = new EntityManager();
         this.movementManager = new MovementManager();

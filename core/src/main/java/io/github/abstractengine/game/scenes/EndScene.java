@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -232,18 +231,6 @@ public class EndScene extends Scene {
         batch.end();
 
         stage.draw();
-
-        if (UI.DEBUG_HITBOXES && debugRenderer != null) {
-            debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
-            debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-            debugRenderer.setColor(Color.RED);
-
-            for (Actor actor : stage.getActors()) {
-                debugRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
-            }
-
-            debugRenderer.end();
-        }
     }
 
     @Override
@@ -301,8 +288,6 @@ public class EndScene extends Scene {
     }
 
     private static final class UI {
-        static final boolean DEBUG_HITBOXES = false;
-
         static final float BUTTON_WIDTH_MULT = 0.24f;
         static final float BUTTON_HEIGHT_MULT = 0.10f;
 

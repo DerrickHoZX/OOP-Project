@@ -1,5 +1,4 @@
 package io.github.abstractengine.game.scenes;
-import io.github.abstractengine.managers.AssetManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;

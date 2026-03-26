@@ -217,7 +217,7 @@ public class MainMenuScene extends Scene {
 
         stage.draw();
 
-        if (UI.DEBUG_HITBOXES && debugRenderer != null) {
+        if (UI.DEBUG_HITBOXES) {
             debugRenderer.setProjectionMatrix(viewport.getCamera().combined);
             debugRenderer.begin(ShapeRenderer.ShapeType.Line);
             debugRenderer.setColor(Color.RED);

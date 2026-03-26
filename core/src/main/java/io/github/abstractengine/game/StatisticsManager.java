@@ -27,7 +27,6 @@ public class StatisticsManager {
 
     private GameCategory category;
     private String username;
-    private IOManager ioManager;
 
     private List<LeaderboardEntry> podiumEntries;
     private final int MAX_PODIUM_SPOTS = 5;
@@ -44,7 +43,6 @@ public class StatisticsManager {
     public StatisticsManager(GameCategory category, String username, IOManager ioManager, float timeLimitInSeconds) {
         this.category = category;
         this.username = username;
-        this.ioManager = ioManager;
         
         this.podiumEntries = new ArrayList<>();
         podiumEntries.add(new LeaderboardEntry("Lancea", 500));

@@ -25,8 +25,6 @@ public class SimulationCollisionHandler implements ICollisionHandler {
     
     private SceneManager sceneManager;
     private EntityManager entityManager;
-    private Viewport viewport;
-    private Circle targetCircle;  
     private StatisticsManager statsManager; 
     private GameEventListener listener;
 
@@ -41,8 +39,6 @@ public class SimulationCollisionHandler implements ICollisionHandler {
                                       StatisticsManager statsManager, GameEventListener listener) {
         this.sceneManager = sceneManager;
         this.entityManager = entityManager;
-        this.viewport = viewport;
-        this.targetCircle = targetCircle;
         this.statsManager = statsManager;
         this.listener = listener;
 
