@@ -3,6 +3,7 @@ package io.github.abstractengine.movement;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.abstractengine.interfaces.Movable;
+import io.github.abstractengine.game.entities.SafeZone;
 
 import java.util.Random;
 
@@ -19,6 +20,11 @@ public class RandomMovement extends MovementComponent {
 
     private final Random random;
     private boolean frozen;
+
+    // Optional obstacle-avoidance.
+    private SafeZone safeZone;
+    private boolean avoidSafeZone;
+    private float safeZonePadding = 0f;
 
     /** Seconds to stand still before picking a new direction (telegraph; scaled by difficulty from scene). */
     private float preTurnPauseSeconds;
@@ -44,6 +50,25 @@ public class RandomMovement extends MovementComponent {
         this.inPauseBeforeTurn = false;
         this.pauseTimer = 0f;
 
+        this.safeZone = null;
+        this.avoidSafeZone = false;
+        pickRandomDirection();
+    }
+
+    public void setSafeZone(SafeZone safeZone) {
+        this.safeZone = safeZone;
+        this.avoidSafeZone = (safeZone != null);
+    }
+
+    /**
+     * Call when the safe zone moves (teleports) so enemies immediately react.
+     */
+    public void onSafeZoneChanged() {
+        if (!avoidSafeZone) return;
+        // Reset timers so we don't get stuck waiting out the current phase.
+        inPauseBeforeTurn = false;
+        pauseTimer = 0f;
+        moveTimer = 0f;
         pickRandomDirection();
     }
 
@@ -129,6 +154,29 @@ public class RandomMovement extends MovementComponent {
             inPauseBeforeTurn = true;
             pauseTimer = 0f;
             velocity.setZero();
+        }
+
+        // Safe-zone avoidance happens after movement/boundary clamping.
+        if (avoidSafeZone && safeZone != null) {
+            // Use rectangle overlap checks so partial overlap also counts as "inside".
+            boolean overlaps = safeZone.overlapsRectangle(
+                    entity.getPosition().x,
+                    entity.getPosition().y,
+                    entitySize,
+                    entitySize,
+                    safeZonePadding
+            );
+
+            if (overlaps) {
+                // Reject this step: keep the previous position and change direction.
+                // Note: we intentionally do not push the enemy out here;
+                // StartScene also enforces "no enemies inside" immediately after relocation.
+                entity.setPosition(currentPos.x, currentPos.y);
+                moveTimer = 0f;
+                inPauseBeforeTurn = false;
+                pauseTimer = 0f;
+                pickRandomDirection();
+            }
         }
     }
 

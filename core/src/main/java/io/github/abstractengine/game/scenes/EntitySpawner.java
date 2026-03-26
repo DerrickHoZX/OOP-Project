@@ -11,12 +11,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.game.AlgorithmManager;
 import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.SafeZone;
 import io.github.abstractengine.game.entities.PowerUpPickup;
 import io.github.abstractengine.game.entities.PowerUpType;
 import io.github.abstractengine.game.entities.Square;
 import io.github.abstractengine.game.entities.Triangle;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.MovementManager;
+import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.movement.RandomMovement;
 
 /**
@@ -37,6 +39,8 @@ public class EntitySpawner {
     private final Circle player;
     private final BitmapFont font;
 
+    private SafeZone safeZone;
+
     private final List<Square> currentAnswerSquares = new ArrayList<>();
     private final List<PowerUpPickup> activePowerUpPickups = new ArrayList<>();
     private int prevStreakForPowerUps;
@@ -49,6 +53,11 @@ public class EntitySpawner {
         this.player = player;
         this.font = font;
         this.prevStreakForPowerUps = 0;
+        this.safeZone = null;
+    }
+
+    public void setSafeZone(SafeZone safeZone) {
+        this.safeZone = safeZone;
     }
 
     // ---------------------------
@@ -61,17 +70,33 @@ public class EntitySpawner {
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
 
-        float randomX = MathUtils.random(250f, worldW - tWidth - 20f);
-        float randomY = MathUtils.random(20f, worldH - 200f);
+        float randomX;
+        float randomY;
+        boolean invalidPosition;
+        int attempts = 0;
+
+        do {
+            invalidPosition = false;
+            randomX = MathUtils.random(250f, worldW - tWidth - 20f);
+            randomY = MathUtils.random(20f, worldH - 200f);
+
+            if (safeZone != null && safeZone.overlapsRectangle(randomX, randomY, tWidth, tHeight, 0f)) {
+                invalidPosition = true;
+            }
+
+            attempts++;
+        } while (invalidPosition && attempts < 100);
 
         Triangle triangle = new Triangle(randomX, randomY, tWidth, tHeight);
-        triangle.setMovementComponent(new RandomMovement(
+        RandomMovement rm = new RandomMovement(
                 ENEMY_BASE_SPEED,
                 ENEMY_MOVE_PHASE_SECONDS,
                 worldW,
                 worldH,
                 tWidth
-        ));
+        );
+        rm.setSafeZone(safeZone);
+        triangle.setMovementComponent(rm);
 
         entityManager.addEntity(triangle);
         movementManager.register(triangle);
@@ -125,6 +150,7 @@ public class EntitySpawner {
         boolean invalidPosition;
         int attempts = 0;
         float minDistanceFromPlayer = 150f;
+        float safeZonePadding = 2f;
 
         float worldW = viewport.getWorldWidth();
         float worldH = viewport.getWorldHeight();
@@ -143,6 +169,12 @@ public class EntitySpawner {
 
             if (distToPlayer < minDistanceFromPlayer) {
                 invalidPosition = true;
+            }
+
+            if (!invalidPosition) {
+                if (safeZone != null && safeZone.overlapsRectangle(spawnX, spawnY, sWidth, sHeight, safeZonePadding)) {
+                    invalidPosition = true;
+                }
             }
 
             if (!invalidPosition) {
@@ -273,5 +305,64 @@ public class EntitySpawner {
 
     public List<PowerUpPickup> getActivePowerUpPickups() {
         return activePowerUpPickups;
+    }
+
+    /**
+     * Enforces "no enemies inside safe zone" right after the safe zone teleports.
+     * We reposition enemies rather than removing them to avoid messing with MovementManager.
+     */
+    public void enforceEnemiesOutsideSafeZone() {
+        if (safeZone == null) return;
+
+        float worldW = viewport.getWorldWidth();
+        float worldH = viewport.getWorldHeight();
+
+        for (Entity e : entityManager.getEntitiesSnapshot()) {
+            if (!(e instanceof Triangle)) continue;
+            Triangle t = (Triangle) e;
+
+            float tW = t.getWidth();
+            float tH = t.getHeight();
+
+            if (!safeZone.overlapsRectangle(t.getX(), t.getY(), tW, tH, 0f)) continue;
+
+            float scx = safeZone.getCenterX();
+            float scy = safeZone.getCenterY();
+
+            float tcx = t.getX() + tW / 2f;
+            float tcy = t.getY() + tH / 2f;
+
+            float dx = tcx - scx;
+            float dy = tcy - scy;
+
+            float len2 = dx * dx + dy * dy;
+            if (len2 < 1e-4f) {
+                dx = MathUtils.random(-1f, 1f);
+                dy = MathUtils.random(-1f, 1f);
+                len2 = dx * dx + dy * dy;
+            }
+
+            float invLen = (float) (1.0 / Math.sqrt(len2));
+            dx *= invLen;
+            dy *= invLen;
+
+            float halfDiag = (float) (Math.sqrt(tW * tW + tH * tH) / 2f);
+            float margin = safeZone.getRadius() + halfDiag + 5f;
+
+            float newCenterX = scx + dx * margin;
+            float newCenterY = scy + dy * margin;
+
+            float newX = newCenterX - tW / 2f;
+            float newY = newCenterY - tH / 2f;
+
+            newX = MathUtils.clamp(newX, 0f, worldW - tW);
+            newY = MathUtils.clamp(newY, 0f, worldH - tH);
+
+            t.setPosition(newX, newY);
+
+            if (t.getMovementComponent() instanceof RandomMovement) {
+                ((RandomMovement) t.getMovementComponent()).onSafeZoneChanged();
+            }
+        }
     }
 }

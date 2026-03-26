@@ -48,6 +48,32 @@ public class SafeZone extends NonCollidableEntity {
         return radius;
     }
 
+    public float getCenterX() {
+        return x + radius;
+    }
+
+    public float getCenterY() {
+        return y + radius;
+    }
+
+    /**
+     * Checks whether this safe zone circle overlaps an axis-aligned rectangle.
+     * Treats an entity as "inside" if any part of its rectangle intersects the safe zone.
+     */
+    public boolean overlapsRectangle(float rectX, float rectY, float rectW, float rectH, float padding) {
+        float cx = getCenterX();
+        float cy = getCenterY();
+
+        float closestX = Math.max(rectX, Math.min(cx, rectX + rectW));
+        float closestY = Math.max(rectY, Math.min(cy, rectY + rectH));
+
+        float dx = cx - closestX;
+        float dy = cy - closestY;
+
+        float effectiveR = radius + Math.max(0f, padding);
+        return (dx * dx + dy * dy) <= (effectiveR * effectiveR);
+    }
+
     @Override
     public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
         // Drawn separately via ShapeRenderer in StartScene since it needs transparency

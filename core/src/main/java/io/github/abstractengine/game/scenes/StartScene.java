@@ -181,8 +181,21 @@ public class StartScene extends Scene implements GameEventListener {
         // entityManager.addEntity(circle); <--- Removed because createEntity automatically adds it
         movementManager.register(circle);
 
+        // Spawn safe zone initially at the player's starting position.
+        float safeZoneRadius = 40f;
+        float circleCenterX = circle.getX() + circle.getWidth() / 2f;
+        float circleCenterY = circle.getY() + circle.getHeight() / 2f;
+        safeZone = new SafeZone(
+                circleCenterX - safeZoneRadius,
+                circleCenterY - safeZoneRadius,
+                safeZoneRadius,
+                999999f // We relocate manually after each answered question.
+        );
+        entityManager.addEntity(safeZone);
+
         // Initialize entity spawner (needs player reference)
         entitySpawner = new EntitySpawner(viewport, entityManager, movementManager, circle, font);
+        entitySpawner.setSafeZone(safeZone);
 
         // Spawn initial enemies
         for (int i = 0; i < 3; i++) {
@@ -202,15 +215,6 @@ public class StartScene extends Scene implements GameEventListener {
         // Spawn first question
         spawnNextQuestion();
         createPauseButton();
-        
-     // Spawn safe zone
-        safeZone = new SafeZone(
-            MathUtils.random(200f, viewport.getWorldWidth() - 400f),
-            MathUtils.random(50f, viewport.getWorldHeight() - 300f),
-            40f,   // radius
-            8f      // relocates every 8 seconds
-        );
-        entityManager.addEntity(safeZone);
     }
 
     private void createPauseButton() {
@@ -290,6 +294,30 @@ public class StartScene extends Scene implements GameEventListener {
         if (currentQuestion != null) {
             algorithmManager.recordAnswer(currentQuestion, wasCorrect);
         }
+
+        // Move the safe zone to wherever the player was when the question was answered.
+        if (safeZone != null && circle != null) {
+            float radius = safeZone.getRadius();
+            float pcx = circle.getX() + circle.getWidth() / 2f;
+            float pcy = circle.getY() + circle.getHeight() / 2f;
+
+            float worldW = viewport.getWorldWidth();
+            float worldH = viewport.getWorldHeight();
+            float hudTop = 180f;
+
+            float maxX = worldW - radius * 2f;
+            float maxY = worldH - hudTop - radius * 2f;
+
+            float newX = MathUtils.clamp(pcx - radius, 0f, Math.max(0f, maxX));
+            float newY = MathUtils.clamp(pcy - radius, 0f, Math.max(0f, maxY));
+
+            safeZone.setPosition(newX, newY);
+        }
+
+        if (entitySpawner != null) {
+            entitySpawner.enforceEnemiesOutsideSafeZone();
+        }
+
         spawnNextQuestion();
     }
 
@@ -389,15 +417,6 @@ public class StartScene extends Scene implements GameEventListener {
         collisionManager.update(dt);
 
         entitySpawner.handleStreakPowerUpSpawns(statsManager.getCurrentStreak());
-        
-     // Relocate safe zone periodically
-        if (safeZone != null && safeZone.needsRelocate()) {
-            safeZone.setPosition(
-                MathUtils.random(200f, viewport.getWorldWidth() - 400f),
-                MathUtils.random(50f, viewport.getWorldHeight() - 300f)
-            );
-            safeZone.resetTimer();
-        }
     }
 
     public void onResume() {

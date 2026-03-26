@@ -1,3 +1,0 @@
-Player	1140
-lancea	470
-as	15
