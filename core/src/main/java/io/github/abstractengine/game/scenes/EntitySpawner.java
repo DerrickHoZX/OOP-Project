@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.abstractengine.game.AlgorithmManager;
 import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.EnemyEntity;
 import io.github.abstractengine.game.entities.SafeZone;
 import io.github.abstractengine.game.entities.PowerUpPickup;
 import io.github.abstractengine.game.entities.PowerUpType;
@@ -20,6 +21,8 @@ import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.MovementManager;
 import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.movement.RandomMovement;
+import io.github.abstractengine.movement.SafeZoneChangeListener;
+import io.github.abstractengine.entities.CollidableEntity;
 
 /**
  * Handles spawning of enemies, answer squares, and power-up pickups.
@@ -318,22 +321,24 @@ public class EntitySpawner {
         float worldH = viewport.getWorldHeight();
 
         for (Entity e : entityManager.getEntitiesSnapshot()) {
-            if (!(e instanceof Triangle)) continue;
-            Triangle t = (Triangle) e;
+            if (!(e instanceof EnemyEntity)) continue;
+            if (!(e instanceof CollidableEntity)) continue;
 
-            float tW = t.getWidth();
-            float tH = t.getHeight();
+            CollidableEntity enemy = (CollidableEntity) e;
 
-            if (!safeZone.overlapsRectangle(t.getX(), t.getY(), tW, tH, 0f)) continue;
+            float enemyW = enemy.getWidth();
+            float enemyH = enemy.getHeight();
+
+            if (!safeZone.overlapsRectangle(enemy.getX(), enemy.getY(), enemyW, enemyH, 0f)) continue;
 
             float scx = safeZone.getCenterX();
             float scy = safeZone.getCenterY();
 
-            float tcx = t.getX() + tW / 2f;
-            float tcy = t.getY() + tH / 2f;
+            float ecx = enemy.getX() + enemyW / 2f;
+            float ecy = enemy.getY() + enemyH / 2f;
 
-            float dx = tcx - scx;
-            float dy = tcy - scy;
+            float dx = ecx - scx;
+            float dy = ecy - scy;
 
             float len2 = dx * dx + dy * dy;
             if (len2 < 1e-4f) {
@@ -346,22 +351,22 @@ public class EntitySpawner {
             dx *= invLen;
             dy *= invLen;
 
-            float halfDiag = (float) (Math.sqrt(tW * tW + tH * tH) / 2f);
+            float halfDiag = (float) (Math.sqrt(enemyW * enemyW + enemyH * enemyH) / 2f);
             float margin = safeZone.getRadius() + halfDiag + 5f;
 
             float newCenterX = scx + dx * margin;
             float newCenterY = scy + dy * margin;
 
-            float newX = newCenterX - tW / 2f;
-            float newY = newCenterY - tH / 2f;
+            float newX = newCenterX - enemyW / 2f;
+            float newY = newCenterY - enemyH / 2f;
 
-            newX = MathUtils.clamp(newX, 0f, worldW - tW);
-            newY = MathUtils.clamp(newY, 0f, worldH - tH);
+            newX = MathUtils.clamp(newX, 0f, worldW - enemyW);
+            newY = MathUtils.clamp(newY, 0f, worldH - enemyH);
 
-            t.setPosition(newX, newY);
+            enemy.setPosition(newX, newY);
 
-            if (t.getMovementComponent() instanceof RandomMovement) {
-                ((RandomMovement) t.getMovementComponent()).onSafeZoneChanged();
+            if (enemy.getMovementComponent() instanceof SafeZoneChangeListener) {
+                ((SafeZoneChangeListener) enemy.getMovementComponent()).onSafeZoneChanged();
             }
         }
     }

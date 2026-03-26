@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import io.github.abstractengine.movement.AvoidanceZone;
 import io.github.abstractengine.entities.NonCollidableEntity;
 
 /**
  * A green translucent circle that protects the player from enemy damage
  * while inside. Spawns randomly and relocates periodically.
  */
-public class SafeZone extends NonCollidableEntity {
+public class SafeZone extends NonCollidableEntity implements AvoidanceZone {
 
     private float radius;
     private float relocateTimer;

@@ -3,11 +3,10 @@ package io.github.abstractengine.movement;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.abstractengine.interfaces.Movable;
-import io.github.abstractengine.game.entities.SafeZone;
 
 import java.util.Random;
 
-public class RandomMovement extends MovementComponent {
+public class RandomMovement extends MovementComponent implements TelegraphState, SafeZoneChangeListener {
 
     private final float baseSpeed;
     private float speed;
@@ -22,7 +21,7 @@ public class RandomMovement extends MovementComponent {
     private boolean frozen;
 
     // Optional obstacle-avoidance.
-    private SafeZone safeZone;
+    private AvoidanceZone safeZone;
     private boolean avoidSafeZone;
     private float safeZonePadding = 0f;
 
@@ -58,7 +57,7 @@ public class RandomMovement extends MovementComponent {
         pickRandomDirection();
     }
 
-    public void setSafeZone(SafeZone safeZone) {
+    public void setSafeZone(AvoidanceZone safeZone) {
         this.safeZone = safeZone;
         this.avoidSafeZone = (safeZone != null);
     }
@@ -66,6 +65,7 @@ public class RandomMovement extends MovementComponent {
     /**
      * Call when the safe zone moves (teleports) so enemies immediately react.
      */
+    @Override
     public void onSafeZoneChanged() {
         if (!avoidSafeZone) return;
         // Reset timers so we don't get stuck waiting out the current phase.
@@ -78,6 +78,7 @@ public class RandomMovement extends MovementComponent {
     /**
      * @return true while the entity is paused before switching direction.
      */
+    @Override
     public boolean isInPauseBeforeTurn() {
         return inPauseBeforeTurn;
     }
@@ -95,6 +96,7 @@ public class RandomMovement extends MovementComponent {
      *  - 2 => Enemy2.png
      *  - 0 => normal Enemy.png
      */
+    @Override
     public int getTelegraphSpriteIndex() {
         if (!inPauseBeforeTurn) return 0;
         int step = (int) (pauseTimer / TELEGRAPH_STEP_SECONDS);
