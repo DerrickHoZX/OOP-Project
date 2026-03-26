@@ -1,2 +1,2 @@
-music=0.5
-sfx=0.68
+music=0.07
+sfx=0.07

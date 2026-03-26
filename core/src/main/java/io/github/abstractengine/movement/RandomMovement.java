@@ -26,6 +26,9 @@ public class RandomMovement extends MovementComponent {
     private boolean avoidSafeZone;
     private float safeZonePadding = 0f;
 
+    // How long each "warning" sprite should show during pre-turn pause.
+    private static final float TELEGRAPH_STEP_SECONDS = 0.1f;
+
     /** Seconds to stand still before picking a new direction (telegraph; scaled by difficulty from scene). */
     private float preTurnPauseSeconds;
 
@@ -70,6 +73,33 @@ public class RandomMovement extends MovementComponent {
         pauseTimer = 0f;
         moveTimer = 0f;
         pickRandomDirection();
+    }
+
+    /**
+     * @return true while the entity is paused before switching direction.
+     */
+    public boolean isInPauseBeforeTurn() {
+        return inPauseBeforeTurn;
+    }
+
+    /**
+     * @return how many seconds we've been in the pause-before-turn state.
+     */
+    public float getPauseTimerSeconds() {
+        return inPauseBeforeTurn ? pauseTimer : 0f;
+    }
+
+    /**
+     * Telegraphed sprite selection for the pre-turn pause.
+     *  - 1 => Enemy1.png
+     *  - 2 => Enemy2.png
+     *  - 0 => normal Enemy.png
+     */
+    public int getTelegraphSpriteIndex() {
+        if (!inPauseBeforeTurn) return 0;
+        int step = (int) (pauseTimer / TELEGRAPH_STEP_SECONDS);
+        // Alternate: 0 -> Enemy1, 1 -> Enemy2, 2 -> Enemy1, ...
+        return (step % 2 == 0) ? 1 : 2;
     }
 
     public void setPreTurnPauseSeconds(float seconds) {
