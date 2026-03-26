@@ -1,4 +1,4 @@
-package io.github.abstractengine.movement;
+package io.github.abstractengine.game.movement;
 
 /**
  * Optional listener for movement components that need to react

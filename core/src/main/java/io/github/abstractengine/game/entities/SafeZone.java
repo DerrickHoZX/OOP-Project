@@ -3,8 +3,8 @@ package io.github.abstractengine.game.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import io.github.abstractengine.movement.AvoidanceZone;
 import io.github.abstractengine.entities.NonCollidableEntity;
+import io.github.abstractengine.game.movement.AvoidanceZone;
 
 /**
  * A green translucent circle that protects the player from enemy damage

@@ -17,11 +17,11 @@ import io.github.abstractengine.game.entities.PowerUpPickup;
 import io.github.abstractengine.game.entities.PowerUpType;
 import io.github.abstractengine.game.entities.Square;
 import io.github.abstractengine.game.entities.Triangle;
+import io.github.abstractengine.game.movement.SafeZoneChangeListener;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.MovementManager;
 import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.movement.RandomMovement;
-import io.github.abstractengine.movement.SafeZoneChangeListener;
 import io.github.abstractengine.entities.CollidableEntity;
 
 /**

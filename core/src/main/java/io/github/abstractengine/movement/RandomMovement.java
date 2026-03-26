@@ -3,10 +3,14 @@ package io.github.abstractengine.movement;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.abstractengine.interfaces.Movable;
+import io.github.abstractengine.game.movement.AvoidanceZone;
+import io.github.abstractengine.game.movement.EnemyMovementModifiable;
+import io.github.abstractengine.game.movement.SafeZoneChangeListener;
+import io.github.abstractengine.game.movement.TelegraphState;
 
 import java.util.Random;
 
-public class RandomMovement extends MovementComponent implements TelegraphState, SafeZoneChangeListener {
+public class RandomMovement extends MovementComponent implements TelegraphState, SafeZoneChangeListener, EnemyMovementModifiable {
 
     private final float baseSpeed;
     private float speed;
@@ -104,6 +108,7 @@ public class RandomMovement extends MovementComponent implements TelegraphState,
         return (step % 2 == 0) ? 1 : 2;
     }
 
+    @Override
     public void setPreTurnPauseSeconds(float seconds) {
         this.preTurnPauseSeconds = Math.max(0f, seconds);
     }
@@ -112,6 +117,7 @@ public class RandomMovement extends MovementComponent implements TelegraphState,
      * Applies streak power-up modifiers. Call each frame before {@link #update(Movable, float)}.
      * When {@code frozen} is true, the entity does not move; unfreezing restores or picks a direction.
      */
+    @Override
     public void setEnemyModifiers(float speedMultiplier, boolean frozen) {
         boolean wasFrozen = this.frozen;
         this.frozen = frozen;

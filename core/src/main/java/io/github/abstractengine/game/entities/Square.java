@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
-import io.github.abstractengine.entities.DisposableEntity;
 
 public class Square extends CollidableEntity implements DisposableEntity {
     

@@ -1,4 +1,4 @@
-package io.github.abstractengine.movement;
+package io.github.abstractengine.game.movement;
 
 /**
  * Minimal abstraction for a circular/area "zone" that entities should avoid.

@@ -3,9 +3,9 @@ package io.github.abstractengine.managers;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.github.abstractengine.entities.DisposableEntity;
 import io.github.abstractengine.entities.Entity;
 import io.github.abstractengine.entities.EntityFactory;
+import io.github.abstractengine.game.entities.DisposableEntity;
 import io.github.abstractengine.interfaces.Movable;
 
 import java.util.ArrayList;

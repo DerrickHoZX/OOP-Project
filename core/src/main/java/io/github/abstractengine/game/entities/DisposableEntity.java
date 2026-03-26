@@ -1,4 +1,4 @@
-package io.github.abstractengine.entities;
+package io.github.abstractengine.game.entities;
 
 /**
  * Optional contract for entities that own disposable resources

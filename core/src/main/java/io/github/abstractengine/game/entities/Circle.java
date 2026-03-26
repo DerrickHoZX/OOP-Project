@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
-import io.github.abstractengine.entities.DisposableEntity;
 
 public class Circle extends CollidableEntity implements DisposableEntity {
 

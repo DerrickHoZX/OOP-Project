@@ -44,17 +44,20 @@ import io.github.abstractengine.game.effects.PointsFeedbackEffect;
 import io.github.abstractengine.game.effects.ScreenFlash;
 import io.github.abstractengine.game.effects.StreakPowerUpRuntime;
 import io.github.abstractengine.game.entities.Circle;
+import io.github.abstractengine.game.entities.EnemyEntity;
 import io.github.abstractengine.game.entities.PowerUpPickup;
 import io.github.abstractengine.game.entities.Triangle;
 import io.github.abstractengine.interfaces.GameEventListener;
+import io.github.abstractengine.interfaces.Movable;
 import io.github.abstractengine.io.KeyCode;
 import io.github.abstractengine.io.LogCategory;
 import io.github.abstractengine.managers.CollisionManager;
 import io.github.abstractengine.managers.EntityManager;
 import io.github.abstractengine.managers.MovementManager;
 import io.github.abstractengine.managers.SceneManager;
+import io.github.abstractengine.game.movement.EnemyMovementModifiable;
 import io.github.abstractengine.movement.KeyboardMovement;
-import io.github.abstractengine.movement.RandomMovement;
+import io.github.abstractengine.movement.MovementComponent;
 import io.github.abstractengine.scene.Scene;
 import io.github.abstractengine.game.entities.SafeZone;
 
@@ -68,8 +71,7 @@ public class StartScene extends Scene implements GameEventListener {
     private static final float ENEMY_PRETURN_PAUSE_START = 0.5f;
     private static final float ENEMY_PRETURN_PAUSE_END = 0.12f;
 
-    private final Viewport viewport;
-    private final CategoryConfig config;
+    private final Viewport viewport;    private final CategoryConfig config;
 
     private SafeZone safeZone;
     private Texture bg;
@@ -373,12 +375,17 @@ public class StartScene extends Scene implements GameEventListener {
         boolean frozen = streakPowerUpRuntime.enemiesFrozen();
         float preTurnPause = getEnemyPreTurnPauseSeconds();
         for (Entity e : entityManager.getEntitiesSnapshot()) {
-            if (e instanceof Triangle) {
-                RandomMovement rm = (RandomMovement) ((Triangle) e).getMovementComponent();
-                if (rm != null) {
-                    rm.setEnemyModifiers(emult, frozen);
-                    rm.setPreTurnPauseSeconds(preTurnPause);
-                }
+            if (!(e instanceof EnemyEntity)) continue;
+            if (!(e instanceof Movable)) continue;
+
+            Movable movable = (Movable) e;
+            MovementComponent movement = movable.getMovementComponent();
+            if (movement == null) continue;
+
+            if (movement instanceof EnemyMovementModifiable) {
+                EnemyMovementModifiable moddable = (EnemyMovementModifiable) movement;
+                moddable.setEnemyModifiers(emult, frozen);
+                moddable.setPreTurnPauseSeconds(preTurnPause);
             }
         }
     }

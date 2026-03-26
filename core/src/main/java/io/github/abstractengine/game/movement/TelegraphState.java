@@ -1,4 +1,4 @@
-package io.github.abstractengine.movement;
+package io.github.abstractengine.game.movement;
 
 /**
  * Minimal interface for rendering a telegraphed animation/state

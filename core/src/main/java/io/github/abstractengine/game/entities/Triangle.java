@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.abstractengine.entities.CollidableEntity;
-import io.github.abstractengine.movement.TelegraphState;
+import io.github.abstractengine.game.movement.TelegraphState;
 
 public class Triangle extends CollidableEntity implements EnemyEntity {
 
