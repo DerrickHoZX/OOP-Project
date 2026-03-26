@@ -39,6 +39,11 @@ public class CircleTriangleCollisionRule implements ICollisionRule {
 
     @Override
     public void apply(CollisionInfo info) {
+        // Skip damage if player is in safe zone
+        if (listener.isPlayerSafe()) {
+            return;
+        }
+
         Entity e1 = info.getEntity1();
         Entity e2 = info.getEntity2();
 

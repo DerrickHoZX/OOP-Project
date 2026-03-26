@@ -14,4 +14,5 @@ public interface GameEventListener {
     void onAnswerSubmitted(boolean wasCorrect);
     void onEnemyDestroyed();
     void onItemCollected(Entity item);
+    boolean isPlayerSafe();
 }

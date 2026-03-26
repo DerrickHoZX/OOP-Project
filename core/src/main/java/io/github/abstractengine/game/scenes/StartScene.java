@@ -53,6 +53,7 @@ import io.github.abstractengine.managers.SceneManager;
 import io.github.abstractengine.movement.KeyboardMovement;
 import io.github.abstractengine.movement.RandomMovement;
 import io.github.abstractengine.scene.Scene;
+import io.github.abstractengine.game.entities.SafeZone;
 
 /**
  * Main gameplay scene. Coordinates game loop, delegates HUD rendering
@@ -68,6 +69,7 @@ public class StartScene extends Scene implements GameEventListener {
     private final GameCategory category;
     private final CategoryConfig config;
 
+    private SafeZone safeZone;
     private Texture bg;
     private CollisionManager collisionManager;
     private Circle circle;
@@ -122,6 +124,18 @@ public class StartScene extends Scene implements GameEventListener {
                 60f
         );
         this.algorithmManager = new AlgorithmManager(config.questions);
+    }
+    
+    @Override
+    public boolean isPlayerSafe() {
+        return isPlayerInSafeZone();
+    }
+    
+    public boolean isPlayerInSafeZone() {
+        if (safeZone == null || circle == null) return false;
+        float pcx = circle.getX() + circle.getWidth() / 2f;
+        float pcy = circle.getY() + circle.getHeight() / 2f;
+        return safeZone.isPlayerInside(pcx, pcy);
     }
 
     @Override
@@ -188,6 +202,15 @@ public class StartScene extends Scene implements GameEventListener {
         // Spawn first question
         spawnNextQuestion();
         createPauseButton();
+        
+     // Spawn safe zone
+        safeZone = new SafeZone(
+            MathUtils.random(200f, viewport.getWorldWidth() - 400f),
+            MathUtils.random(50f, viewport.getWorldHeight() - 300f),
+            40f,   // radius
+            8f      // relocates every 8 seconds
+        );
+        entityManager.addEntity(safeZone);
     }
 
     private void createPauseButton() {
@@ -366,6 +389,15 @@ public class StartScene extends Scene implements GameEventListener {
         collisionManager.update(dt);
 
         entitySpawner.handleStreakPowerUpSpawns(statsManager.getCurrentStreak());
+        
+     // Relocate safe zone periodically
+        if (safeZone != null && safeZone.needsRelocate()) {
+            safeZone.setPosition(
+                MathUtils.random(200f, viewport.getWorldWidth() - 400f),
+                MathUtils.random(50f, viewport.getWorldHeight() - 300f)
+            );
+            safeZone.resetTimer();
+        }
     }
 
     public void onResume() {
@@ -388,6 +420,17 @@ public class StartScene extends Scene implements GameEventListener {
         if (bg != null) batch.draw(bg, 0, 0, worldW, worldH);
         entityManager.render(batch, shapeRenderer);
         batch.end();
+        
+     // Draw safe zone
+        if (safeZone != null) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            safeZone.drawZone(shapeRenderer);
+            shapeRenderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
 
         // Draw HUD panels
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
@@ -406,6 +449,8 @@ public class StartScene extends Scene implements GameEventListener {
         // Draw pause button
         if (stage != null) {
             stage.draw();
+            
+            
         }
 
         // Draw screen flash overlay
